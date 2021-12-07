@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{login_page.title} - library|"></title>
+</head>
+<body>
+
+<h2 class="heading">ログイン</h2>
+
+<!-- 参考 この
+action="/login" では、 
+<form method="post" action="/login"> 
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />がフォームタグの中に
+無いとダメです。   th:action="@{/login}" なら、無くても大丈夫です 把握しておくこと
+-->
+
+<!-- 後で、ログインするのに、メルアドも追加する -->
+<form method="post" th:action="@{/login}">
+	<div th:if="${param.error}" >
+	ログインに失敗しました
+		<div th:if="${session[SPRING_SECURITY_LAST_EXCEPTION] != null}">
+			<span th:text="${session[SPRING_SECURITY_LAST_EXCEPTION].message}"></span>
+		</div>
+	</div> 
+	
+	<div th:if="${param.logout}">
+		ログアウトしました
+	</div>
+	
+	<!-- ログイン認証は、ユーザ名とパスワードだけ -->
+	<label for="username">ユーザー名</label>
+	<input type="text" id="username" name="username" ></br>
+	
+	<label for="password">パスワード</label>
+	<input type="password" id="password" name="password"></br>
+	<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+	
+	
+	<button type="submit">ログイン</button>
+</form>
+
+<a href="/signup">ユーザー登録</a>
+
+<!-- ポイント
+上記のコードでは、CSRFトークンの記載していませんが、フォームタグのところに th:action="@{/login}"の記載をすることで、
+自動的に CSRFトークンが設定されるようになっています なので、 action="/login" では機能しません 
+ブラウザから、login.htmlのコードを確認すると
+<input name="_csrf" type="hidden" value="38543bd2-15ba-4be8-a983-f50e5b739ca6" />
+が、Springによって自動的に CSRF トークンが設定されているのが確認できます
+コードを書く側は CSRF を意識しなくとも Spring Security が自動的に CSRF 対策をしてくれます
+ CSRFトークンの部分を自分で書く場合（参考）
+ フォームタグの中に
+ <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+ を書くと、 action="/login" でも機能するようになります
+ 把握しておくことで何かの時に役に立つ
+-->
+
+<!-- ログインエラー があるかどうかを判別するための条件分岐
+th:if="${param.error}"     補足  th:if="${param.error != null}" というような条件文でもいい
+ログアウト情報 があるかどうかを判別するための条件分岐
+th:if="${param.logout}"
+これらの要件を満たしたときに、ブラウザにエラーメッセージを表示したり、ログアウトしたことを表示したりする
+
+認証エラー時に発生した例外オブジェクト は 
+SPRING_SECURITY_LAST_EXCEPTION という属性名で保持されます
+ここからエラーメッセージを取得します
+例外が発生している場合
+th:if="${session[SPRING_SECURITY_LAST_EXCEPTION] != null}"
+
+エラーメッセージを取得
+th:text="${session[SPRING_SECURITY_LAST_EXCEPTION].message}" -->
+
+</body>
+</html>

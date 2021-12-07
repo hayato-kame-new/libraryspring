@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{books_page.title} - library|"></title>
+
+</head>
+<body>
+
+<h2 class="heading">書籍一覧</h2>
+
+
+
+	<table>
+		<tr>
+			<th>ID</th><th>ISBN</th><th>タイトル</th><th>著者</th><th colspan="2"></th>
+		</tr>
+		
+		<tr th:each="obj : ${books}" >
+			<!-- <td th:text="${book.id}"></td>
+			<td th:text="${book.isbn}"></td>
+			<td th:text="${book.title}"></td>
+			<td th:text="${book.authors}"></td> -->
+			<td th:text="${obj[0]}"></td>
+			<td th:text="${obj[1]}"></td>
+			<td th:text="${obj[3]}"></td>
+			<td th:text="${obj[4]}"></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	
+<!-- 以降がページネーション部分 -->
+<p th:text="${page}"></p>
+<p th:text="${page.first}"></p>
+<p th:text="${page.number}"></p>
+<p th:text="${page.totalPages}"></p>
+
+<div>
+  <ul>
+    <li style="display:inline;">
+      <span th:if="${page.first}">&lt;&lt;前</span>
+      <a
+        th:if="${!page.first}"
+        th:href="@{/books(page = ${page.number} - 1)}"
+      >
+        &lt;&lt;前
+      </a>
+    </li>
+    <li
+      th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+      style="display:inline; margin-left:10px;"
+    >
+      <span th:if="${i} == ${page.number}" th:text="${i + 1}">1</span>
+      <a
+        th:if="${i} != ${page.number}"
+        th:href="@{/books(page = ${i})}"
+      >
+        <span th:text="${i+1}">1</span>
+      </a>
+    </li>
+    <li style="display:inline; margin-left:10px;">
+      <span th:if="${page.last}">次&gt;&gt;</span>
+      <a
+        th:if="${!page.last}"
+        th:href="@{/books(page = (${page.number} + 1))}"
+      >
+        次&gt;&gt;
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{top_page.title} - library|"></title>
+<style>
+ .top {
+ 	font-size: 75%;
+ }
+</style>
+</head>
+<body> 
+	 <p class="top" style="text-align:right" th:text="'ユーザーID: ' + ${#authentication.principal.id} + '  ユーザ名: '+ ${#authentication.principal.username} + 'さん'"></p>
+
+     <p class="top" style="text-align:right" th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
+    <hr />
+    
+	<h2 class="heading">図書館 Top Page</h2>
+	
+
+	<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
+	Maven プロジェクト（pom.xml ファイル）に追加されている 
+	現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
+	${#authentication.principal.password}
+	${#authentication.principal.authorities} で取得もできる
+	-->
+	<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div>
+	
+	<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
+	<div th:text="| password: ${#authentication.principal.password} です|"></div>
+	<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div> -->
+	
+	<div>
+		<a href="/books" th:href="@{/books}"><button type="button" th:text="書籍一覧画面へ" ></button></a>
+	</div>
+	
+	<div>
+		<!-- フォームのビューで必要なので  ? 以降のクエリー文字列action=addを つけること -->
+		<a href="/book_add_edit?action=add" th:href="@{/book_add_edit(action=add)}"><button type="button" th:text="書籍新規登録画面へ" ></button></a>
+	</div>
+	
+	<div>
+		<a href="/search" th:href="@{/search}"><button type="button" th:text="書籍検索画面へ" ></button></a>
+	</div>
+	
+	<div>
+		<a href="/history" th:href="@{/history}"><button type="button" th:text="貸し出し履歴検索画面へ" ></button></a>
+	</div>
+	
+	<div>
+		<form th:action="@{/logout}" method="post">
+	        <input type="submit" value="ログアウト" />
+	    </form>	
+	</div>
+
+</body>
+</html>
