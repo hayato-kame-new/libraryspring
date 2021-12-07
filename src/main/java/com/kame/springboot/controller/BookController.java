@@ -37,13 +37,15 @@ public class BookController {
 	/**
 	 * ページネーション
 	 * JPQLを使うやり方です 表示は books.html
+	 * sort = { "id" } で id順に表示でき ページングできます @PageableDefault(page = 0, size = 10, sort = { "id" }) Pageable pageable 
 	 * @param pageable
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "/books", method=RequestMethod.GET)
 	public String index(
-			@PageableDefault(page = 0, size = 10) Pageable pageable,
+			// @PageableDefault(page = 0, size = 10) Pageable pageable,
+			@PageableDefault(page = 0, size = 10, sort = { "id" }) Pageable pageable,
 			Model model) {
 		
 		// 書籍を 新規登録 編集 が成功したら リダイレクトしてくるので このリクエストハンドラを実行する

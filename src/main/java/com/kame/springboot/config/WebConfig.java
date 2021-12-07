@@ -25,8 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
         // 1ページに表示する最大件数(10件)を設定する
         // resolver.setMaxPageSize(10);
         
-        
-        // これ
+       // こっちを使う
         resolver.setFallbackPageable(PageRequest.of(0, 10));
         
       

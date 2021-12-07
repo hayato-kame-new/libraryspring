@@ -10,9 +10,8 @@ import com.kame.springboot.entity.Book;
 @Repository  // リポジトリもコンポーネントです
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
+	 public Page<Book> findAll(Pageable pageable);
 	
-
-	public Page<Book> findAll(Pageable pageable);
 	
 	
 }
