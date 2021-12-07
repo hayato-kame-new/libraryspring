@@ -23,6 +23,7 @@ import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Book;
 import com.kame.springboot.service.BookService;
 
+
 @Controller
 public class BookController {
 	
@@ -53,12 +54,27 @@ public class BookController {
 		}
 		
 		 Page<Book> bookPage = bookService.getBooks(pageable);
+		 
+		 // この Sort.byをサービスクラスで
+		//   Page<Book> bookPage = bookService.getBooks(PageRequest.of(0, 0, Sort.by(Sort.Direction.ASC, "id")));
 		
 
 		 model.addAttribute("page", bookPage);  // Page<Book>
-	     model.addAttribute("books", bookPage.getContent()); // List<Book>
-	     // List<Book> list = bookPage.getContent();
+	     model.addAttribute("books", bookPage.getContent()); // bookPage.getContent() コレクション ランダムアクセスリスト
 	     
+	    
+	     // List absList = list.stream().sorted().collect(Collectors.toList()); // ソート処理 昇順
+	     
+		 
+//		 List<Book> list = bookPage.getContent();
+//		 
+//		 // Collections.sort 戻り値はなく list を変更します 元のは残りません
+//		 Collections.sort(list, new Comparator<Book>() {  // Javaの匿名クラス（無名クラス）の使い方 を参照する
+//	            public int compare(Book b1, Book b2) {
+//	                return Integer.compare(b1.getId(), b2.getId());
+//	            }
+//	        });
+//		 model.addAttribute("books", list);
 	     model.addAttribute("flashMsg", flashMsg);
 	        
         return "book/books";

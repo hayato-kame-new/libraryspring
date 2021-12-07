@@ -37,14 +37,13 @@ public class BookService {
 	 */
 	public Page<Book> getBooks(Pageable pageable) {
 		
-         return bookRepository.findAll(pageable);
-		
+         return bookRepository.findAll(pageable);		
     }
 	
-
+	
 	
 	/**
-	 * 戻り値 List<Book> になるやり方  order by id asc にしたいので、こちらを使う
+	 * 戻り値 List<Book> になるやり方  order by id asc にしたい
 	 * 登録してあるBookインスタンスを全て検索してListにして返す
 	 * createNativeQuery(メソッドは JPQLではなく、素のSQL文  PostgreSQLなので、 テーブル名やカラム名は全てを小文字にすること
 	 * order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
@@ -54,13 +53,13 @@ public class BookService {
 	 * 
 	 * @return
 	 */
-	 public List<Book> booksList() {
-		// javax.persistence.Queryインタフェースの型のオブジェクトを生成する
-		Query query = entityManager.createNativeQuery("select * from books order by id asc");  // order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
-		// ページネーションを使うためには Listの代わりに Pageクラスを使いますが ここではList<Book> でしかできないので
-		 List<Book> list = (List<Book>)query.getResultList();  // まず、これでOKだったのを確信した		
-		return list;
-	}
+//	 public List<Book> booksList() {
+//		// javax.persistence.Queryインタフェースの型のオブジェクトを生成する
+//		Query query = entityManager.createNativeQuery("select * from books order by id asc");  // order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
+//		// ページネーションを使うためには Listの代わりに Pageクラスを使いますが ここではList<Book> でしかできないので
+//		 List<Book> list = (List<Book>)query.getResultList();  		
+//		return list;
+//	}
 	 
 	
 
