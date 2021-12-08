@@ -59,7 +59,8 @@ public class BookController {
 		 Page<Book> bookPage = bookService.getAllBooks(pageable);
 		 
 		 model.addAttribute("page", bookPage);  
-	     model.addAttribute("books", bookPage.getContent());    
+	     model.addAttribute("books", bookPage.getContent());
+	     
 	     model.addAttribute("flashMsg", flashMsg);
 	        
         return "book/books";
@@ -154,7 +155,7 @@ public class BookController {
 	 */
 	@RequestMapping(value="/book_add_edit", method=RequestMethod.POST)
 	public ModelAndView bookAddEdit(
-			@RequestParam( name = "action")String action,  // 必須のパラメータ
+			@RequestParam( name = "action")String action,  // 必須のパラメータ hidden
 			@RequestParam( name = "id")Integer id, // 必須のパラメータ  idは新規では 0なので 0で渡ってくる 編集の時にはidが入ってる
 			@ModelAttribute("book")@Validated Book book,
 			BindingResult result,
@@ -189,7 +190,7 @@ public class BookController {
 	    String flashMsg = "";
 		switch(action) {
 		case "add":
-			// 新規登録する  新規の時には フォームのオブジェクト 
+			// 新規登録する  新規の時には フォームのオブジェクト を利用して
 			// フォームオブジェクトにフォームの値が入ってるのでそのまま登録できる
 			 success = bookService.create(book);
 			if(success == false) { // データベース登録失敗

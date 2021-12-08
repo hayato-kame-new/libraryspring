@@ -1,16 +1,20 @@
 package com.kame.springboot.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Member;
@@ -38,10 +42,19 @@ public class MemberController {
 			Model model
 			) {
 		
+		// 会員を 新規登録 編集 が成功したら リダイレクトしてくるので このリクエストハンドラを実行する
+		// Flash Scope から 取り出すには Modelインスタンスの getAttributeメソッドを使用する
+		String flashMsg = null;
+		if(model.getAttribute("flashMsg") != null) {
+			flashMsg = (String) model.getAttribute("flashMsg");  // Flash Scopeに保存してあるのは Object型のインスタンスなので キャストする
+		}
+		
 		// ページネーションと idで ソートしたコレクション を取得
 		Page<Member> memberPage = memberService.getAllMembers(pageable);
 		model.addAttribute("page", memberPage);
 		model.addAttribute("members", memberPage.getContent());
+		
+		model.addAttribute("flashMsg", flashMsg);
 		
 		return "member/members";
 	}
@@ -100,4 +113,68 @@ public class MemberController {
 		
 	}
 		
+	// 登録実行する
+	@RequestMapping( value = "/member_add_edit", method=RequestMethod.POST)
+	public ModelAndView memberAddEdit(
+			@RequestParam( name = "action")String action,  // 必須のパラメータ hidden
+			@RequestParam( name = "id")Integer id, // 必須のパラメータ  idは新規では 0なので 0で渡ってくる 編集の時にはidが入ってる
+			@ModelAttribute("member") Member member,
+			BindingResult result,
+			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
+		    HttpServletRequest request, // 要る?
+			ModelAndView mav
+			) {
+		
+		// もし、バリデーションエラーがあったら フォワード
+		if (result.hasErrors()) {
+			// フォワード
+        	mav.setViewName("member/form");       	
+        	mav.addObject("msg", "入力エラーが発生しました。");
+			
+        	return mav;  //returnで メソッドの即終了この後ろは実行されない
+		 }
+		
+		// バリデーションエラーがなかったら 処理を進める フォームのオブジェクトから取得する
+	//  int id = book.getId();  // 編集の時には入ってる 新規の時にはフォームはないのでint型のデフォルト値(規定値) 0 のままです
+		String name = member.getName();
+		String tel = member.getTel();
+		String address = member.getAddress();
+		
+		// バリデーションエラーがなかったら actionによって分岐処理を進める
+		
+		boolean success = false;
+	    String flashMsg = "";
+	    switch(action) {
+	    case "add":
+	    	// 新規登録する  新規の時には フォームのオブジェクト を利用して
+	    	// フォームオブジェクトにフォームの値が入ってるのでそのまま登録できる
+	    	success = memberService.create(member);
+	    	if(success == false) { // データベース登録失敗
+				// 失敗のメッセージとreturnする
+				flashMsg = "会員を新規登録できませんでした";
+				mav.addObject("flashMsg", flashMsg);
+				mav.setViewName("result");
+				return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
+			} else {
+				// 成功してる
+				flashMsg = "会員を新規登録しました";
+			}
+	    	break; // switch文を抜ける
+	    	
+	    case "edit":
+	    	
+	    	break;
+	    }
+	    
+    	// 成功したら
+ 		// リダイレクトします リダイレクトは、フォワードと違って、リダイレクト先のリクエストハンドラを実行させます。フォワードは、ビューを表示させるだけ
+ 		// flashMsgは Flashスコープへ保存します スコープに置けるのは、参照型のインスタンスのみです。基本型(プリミティブ型)の変数は置けません intなら Integerの参照型にすれば置ける。
+ 		// (また、自作のクラスのインスタンスは、サーブレットなら、Beanのクラスにすることが必要です)
+ 		//  Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。
+         // Flash Scop は Request Scope より長く、Session Scope より短いイメージ  リダイレクト先のリクエストハンドラでは、Flash Scopeから取り出すには、Modelインスタンスの getAttributeメソッドを使う
+         // RedirectAttributesインスタンスの addFlashAttributeメソッドで Flash Scop に保存する
+ 		redirectAttributes.addFlashAttribute("flashMsg" , flashMsg);
+ 		// 書籍一覧を表示する
+ 		 return new ModelAndView("redirect:/members");
+	}
 }
