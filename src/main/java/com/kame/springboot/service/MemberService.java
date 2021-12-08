@@ -40,7 +40,7 @@ public class MemberService {
     }
 	
 	/**
-	  * 会員 新規登録
+	  * 会員 新規登録する
 	  * @param book
 	  * @return true:成功<br /> false:失敗
 	  */
@@ -98,7 +98,7 @@ public class MemberService {
 	 }
 	 
 	 /**
-	  * 会員 更新 
+	  * 会員 更新する
 	  * @param member
 	  * @return true:成功<br /> false:失敗
 	  */
@@ -116,6 +116,23 @@ public class MemberService {
 			// ここでreturnしたら このメソッドは即終了するので以降は実行されない 引数の falseを呼び出し元へ返す
 		}
 		return true;  // 成功
+	 }
+	 
+	 /**
+	  * 会員 削除する
+	  * @param id
+	  * @return true:成功<br /> false:失敗
+	  */
+	 public boolean delete(Integer id) {
+		 Query query = entityManager.createNativeQuery("delete from members where id = ? ");
+		 
+		 query.setParameter(1, id);
+		 
+		 int result = query.executeUpdate();
+		 if(result != 1) {
+			 return false;  // 失敗
+		 }
+		 return true;  // 成功
 	 }
 
 }

@@ -160,7 +160,7 @@ public class BookController {
 			@ModelAttribute("book")@Validated Book book,
 			BindingResult result,
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
-		    HttpServletRequest request, // 要る?
+		    HttpServletRequest request, // requestオブジェクトから取得したい時に
 			ModelAndView mav
 			) {
 		
@@ -246,7 +246,7 @@ public class BookController {
 	public ModelAndView delete(
 			@RequestParam(name = "id")Integer id,  
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
-			// HttpServletRequest request,  // 要る?
+			// HttpServletRequest request,  // requestオブジェクトから取得したい時に
 			ModelAndView mav
 			) {
 		

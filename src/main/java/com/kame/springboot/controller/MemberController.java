@@ -102,10 +102,10 @@ public class MemberController {
 		case "delete":
 			// aリンクの idが クエリー文字列で送られてきてるので 
 			// 主キーのidから、Bookオブジェクトを取得して、
-			// リクエストハンドラで定義した@ModelAttribute("book") Book book の フォームのオブジェクトに上書きをする
+			// リクエストハンドラで定義した@ModelAttribute("member") Member member の フォームのオブジェクトに上書きをする
 			
-//			member = memberService.findMemberDataById(id);
-//			mav.addObject("member", member);  // 必要 フォームに初期値として、表示するために
+			member = memberService.findMemberDataById(id);
+			mav.addObject("member", member);  // 必要 フォームに初期値として、表示するために
 			break;
 		
 		}
@@ -114,7 +114,18 @@ public class MemberController {
 		
 	}
 		
-	// 登録実行する
+	
+	/**
+	 *  会員を登録  編集 をする
+	 * @param action
+	 * @param id
+	 * @param member
+	 * @param result
+	 * @param redirectAttributes
+	 * @param request
+	 * @param mav
+	 * @return ModelAndView
+	 */
 	@RequestMapping( value = "/member_add_edit", method=RequestMethod.POST)
 	public ModelAndView memberAddEdit(
 			@RequestParam( name = "action")String action,  // 必須のパラメータ hidden
@@ -122,7 +133,7 @@ public class MemberController {
 			@ModelAttribute("member")@Validated Member member,   // @Validatedをつけることによってバリデーション機能が働きます
 			BindingResult result,
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
-		    HttpServletRequest request, // 要る?
+		    HttpServletRequest request, // requestオブジェクトから取得したい時に
 			ModelAndView mav
 			) {
 		
@@ -189,5 +200,49 @@ public class MemberController {
  		redirectAttributes.addFlashAttribute("flashMsg" , flashMsg);
  		// 書籍一覧を表示する
  		 return new ModelAndView("redirect:/members");
+	}
+	
+	/**
+	 * 会員を削除する
+	 * @param id
+	 * @param redirectAttributes
+	 * @param mav
+	 * @return ModelAndView
+	 */
+	@RequestMapping( value = "/member_delete" , method=RequestMethod.POST)
+	public ModelAndView delete(
+			@RequestParam( name = "id")Integer id,
+			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
+			// HttpServletRequest request,  // requestオブジェクトから取得したい時に
+			ModelAndView mav			
+			) {
+		
+		// idがあれば Memberデータを削除できる
+		boolean success = memberService.delete(id);
+		String flashMsg = "";
+		if(success == false) { // データベースから削除に失敗
+			flashMsg = "会員を削除できませんでした";
+			// 結果ページへフォワードする
+			mav.setViewName("result");
+			mav.addObject("flashMsg", flashMsg);
+			return mav;  // ここで即リクエストハンドラの終了 引数のmavを呼び出し元へ返す
+			// return で即終了してるので これより下の行は実行されない
+		} else {
+			// 成功してる
+			flashMsg = "会員を削除しました";
+		}
+		
+		// 一覧へリダイレクトします
+		
+		//  リダイレクトは、フォワードと違って、リダイレクト先のリクエストハンドラを実行させます。フォワードは、ビューを表示させるだけ
+		// flashMsgは Flashスコープへ保存します スコープに置けるのは、参照型のインスタンスのみです。基本型(プリミティブ型)の変数は置けません intなら Integerの参照型にすれば置ける。
+		// (また、自作のクラスのインスタンスは、サーブレットなら、Beanのクラスにすることが必要です)
+		//  Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。
+        // Flash Scop は Request Scope より長く、Session Scope より短いイメージ 
+		// リダイレクト先のリクエストハンドラでは、Flash Scopeから取り出すには、Modelインスタンスの getAttributeメソッドを使う
+       
+		redirectAttributes.addAttribute("flashMsg", flashMsg);   // RedirectAttributesインスタンスの addFlashAttributeメソッドで Flash Scop に保存する
+		return new ModelAndView("redirect:/members");
+		
 	}
 }
