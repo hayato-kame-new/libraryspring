@@ -27,10 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
         
        // こっちを使う
         resolver.setFallbackPageable(PageRequest.of(0, 10));
-        
-      
-     
-       
+             
         argumentResolvers.add(resolver);
     }
 }

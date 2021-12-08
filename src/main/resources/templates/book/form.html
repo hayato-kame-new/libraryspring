@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
 <title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -68,11 +69,20 @@
 		</div>
 	</div>
 	
-	<div>
-		<input type="submit" value="送信" />
-		<input type="reset" value="キャンセル">
-	</div>
+	<th:block th:if="${action.equals('add') || action.equals('edit')}">
+		<div>
+			<input type="submit" value="送信" />
+			<input type="reset" value="キャンセル">
+		</div>
+	</th:block>
 </form>
+	<th:block th:if="${action.equals('delete')}" >
+		<form th:action = @{/book_delete} method="post" th:object="${book}" onsubmit="return beforeSubmit()">
+		    <input type="hidden" name="id" th:value="${book.id}" />
+		    <input type="submit" value="削除します" />
+		</form>
+	
+	</th:block>
 
 <hr />
 
@@ -80,5 +90,47 @@
 	<a href="/books" th:href="@{/books}"><button type="button" th:text="書籍一覧画面へ戻る" ></button></a>
 </div>
 
+
+<!-- Font Awesomeのための -->
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
+
+<!-- <script>
+(function($){
+    function formSetDay(){
+      var lastday = formSetLastDay($('.js-changeYear').val(), $('.js-changeMonth').val());
+      var option = '';
+      for (var i = 1; i <= lastday; i++) {
+        if (i === $('.js-changeDay').val()){
+          option += '<option value="' + i + '" selected="selected">' + i + '</option>\n';
+        }else{
+          option += '<option value="' + i + '">' + i + '</option>\n';
+        }
+      }
+      $('.js-changeDay').html(option);
+    }
+
+    function formSetLastDay(year, month){
+      var lastday = new Array('', 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+      if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0){
+        lastday[2] = 29;
+      }
+      return lastday[month];
+    }
+
+    $('.js-changeYear, .js-changeMonth').change(function(){
+      formSetDay();
+    });
+  })(jQuery);
+</script> -->
+
+<script>
+function beforeSubmit() {
+    if(window.confirm('本当に削除しますか？')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+</script>
 </body>
 </html>

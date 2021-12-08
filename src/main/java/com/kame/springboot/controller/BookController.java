@@ -57,26 +57,8 @@ public class BookController {
 		
 		 Page<Book> bookPage = bookService.getBooks(pageable);
 		 
-		 // この Sort.byをサービスクラスで
-		//   Page<Book> bookPage = bookService.getBooks(PageRequest.of(0, 0, Sort.by(Sort.Direction.ASC, "id")));
-		
-
-		 model.addAttribute("page", bookPage);  // Page<Book>
-	     model.addAttribute("books", bookPage.getContent()); // bookPage.getContent() コレクション ランダムアクセスリスト
-	     
-	    
-	     // List absList = list.stream().sorted().collect(Collectors.toList()); // ソート処理 昇順
-	     
-		 
-//		 List<Book> list = bookPage.getContent();
-//		 
-//		 // Collections.sort 戻り値はなく list を変更します 元のは残りません
-//		 Collections.sort(list, new Comparator<Book>() {  // Javaの匿名クラス（無名クラス）の使い方 を参照する
-//	            public int compare(Book b1, Book b2) {
-//	                return Integer.compare(b1.getId(), b2.getId());
-//	            }
-//	        });
-//		 model.addAttribute("books", list);
+		 model.addAttribute("page", bookPage);  
+	     model.addAttribute("books", bookPage.getContent()); 	     
 	     model.addAttribute("flashMsg", flashMsg);
 	        
         return "book/books";
@@ -108,15 +90,17 @@ public class BookController {
 	
 	
 	/**
-	 * 書籍 新規登録画面  編集画面 を表示する
+	 * 書籍 新規登録画面  編集画面   削除確認画面 を表示する
+	 * 削除する際も、一度内容を確認してからなので 削除の確認画面を表示する
 	 * aリンクの ?以降のクエリー文字列を取得する
-	 * 新規の時    ?action=add
+	 * 新規の時    ?action=add  になる  idのクエリー文字列はない 
 	 * 
-	 * 編集の時     ?action=edit&id=2 
+	 * 編集の時     ?action=edit&id=2  などになる
+	 * 削除の時     ?action=delete&id=2  などになる
 	 * @param mav
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value="/book_add_edit", method=RequestMethod.GET)
+	@RequestMapping(value="/book_form", method=RequestMethod.GET)
 	public ModelAndView bookForm(
 			@ModelAttribute("book") Book book,
 			@RequestParam(name = "action")String action, // 必須パラメータ
@@ -140,7 +124,15 @@ public class BookController {
 			// リクエストハンドラで定義した@ModelAttribute("book") Book book の フォームのオブジェクトに上書きをする
 			book = bookService.findBookDataById(id);
 			mav.addObject("book", book);  // 必要
-			break;	
+			break;
+			
+		case "delete":
+			// aリンクの idが クエリー文字列で送られてきてるので 
+			// 主キーのidから、Bookオブジェクトを取得して、
+			// リクエストハンドラで定義した@ModelAttribute("book") Book book の フォームのオブジェクトに上書きをする
+			book = bookService.findBookDataById(id);
+			mav.addObject("book", book);  // 必要
+			break;
 		
 		}
 		
@@ -149,7 +141,7 @@ public class BookController {
 	}
 	
 	/**
-	 * 書籍 新規登録   編集 をする
+	 * 書籍 新規登録   編集  をする
 	 * @param action
 	 * @param id
 	 * @param book
@@ -166,7 +158,7 @@ public class BookController {
 			@ModelAttribute("book")@Validated Book book,
 			BindingResult result,
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
-			HttpServletRequest request,
+		    HttpServletRequest request, // 要る?
 			ModelAndView mav
 			) {
 		
@@ -235,7 +227,43 @@ public class BookController {
 		// 書籍一覧を表示する
 		 return new ModelAndView("redirect:/books");
 	}
-	   
+	
+	
+	/**
+	 * 書籍を削除する
+	 * <a th:href="@{/book_delete(id=${book.id})}">
+	 * formで method="post"  HTTPメソッドは POSTアクセスです
+	 * ちなみに formタグの method="get"が デフォルトなので method属性を省略すると GETアクセスになる
+	 * @param id
+	 * @param redirectAttributes
+	 * @param mav
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value="/book_delete", method=RequestMethod.POST)
+	public ModelAndView delete(
+			@RequestParam(name = "id")Integer id,  
+			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
+			// HttpServletRequest request,  // 要る?
+			ModelAndView mav
+			) {
+		
+		String flashMsg = "";
+		// 削除は 主キーidがあればできる
+		boolean success = bookService.delete(id);
+		
+		if(success == false) { // データベース 更新 失敗
+			// 失敗のメッセージとreturnする
+			flashMsg = "書籍を削除できませんでした";
+			mav.setViewName("result");
+			return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
+		} else {
+			// 成功してる
+			flashMsg = "書籍を削除しました";
+		}
+		redirectAttributes.addFlashAttribute("flashMsg" , flashMsg);
+		// 書籍一覧を表示する
+		 return new ModelAndView("redirect:/books");
+		
 	}
-
-
+	
+}

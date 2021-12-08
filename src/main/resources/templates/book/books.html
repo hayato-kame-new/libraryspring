@@ -31,10 +31,10 @@
 			<td th:text="${book.authors}"></td>
 			<td>
 			 <!--  ? 以降の クエリー文字列  ?action=edit&id=1   などと表示される -->
-				<a th:href="@{/book_add_edit(action=edit, id=${book.id})}"><button type="button" >書籍 編集画面へ</button></a>
+				<a th:href="@{/book_form(action=edit, id=${book.id})}"><button type="button" >書籍 編集画面へ</button></a>
 			</td>
 			<td>
-				
+				<a th:href="@{/book_form(action=delete, id=${book.id})}"><button type="button" >書籍 削除画面へ</button></a>
 			</td>
 		</tr>
 	</table>
@@ -42,7 +42,7 @@
 </th:block>
 </div>
 <div>
-	<a href="/book_add_edit?action=add" th:href="@{/book_add_edit(action=add)}"><button type="button" >書籍 新規登録画面へ</button></a>
+	<a href="/book_form?action=add" th:href="@{/book_form(action=add)}"><button type="button" >書籍 新規登録画面へ</button></a>
 </div>
 
 

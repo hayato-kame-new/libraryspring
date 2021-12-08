@@ -151,12 +151,28 @@ public class BookService {
 		 query.setParameter(7, book.getId());
 		 
 		 int result = query.executeUpdate();
-			if (result != 1) { // 失敗
-				return false; // 失敗したら false が返る
-				// ここでreturnしたら このメソッドは即終了するので以降は実行されない 引数の falseを呼び出し元へ返す
-			}
-			return true;  // 成功
-
+		if (result != 1) { // 失敗
+			return false; // 失敗したら false が返る
+			// ここでreturnしたら このメソッドは即終了するので以降は実行されない 引数の falseを呼び出し元へ返す
+		}
+		return true;  // 成功
+	 }
+	 
+	 /**
+	  * 書籍 削除
+	  * @param id
+	  * @return true:成功<br /> false:失敗
+	  */
+	 public boolean delete(Integer id) {
+		 Query query = entityManager.createNativeQuery("delete from books where id = ?"); 
+		 query.setParameter(1, id);
+		 int result = query.executeUpdate();
+		if (result != 1) { // 失敗
+			return false; // 失敗したら false が返る
+			// ここでreturnしたら このメソッドは即終了するので以降は実行されない 引数の falseを呼び出し元へ返す
+		}
+		return true;  // 成功
+	 
 	 }
 
 }
