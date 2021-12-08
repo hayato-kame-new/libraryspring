@@ -27,6 +27,8 @@ public class Book {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)  // GenerationType.AUTO  こっちじゃない これだとうまくいきません
 	private int id;  // 主キー 自動採番
 	
+	// 13のバリデーションをつけてください
+	
 	// 追加
 	@NotEmpty(message="ISBNを入力してください")
 	@Column(name = "isbn")  // ユニーク 世界でただ一つ

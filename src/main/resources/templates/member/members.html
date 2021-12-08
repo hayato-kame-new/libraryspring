@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
-<title th:text="|#{books_page.title} - library|"></title>
+<title th:text="|#{members_page.title} - library|"></title>
 <style>
  .flashMsg {
  	color: skyblue;
@@ -17,29 +17,30 @@
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス-->
 <div th:include="common/header :: common_header"></div>
-<h2 class="heading">書籍一覧</h2>
+
+<h2 class="heading">会員一覧</h2>
 
 <!-- リダイレクト後のメッセージ -->
 <p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
 
 <div>
-<th:block th:if="${books.size() > 0}" >
+<th:block th:if="${members.size() > 0}" >
 	<table>
 		<tr>
-			<th>ID</th><th>ISBN</th><th>タイトル</th><th>著者</th><th colspan="2"></th>
+			<th>ID</th><th>名前</th><th>電話番号</th><th>住所</th><th colspan="2"></th>
 		</tr>
 		
-		<tr th:each="book : ${books}" >
-			<td th:text="${book.id}"></td>
-			<td th:text="${book.isbn}"></td>
-			<td th:text="${book.title}"></td>
-			<td th:text="${book.authors}"></td>
+		<tr th:each="member : ${members}" >
+			<td th:text="${member.id}"></td>
+			<td th:text="${member.name}"></td>
+			<td th:text="${member.tel}"></td>
+			<td th:text="${member.address}"></td>
 			<td>
 			 <!--  ? 以降の クエリー文字列  ?action=edit&id=1   などと表示される -->
-				<a th:href="@{/book_form(action=edit, id=${book.id})}"><button type="button" >書籍 編集画面へ</button></a>
+				<a th:href="@{/member_form(action=edit, id=${member.id})}"><button type="button" >会員 編集画面へ</button></a>
 			</td>
 			<td>
-				<a th:href="@{/book_form(action=delete, id=${book.id})}"><button type="button" >書籍 削除画面へ</button></a>
+				<a th:href="@{/member_form(action=delete, id=${member.id})}"><button type="button" >会員 削除画面へ</button></a>
 			</td>
 		</tr>
 	</table>
@@ -47,7 +48,7 @@
 </th:block>
 </div>
 <div>
-	<a href="/book_form?action=add" th:href="@{/book_form(action=add)}"><button type="button" >書籍 新規登録画面へ</button></a>
+	<a href="/member_form?action=add" th:href="@{/member_form(action=add)}"><button type="button" >会員 新規登録画面へ</button></a>
 </div>
 
 

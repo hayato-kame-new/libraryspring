@@ -5,9 +5,14 @@
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
 <title>Insert title here</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス -->
+<style th:include="common/header :: common_header_style"></style>
 </head>
 <body>
-
+<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス-->
+<div th:include="common/header :: common_header"></div>
 <!-- 三項演算子のネストの書き方
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->

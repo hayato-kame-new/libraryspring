@@ -191,10 +191,11 @@ public class BookController {
 		case "add":
 			// 新規登録する  新規の時には フォームのオブジェクト 
 			// フォームオブジェクトにフォームの値が入ってるのでそのまま登録できる
-			success = bookService.create(book);
+			 success = bookService.create(book);
 			if(success == false) { // データベース登録失敗
 				// 失敗のメッセージとreturnする
 				flashMsg = "書籍を新規登録できませんでした";
+				mav.addObject("flashMsg", flashMsg);
 				mav.setViewName("result");
 				return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
 			} else {

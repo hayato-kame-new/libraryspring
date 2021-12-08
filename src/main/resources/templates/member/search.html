@@ -4,20 +4,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
 <title th:text="|#{member_search_page.title} - library|"></title>
+<!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス -->
+<style th:include="common/header :: common_header_style"></style>
 </head>
 <body> 
-	<header>
-		 <p class="header_right" th:text="'ユーザーID: ' + ${#authentication.principal.id} + '  ユーザ名: '+ ${#authentication.principal.username} + 'さん'"></p>
-	     <p class="header_right"  th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
-    	<div class="header_right">
-			<a  href="/user" th:href="@{/user}"><button type="button" >ユーザー情報 画面へ</button></a>			
-			<form style="display:inline-block" th:action="@{/logout}" method="post">
-		        <input type="submit" value="ログアウト" />
-		    </form>			
-		</div>
-		
-    	<hr />
-	</header>
+<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス-->
+<div th:include="common/header :: common_header"></div>
+
 	 <div class="contents">
 		<h2 class="heading">会員検索ページ</h2>
 		<h4>条件を指定して会員情報を検索します</h4>
