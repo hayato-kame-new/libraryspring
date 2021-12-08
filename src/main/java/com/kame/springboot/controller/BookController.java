@@ -45,7 +45,7 @@ public class BookController {
 	@RequestMapping(value = "/books", method=RequestMethod.GET)
 	public String index(
 			// @PageableDefault(page = 0, size = 10) Pageable pageable,
-			@PageableDefault(page = 0, size = 10, sort = { "id" }) Pageable pageable,
+			@PageableDefault(page = 0, size = 10, sort = { "id" }) Pageable pageable, // id でソートしてる 重要
 			Model model) {
 		
 		// 書籍を 新規登録 編集 が成功したら リダイレクトしてくるので このリクエストハンドラを実行する
@@ -54,11 +54,11 @@ public class BookController {
 		if(model.getAttribute("flashMsg") != null) {
 			flashMsg = (String) model.getAttribute("flashMsg");  // Flash Scopeに保存してあるのは Object型のインスタンスなので キャストする
 		}
-		
-		 Page<Book> bookPage = bookService.getBooks(pageable);
+		// ページネーションと idで ソートしたコレクション を取得
+		 Page<Book> bookPage = bookService.getAllBooks(pageable);
 		 
 		 model.addAttribute("page", bookPage);  
-	     model.addAttribute("books", bookPage.getContent()); 	     
+	     model.addAttribute("books", bookPage.getContent());    
 	     model.addAttribute("flashMsg", flashMsg);
 	        
         return "book/books";

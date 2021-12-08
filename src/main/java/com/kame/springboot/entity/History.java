@@ -48,6 +48,65 @@ public class History {
 		super();
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
+
+	  /**
+     * 貸し出し中であるかを判定するメソッド 異なるパッケージから見えるようにするため publicにする
+     * 貸し出し中であれば，true， 貸し出し中でなければfalseを返す
+     * 貸し出し中である，ということは  まだ返却されていない  ということ
+     * returnDateにまだ値が代入されていないことを表します
+     * 貸し出された時に初めてHistory型のオブジェクトが生成されるこの時には returnDate は 参照型の規定値(デフォルト値) のnull になってます
+     * @return true:貸出中 <br /> false:貸出中ではない
+     */
+    public Boolean isLent() {
+        if(this.returnDate == null) {  // 貸出中である
+            return true;  // 貸出中なら tureを返す
+        }
+        return false;  // 貸し出し中では無い falseを返す
+    }
+
+	
+	
+	// アクセッサ
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Date getLendDate() {
+		return lendDate;
+	}
+
+	public void setLendDate(Date lendDate) {
+		this.lendDate = lendDate;
+	}
+
+	public Date getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
+	}
+
+	public int getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
+	}
+
+	public int getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
+	}
+	
 	
 
 }

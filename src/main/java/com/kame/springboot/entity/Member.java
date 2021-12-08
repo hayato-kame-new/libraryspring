@@ -67,7 +67,7 @@ public class Member {
 		this.address = address;
 	}
 
-
+	// アクセッサ
 	public int getId() {
 		return id;
 	}

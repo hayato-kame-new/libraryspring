@@ -30,12 +30,12 @@ public class BookService {
 	private EntityManager entityManager;
 	
 	/**
-	 * リポジトリを使用したやり方です 戻り値  Page<Book>
-	 * こっちではなくて 戻り値 　List<Book> になるやり方の下のメソッドを使ってる
+	 * ページネーションとソートを使って 書籍 全ての情報を取得
+	 * リポジトリのメソッド自動生成機能を使う
 	 * @param pageable
 	 * @return Page<Book>
 	 */
-	public Page<Book> getBooks(Pageable pageable) {
+	public Page<Book> getAllBooks(Pageable pageable) {
 		
          return bookRepository.findAll(pageable);		
     }

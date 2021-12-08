@@ -12,7 +12,17 @@
      <p style="text-align:right" th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
     
 	<h2 class="heading">検索ページ</h2>
-	<h4>条件を指定して社員情報を検索します</h4>
+	<h4>条件を指定して書籍情報を検索します</h4>
+
+	<div>
+		<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+	</div>
+	
+	<div>
+		<form th:action="@{/logout}" method="post">
+	        <input type="submit" value="ログアウト" />
+	    </form>	
+	</div>
 
 	<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
 	Maven プロジェクト（pom.xml ファイル）に追加されている 
@@ -26,15 +36,5 @@
 	<div th:text="| password: ${#authentication.principal.password} です|"></div>
 	<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div>
 	 -->
-	<div>
-		<a href="/find" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
-	</div>
-	
-	<div>
-		<form th:action="@{/logout}" method="post">
-	        <input type="submit" value="ログアウト" />
-	    </form>	
-	</div>
-
 </body>
 </html>
