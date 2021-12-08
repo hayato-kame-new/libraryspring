@@ -1,5 +1,8 @@
 package com.kame.springboot.service;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -63,5 +66,56 @@ public class MemberService {
 		 return true;		 
 	 }
 	 
+	 /**
+	  * 会員 を主キーで検索して オブジェクトを返す 
+	  *  query.getResultList()で 取得したデータは List<Object[]>になってます
+	  * @param id
+	  * @return Member
+	  */
+	 public Member findMemberDataById(Integer id) {
+	 
+		 Query query = entityManager.createNativeQuery("select * from members where id = :id ");
+		 query.setParameter("id", id);
+		 // List<Object[]>   になってます
+		  List<Object[]> resultDataList = query.getResultList();
+		  // Iterator<Object[]> になってます
+		  Iterator<Object[]> itr = resultDataList.iterator();
+		  
+		  String name = "";
+		  String tel = "";
+		  String address = "";
+		  while(itr.hasNext()) {
+			  Object[] obj = (Object[]) itr.next();
+			  
+			// id は取得しなくてもいい
+			// id = Integer.parseInt(String.valueOf(obj[0]));
+			  name = String.valueOf(obj[1]);  // String型に キャストするんじゃなくて メソッドを使ってString型へ変換する
+			  tel = String.valueOf(obj[2]);
+			  address = String.valueOf(obj[3]);
+		  }
+		 Member member = new Member(id, name, tel, address);
+		 return member;
+	 }
+	 
+	 /**
+	  * 会員 更新 
+	  * @param member
+	  * @return true:成功<br /> false:失敗
+	  */
+	 public boolean update(Member member) {
+		 Query query = entityManager.createNativeQuery("update members set (name, tel, address) = (?, ?, ?) where id = ? ");
+		 
+		 query.setParameter(1, member.getName());
+		 query.setParameter(2, member.getTel());
+		 query.setParameter(3, member.getAddress());
+		 query.setParameter(4, member.getId());
+		 
+		 int result = query.executeUpdate();
+		if (result != 1) { // 失敗
+			return false; // 失敗したら false が返る
+			// ここでreturnしたら このメソッドは即終了するので以降は実行されない 引数の falseを呼び出し元へ返す
+		}
+		return true;  // 成功
+	 }
 
 }

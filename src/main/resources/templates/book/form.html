@@ -19,6 +19,8 @@
 
 <h3 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : '書籍 削除確認画面 この本を削除してよろしいですか?'}"></h3>
 
+<p th:if="${msg}" th:text="${msg}"></p>
+
 <form th:action="@{/book_add_edit}" method="post" th:object="${book}">
 
 	<input type="hidden" name="action" th:value="${action}" />

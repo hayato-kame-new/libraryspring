@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -90,12 +91,12 @@ public class MemberController {
 			
 		case "edit":
 			// aリンクの idが クエリー文字列で送られてきてるので 
-			// 主キーのidから、Mmeberオブジェクトを取得して、
+			// 主キーのidから、Memberオブジェクトを取得して、
 			// リクエストハンドラで定義した@ModelAttribute("member") Member member の フォームのオブジェクトに上書きをする
 			// そして、それを mav.addObject("book", book);することが必要
 			
-//			member = memberService.findMemberDataById(id);
-//			mav.addObject("member", member);  // 必要 フォームに初期値として、表示するために
+			member = memberService.findMemberDataById(id);
+			mav.addObject("member", member);  // 必要 フォームに初期値として、表示するために
 			break;
 			
 		case "delete":
@@ -118,7 +119,7 @@ public class MemberController {
 	public ModelAndView memberAddEdit(
 			@RequestParam( name = "action")String action,  // 必須のパラメータ hidden
 			@RequestParam( name = "id")Integer id, // 必須のパラメータ  idは新規では 0なので 0で渡ってくる 編集の時にはidが入ってる
-			@ModelAttribute("member") Member member,
+			@ModelAttribute("member")@Validated Member member,   // @Validatedをつけることによってバリデーション機能が働きます
 			BindingResult result,
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
 		    HttpServletRequest request, // 要る?
@@ -130,15 +131,15 @@ public class MemberController {
 			// フォワード
         	mav.setViewName("member/form");       	
         	mav.addObject("msg", "入力エラーが発生しました。");
-			
+			mav.addObject("action", action);
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
 		
 		// バリデーションエラーがなかったら 処理を進める フォームのオブジェクトから取得する
 	//  int id = book.getId();  // 編集の時には入ってる 新規の時にはフォームはないのでint型のデフォルト値(規定値) 0 のままです
-		String name = member.getName();
-		String tel = member.getTel();
-		String address = member.getAddress();
+//		String name = member.getName();
+//		String tel = member.getTel();
+//		String address = member.getAddress();
 		
 		// バリデーションエラーがなかったら actionによって分岐処理を進める
 		
@@ -162,8 +163,20 @@ public class MemberController {
 	    	break; // switch文を抜ける
 	    	
 	    case "edit":
+	    	// 書籍 編集する フォームオブジェクトにフォームの値が入ってるので そのまま引数にして更新できる
+	    	success = memberService.update(member);
 	    	
-	    	break;
+	    	if(success == false) { // データベース更新失敗
+				// 失敗のメッセージとreturnする
+				flashMsg = "会員を更新できませんでした";
+				mav.addObject("flashMsg", flashMsg);
+				mav.setViewName("result");
+				return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
+			} else {
+				// 成功してる
+				flashMsg = "会員を更新しました";
+			}
+	    	break; // switch文を抜ける
 	    }
 	    
     	// 成功したら

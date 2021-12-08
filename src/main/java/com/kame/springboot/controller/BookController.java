@@ -177,12 +177,12 @@ public class BookController {
 		 
 		 // バリデーションエラーはなかったら フォームのオブジェクトから取得する
 		 //  int id = book.getId();  // 編集の時には入ってる 新規の時にはフォームはないのでint型のデフォルト値(規定値) 0 のままです
-		  String isbn = book.getIsbn();
-		  String genre = book.getGenre();
-		  String title = book.getTitle();
-		  String authors = book.getAuthors();
-		  String publisher = book.getPublisher();
-		  Integer publishYear = book.getPublishYear();
+//		  String isbn = book.getIsbn();
+//		  String genre = book.getGenre();
+//		  String title = book.getTitle();
+//		  String authors = book.getAuthors();
+//		  String publisher = book.getPublisher();
+//		  Integer publishYear = book.getPublishYear();
 		  
 		 // バリデーションエラーがなかったら actionによって分岐処理を進める
 		  

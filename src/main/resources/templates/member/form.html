@@ -19,6 +19,8 @@
 
 <h3 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : '会員 削除確認画面 この本を削除してよろしいですか?'}"></h3>
 
+<p th:if="${msg}" th:text="${msg}"></p>
+
 <form th:action="@{/member_add_edit}" method="post" th:object="${member}">
 
 	<input type="hidden" name="action" th:value="${action}" />
