@@ -3,10 +3,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
-<title th:text="|#{book_search_page.title} - library|"></title>
+<title th:text="|#{member_search_page.title} - library|"></title>
 </head>
 <body> 
-	 <header>
+	<header>
 		 <p class="header_right" th:text="'ユーザーID: ' + ${#authentication.principal.id} + '  ユーザ名: '+ ${#authentication.principal.username} + 'さん'"></p>
 	     <p class="header_right"  th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
     	<div class="header_right">
@@ -17,11 +17,10 @@
 		</div>
 		
     	<hr />
-	 </header>
-	 
+	</header>
 	 <div class="contents">
-		<h2 class="heading">検索ページ</h2>
-		<h4>条件を指定して書籍情報を検索します</h4>
+		<h2 class="heading">会員検索ページ</h2>
+		<h4>条件を指定して会員情報を検索します</h4>
 	
 		<div>
 			<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>

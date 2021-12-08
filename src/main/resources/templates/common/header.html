@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<style th:fragment="common_header_style">
+.header_right {
+ 	font-size: 75%;
+	text-align: right;
+ }
+.container {
+	display: flex;
+}
+
+</style>
+</head>
+<body>
+
+	<header th:fragment="common_header">
+		 <p class="header_right" th:text="'ユーザーID: ' + ${#authentication.principal.id} + '  ユーザ名: '+ ${#authentication.principal.username} + 'さん'"></p>
+	     <p class="header_right"  th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
+    	<div class="header_right">
+			<a  href="/user" th:href="@{/user}"><button type="button" >ユーザー情報 画面へ</button></a>			
+			<form style="display:inline-block" th:action="@{/logout}" method="post">
+		        <input type="submit" value="ログアウト" />
+		    </form>			
+		</div>
+		
+    	<hr />
+	</header>
+
+</body>
+</html>

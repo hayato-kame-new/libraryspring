@@ -35,7 +35,8 @@ public class BookController {
 	ViewBean viewBean;
 	
 	/**
-	 * ページネーション
+	 * 書籍一覧を表示する
+	 * ページネーションと idでソートをして書籍一覧を表示する
 	 * JPQLを使うやり方です 表示は books.html
 	 * sort = { "id" } で id順に表示でき ページングできます @PageableDefault(page = 0, size = 10, sort = { "id" }) Pageable pageable 
 	 * @param pageable

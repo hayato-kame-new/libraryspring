@@ -10,13 +10,16 @@ public class BookSearchController {
 	
 	
 	/**
-	 * 検索画面を表示する
+	 * 書籍 検索画面を表示する
+	 * その書籍が現在どういう状態かまでわかる
 	 * @param mav
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/search", method=RequestMethod.GET)
+	@RequestMapping(value = "/book_search", method=RequestMethod.GET)
 	public ModelAndView searchForm(ModelAndView mav) {
 		
+		
+		// その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか
 		mav.setViewName("book/search");  // templetesフォルダ以下の bookフォルダのsearch.htmlファイル
 		
 		return mav;

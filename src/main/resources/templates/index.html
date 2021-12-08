@@ -5,54 +5,87 @@
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
 <title th:text="|#{top_page.title} - library|"></title>
 <style>
- .top {
+ .header_right {
  	font-size: 75%;
+	text-align: right;
  }
+.container {
+	display: flex;
+}
+.book_item {
+	margin-right: 40px;
+}
 </style>
 </head>
-<body> 
-	 <p class="top" style="text-align:right" th:text="'ユーザーID: ' + ${#authentication.principal.id} + '  ユーザ名: '+ ${#authentication.principal.username} + 'さん'"></p>
+<body>
+	<header>
+		 <p class="header_right" th:text="'ユーザーID: ' + ${#authentication.principal.id} + '  ユーザ名: '+ ${#authentication.principal.username} + 'さん'"></p>
+	     <p class="header_right"  th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
+    	<div class="header_right">
+			<a  href="/user" th:href="@{/user}"><button type="button" >ユーザー情報 画面へ</button></a>			
+			<form style="display:inline-block" th:action="@{/logout}" method="post">
+		        <input type="submit" value="ログアウト" />
+		    </form>			
+		</div>
+		
+    	<hr />
+	</header>
+    <div class="contents">
+		<h1 class="heading">図書館 Top Page</h1>
+			
+		<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
+		Maven プロジェクト（pom.xml ファイル）に追加されている 
+		現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
+		${#authentication.principal.password}
+		${#authentication.principal.authorities} で取得もできる
+		-->
+		<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div>
+		
+		<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
+		<div th:text="| password: ${#authentication.principal.password} です|"></div>
+		<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div> -->
+		
+		<div class="container"><!-- フレックスコンテナ -->
+			<div class="book_item"><!-- フレックスアイテム -->
+				<div>
+					<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面へ</button></a>
+				</div>
+				
+				<div>
+					<!-- フォームのビューで必要なので  ? 以降のクエリー文字列action=addを つけること -->
+					<a href="/book_add_edit?action=add" th:href="@{/book_add_edit(action=add)}"><button type="button"  >書籍 新規登録画面へ</button></a>
+				</div>
+				
+				<div>
+					<a href="/book_search" th:href="@{/book_search}"><button type="button"  >書籍 検索画面へ</button></a>
+				</div>
+				
+				<div>
+					<a href="/history" th:href="@{/history}"><button type="button"  >書籍 貸し出し履歴 検索画面へ</button></a>
+				</div>
+			</div>
+			
+			<div class="member_item"><!-- フレックスアイテム -->
+				<div>
+					<a href="/members" th:href="@{/members}"><button type="button"  >会員 一覧画面へ</button></a>
+				</div>
+				
+				<div>
+					<a href="/member_add_edit?action=add" th:href="@{/member_add_edit?action=add}"><button type="button"  >会員 新規登録画面へ</button></a>
+				</div>
+				
+				<div>
+					<a href="/member_search" th:href="@{/member_search}"><button type="button"  >会員 検索画面へ</button></a>
+				</div>
+				
+			</div>
+		</div>	
+		<div>
+			<form th:action="@{/logout}" method="post">
+		        <input type="submit" value="ログアウト" />
+		    </form>	
+		</div>
 
-     <p class="top" style="text-align:right" th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
-    <hr />
-    
-	<h2 class="heading">図書館 Top Page</h2>
-	
-
-	<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
-	Maven プロジェクト（pom.xml ファイル）に追加されている 
-	現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
-	${#authentication.principal.password}
-	${#authentication.principal.authorities} で取得もできる
-	-->
-	<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div>
-	
-	<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
-	<div th:text="| password: ${#authentication.principal.password} です|"></div>
-	<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div> -->
-	
-	<div>
-		<a href="/books" th:href="@{/books}"><button type="button" th:text="書籍一覧画面へ" ></button></a>
-	</div>
-	
-	<div>
-		<!-- フォームのビューで必要なので  ? 以降のクエリー文字列action=addを つけること -->
-		<a href="/book_add_edit?action=add" th:href="@{/book_add_edit(action=add)}"><button type="button" th:text="書籍新規登録画面へ" ></button></a>
-	</div>
-	
-	<div>
-		<a href="/search" th:href="@{/search}"><button type="button" th:text="書籍検索画面へ" ></button></a>
-	</div>
-	
-	<div>
-		<a href="/history" th:href="@{/history}"><button type="button" th:text="貸し出し履歴検索画面へ" ></button></a>
-	</div>
-	
-	<div>
-		<form th:action="@{/logout}" method="post">
-	        <input type="submit" value="ログアウト" />
-	    </form>	
-	</div>
-
+    </div>
 </body>
 </html>
