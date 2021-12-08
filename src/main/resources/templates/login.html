@@ -29,16 +29,21 @@ action="/login" では、
 			ログアウトしました
 		</div>
 		
-		<!-- ログイン認証は、ユーザ名とパスワードだけ -->
-		<label for="username">ユーザー名</label>
-		<input type="text" id="username" name="username" ></br>
+		<div>
+			<!-- ログイン認証は、ユーザ名とパスワードだけ -->
+			<label for="username">ユーザー名</label>
+			<input type="text" id="username" name="username" ></br>
+		</div>
 		
-		<label for="password">パスワード</label>
-		<input type="password" id="password" name="password"></br>
-		<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+		<div>
+			<label for="password">パスワード</label>
+			<input type="password" id="password" name="password"></br>
+			<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+		</div>
 		
-		
-		<button type="submit">ログイン</button>
+		<div>
+			<button type="submit">ログイン</button>
+		</div>
 	</form>
 </div>
 

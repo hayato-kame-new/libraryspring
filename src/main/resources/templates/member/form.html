@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
-<title th:text="|#{book_form_page.title} - library|"></title>
+<title th:text="|#{member_form_page.title} - library|"></title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
@@ -17,63 +17,37 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h3 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : '書籍 削除確認画面 この本を削除してよろしいですか?'}"></h3>
+<h3 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : '会員 削除確認画面 この本を削除してよろしいですか?'}"></h3>
 
-<form th:action="@{/book_add_edit}" method="post" th:object="${book}">
+<form th:action="@{/member_add_edit}" method="post" th:object="${member}">
 
 	<input type="hidden" name="action" th:value="${action}" />
 	<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 編集の時には idが入ってるので使用できる -->
 	<input type="hidden" name="id" th:value="*{id}" />
 	
-	<p th:if="${id != null && id != 0}" th:text="|書籍登録ID: *{id}|" ></p>
+	<p th:if="${id != null && id != 0}" th:text="|会員ID: *{id}|" ></p>
 	
 	<div>
-		<label for="isbn">ISBN: </label> 
-		<input type="text" id="isbn" name="isbn" th:value="*{isbn}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" th:errorclass="err">
+		<label for="name">名前: </label> 
+		<input type="text" id="name" name="name" th:value="*{name}" th:errorclass="err" />		
+		<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="err">
 		</div>				
 	</div>
 	
 	<div>
-	    <label for="genre">ジャンル: </label>
-		<select name="genre" id="genre" size="4" >
-			<!-- <option  >選択しない</option> -->
-			<th:block th:each="element : ${genreMap}">
-				<option  th:value="${element.value}"  th:selected="${element.value == book.genre}"   th:inline="text">[[${element.value}]]</option>
-			</th:block>
-		</select>		
-		<div th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}" th:errorclass="err">
-		</div>	
-	</div>
-	
-	<div>
-		<label for="title">タイトル: </label> 
-		<input type="text" id="title" name="title" th:value="*{title}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="err">
+		<label for="tel">電話: </label>
+		<input type="text" id="tel" name="tel" th:value="*{tel}" th:errorclass="err" />		
+		<div th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" th:errorclass="err">
 		</div>				
 	</div>
 	
 	<div>
-		<label for="authors">著者: </label>
-		<input type="text" id="authors" name="authors" th:value="*{authors}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('authors')}" th:errors="*{authors}" th:errorclass="err">
+		<label for="address">住所: </label>
+		<input type="text" id="address" name="address" th:value="*{address}" th:errorclass="err" />		
+		<div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" th:errorclass="err">
 		</div>				
 	</div>
-	
-	<div>
-		<label for="publisher">出版社: </label>
-		<input type="text" id="publisher" name="publisher" th:value="*{publisher}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('publisher')}" th:errors="*{publisher}" th:errorclass="err">
-		</div>				
-	</div>
-	
-	<div>
-		<label for="publishYear">発行年: </label>
-		<input type="text" id="publishYear" name="publishYear" th:value="*{publishYear}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('publishYear')}" th:errors="*{publishYear}" th:errorclass="err">
-		</div>
-	</div>
-	
+		
 	<th:block th:if="${action.equals('add') || action.equals('edit')}">
 		<div>
 			<input type="submit" value="送信" />
@@ -82,8 +56,8 @@
 	</th:block>
 </form>
 	<th:block th:if="${action.equals('delete')}" >
-		<form th:action = @{/book_delete} method="post" th:object="${book}" onsubmit="return beforeSubmit()">
-		    <input type="hidden" name="id" th:value="${book.id}" />
+		<form th:action = @{/member_delete} method="post" th:object="${member}" onsubmit="return beforeSubmit()">
+		    <input type="hidden" name="id" th:value="${member.id}" />
 		    <input type="submit" value="削除します" />
 		</form>
 	
@@ -92,7 +66,7 @@
 <hr />
 
 <div>
-	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面へ戻る</button></a>
+	<a href="/members" th:href="@{/members}"><button type="button" >会員 一覧画面へ戻る</button></a>
 </div>
 
 

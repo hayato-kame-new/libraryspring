@@ -124,7 +124,7 @@ public class BookController {
 			// 主キーのidから、Bookオブジェクトを取得して、
 			// リクエストハンドラで定義した@ModelAttribute("book") Book book の フォームのオブジェクトに上書きをする
 			book = bookService.findBookDataById(id);
-			mav.addObject("book", book);  // 必要
+			mav.addObject("book", book);  // 必要 フォームに初期値として、表示するために
 			break;
 			
 		case "delete":
@@ -132,7 +132,7 @@ public class BookController {
 			// 主キーのidから、Bookオブジェクトを取得して、
 			// リクエストハンドラで定義した@ModelAttribute("book") Book book の フォームのオブジェクトに上書きをする
 			book = bookService.findBookDataById(id);
-			mav.addObject("book", book);  // 必要
+			mav.addObject("book", book);  // 必要 フォームに初期値として、表示するために
 			break;
 		
 		}
