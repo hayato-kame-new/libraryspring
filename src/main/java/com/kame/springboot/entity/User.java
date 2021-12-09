@@ -27,10 +27,14 @@ public class User {
 	@Id // 主キー @Entityをつけたら これがないと起動しません
 	@Column(name = "id") // カラム名は、postgreSQL 全て小文字なので小文字にする リレーションのあるカラム
 	private int id; // 主キーになるもの idもゲッターで取得できるようにしたい
+	
+	
 	// SpringSecurityの認証済みユーザの情報にusername,password以外をもたせるて、getterで参照できるようにしたい
-	 // @Column(name = "username") // カラム名は、postgreSQL 全て小文字なので小文字にする
-    @Column(name = "name")
+	 // カラム名は、postgreSQL 全て小文字なので小文字にする
+    @Column(name = "name")  // 注意
     private String username; // usersテーブルのカラム名は name   usernameでいい userNameにしない 注意UserDetailsImplに合わせること
+    // Springセキュリティのため Springが ユーザ名をユニークにしてる
+    
     
     @Column(name = "password")
 	private String password;  // ハッシュ化したパスワード

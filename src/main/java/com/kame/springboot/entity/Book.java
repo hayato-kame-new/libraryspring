@@ -22,6 +22,9 @@ import javax.validation.constraints.Size;
 public class Book {  // Bookの方が 主エンティティ   Historyエンティティが 従エンティティ
 	
 	// フォームのクラスを作らないので バリデーションのアノテーションもつける 
+	// ＠NotBlank を使用しています
+		// ＠NotNull 又は ＠NotEmpty を使用した場合、半角スペースのみでもユーザー名として登録ができてしまいますが、この半角スペースのユーザー名ではログインすることができないためです
+	// 	@NotBlank  // javax.validation.constraints.NotBlank            Null、空文字、空白をエラーとする
 	/*
 	 * booksテーブルは  historiesテーブルの親テーブルになる historiesテーブルとリレーションがある
 	 * booksテーブルは membersテーブルとはリレーションの関係はない 
@@ -34,41 +37,44 @@ public class Book {  // Bookの方が 主エンティティ   Historyエンテ�
 	private int id;  // 主キー 自動採番  リレーションあり 他のテーブルから参照されています  こっちbooksテーブルが主テーブルです
 	
 	
+	// 後で このカラムに入力チェックのバリデーションで ユニークを作ってつけてください
+	
+	
 	// 追加 ISBN は 13桁です
 	@NotEmpty(message="ISBNを入力してください")
 	 // @Size(min = 13, max = 13, message = "ISBNは13文字で入力してください")  // isbn VARCHAR(40) NOT NULL UNIQUE,  日本語の漢字なら 39文字までOK
 	 @Pattern(regexp = "^[0-9]{13}$", message = "ISBNは13桁の半角数字で入力してください")
-	@Column(name = "isbn")  // ユニーク 世界でただ一つ
+	@Column(name = "isbn")  // ユニーク 世界でただ一つ  isbn VARCHAR(40) NOT NULL UNIQUE
 	private String isbn;  // 2007年以降の新刊のコードから13ケタになっています。10桁 から 13桁に変更している
-	// booksテーブルでは isbnカラムにUNIQUEをつけてるので、このカラムに入力チェックのバリデーションで ユニークを作ってつけてください
+	// booksテーブルでは isbnカラムにUNIQUEをつけてるので、isbn VARCHAR(40) NOT NULL UNIQUE このカラムに入力チェックのバリデーションで ユニークを作ってつける
 	// もしフォームクラスを作ったら、そちらにバリデーションのアノテーションをつける事になる
 	
 	
 	// 追加
-	@NotEmpty(message="ジャンルを入力してください")
-	@Size(min = 1 ,max = 20, message = "ジャンルは20文字以内で入力してください")
+	@NotEmpty(message="ジャンルを選択してください")
+	// @Size(max = 20, message = "ジャンルは20文字以内で入力してください") //  minは書かないこと エラーメッセージ2つ出さないようにするため 今回はセレクトボックスなのでいらない
 	@Column(name = "genre") 
 	private String genre;
 	
 	@NotEmpty(message="タイトルを入力してください")
-	@Size(min = 1, max = 100, message = "タイトルは100文字以内で入力してください")
+	@Size(max = 100, message = "タイトルは100文字以内で入力してください") //  minは書かないこと エラーメッセージ2つ出さないようにするため
 	@Column( name = "title")
 	private String title;
 	
 	@NotEmpty(message="著者を入力してください")
-	@Size(min = 1, max = 100, message = "著者は100文字以内で入力してください")
+	@Size( max = 100, message = "著者は100文字以内で入力してください") // minは書かないこと エラーメッセージ2つ出さないようにするため
 	@Column( name = "authors")
 	private String authors;
 	
 	@NotEmpty(message="出版社を入力してください")
-	@Size(min = 1, max = 100, message = "出版社は100文字以内で入力してください")
+	@Size( max = 100, message = "出版社は100文字以内で入力してください") // minは書かないこと エラーメッセージ2つ出さないようにするため
 	@Column( name = "publisher")
 	private String publisher;
 	
 	// @Max(9999) @Min(1000) のエラーメッセージが英語で出るので messages.propertiesに書くこと
 	@Max(9999)  // typeMismatch.publishYear=発行年を半角数字 西暦4桁で入力してください   
 	@Min(1000)  // typeMismatch.publishYear=発行年を半角数字 西暦4桁で入力してください
-	@NotNull(message="発行年を半角数字 発行年を西暦で入力してください")
+	@NotNull(message="発行年を半角数字 西暦で入力してください")
 	@Column( name = "publishyear")  // PostgreSQLなので booksテーブルのカラムの名前は 全て小文字の publishyear
 	private Integer publishYear;
 

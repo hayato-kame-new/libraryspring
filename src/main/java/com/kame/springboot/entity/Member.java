@@ -30,7 +30,7 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 	
 	/*
 	 * membersテーブルは  historiesテーブルの親テーブルになる historiesテーブルとリレーションがある
-	 * membersテーブルは usersテーブルとはリレーションの関係はない 
+	 * membersテーブルは usersテーブルとはリレーションの関係はない 全く関係ない
 	 */
 	
 	@Id  // 主キー
@@ -38,12 +38,14 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 	@GeneratedValue(strategy = GenerationType.IDENTITY)  // GenerationType.AUTO  こっちじゃない これだとうまくいきません
 	private int id;  // 参照されてるフィールド  リレーションあり Historyエンティティの memberIdフィールドとリレーションあり
 	
+	
 	@NotEmpty( message = "名前を入力してください")
-	@Size(min = 1, max = 100, message = "名前は100文字以内で入力してください")
-	@Column( name = "name")
+	@Size(max = 100, message = "名前は100文字以内で入力してください") //   minは書かないこと エラーメッセージ2つ出さないようにするため
+	@Column( name = "name")  // ユニーク制約はつけません
 	private String name;  // このnameカラムを membersテーブルでは ユニークにしてるので、バリデーションにユニークを作ってカスタムアノテーションをつけること
-	// membersテーブルでは nameカラムにUNIQUEをつけてるので、このカラムに入力チェックのバリデーションで ユニークを作ってつけてください
+	// membersテーブルでは nameカラムにUNIQUEはつけません usersテーブルのユーザ名はユニークだけど このmembersテーブルのユーザ名は同姓同名を許してるので
 	// もしフォームクラスを作ったら、そちらにバリデーションのアノテーションをつける事になる
+	
 	
 	@NotEmpty( message = "電話番号を入力してください")
 	// @Pattern(regexp = "0\\d{1,4}-\\d{1,4}-\\d{4}", message = "電話番号の形式で入力してください")
@@ -53,7 +55,7 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 	
 	
 	@NotEmpty( message = "住所を入力してください")
-	@Size(min = 1, max = 100, message = "住所は100文字以内で入力してください")
+	@Size(max = 100, message = "住所は100文字以内で入力してください")  // minは書かないこと エラーメッセージ2つ出さないようにするため
 	@Column( name = "address")
 	private String address;
 
