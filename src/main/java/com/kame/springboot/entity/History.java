@@ -7,15 +7,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity  // エンティティのクラスです
 @Table(name = "histories")  // テーブル名全て小文字で
-public class History {
+public class History {  // 子テーブルの方です ある本に対する貸出履歴オブジェクトを作成するためのクラス
 	
 	// フォームのクラスを作らないなら 後で、バリデーションのアノテーションもつける 
 	
-	//主キーの idカラムには@Idを必ずつける 無いとエラー
+	//主キーの idカラムには@Idを必ずつける 無いとエラー @Entityをつけたら @Idをつけないと起動しないので注意する
 	@Id
 	@Column( name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)  //  GenerationType.AUTO  こっちじゃない これだとうまくいきません
@@ -30,17 +31,21 @@ public class History {
 	
 //	private Book book;
 //	private User user;
-	 // リレーション
+	 // リレーションのあるフィールド
 	@Column( name = "bookid") //  historiesテーブルの カラム名は全て小文字で
-	private int bookId;  // 貸し出し本 の id
+	private int bookId;  // 貸し出し本 の idを参照してる  リレーションのあるフィールド
 	
-	
+	// リレーションのあるフィールド
 	@Column( name = "memberid")  // historiesテーブルの カラム名は全て小文字で
-	private int memberId;  //  会員の id
+	private int memberId;  //  会員の idを参照してる  リレーションのあるフィールド 
 	
-	// リレーションつけること
-	
+	// リレーションつけること  テーブル同志のリレーション  エンティティとして@Entityをつけたクラス同士で対応する記述をする 
+	@ManyToOne  // 他はごちゃごちゃ要らない @ManyToOneにはMappedBy属性が存在しない
+	Book book;   // @ManyToOneなので 単数形の Book book; にする １冊の本はたくさんの履歴をもつが  履歴はある特定１冊に対しての履歴（１つしか持たない)
 
+	@ManyToOne
+	Member member;  // 単数形 一人の会員は たくさんの履歴をもつが 履歴はある特定の一人の会員の履歴
+	
 	/**
 	 * 引数なしのコンストラクタ
 	 */

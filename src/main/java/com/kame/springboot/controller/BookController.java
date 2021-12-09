@@ -172,6 +172,7 @@ public class BookController {
         	Map<Integer, String> genreMap = viewBean.getGenreMap();       
     		// セレクトボックス表示用のgenreMap
     		mav.addObject("genreMap", genreMap);
+    		mav.addObject("action", action);
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
 		 
