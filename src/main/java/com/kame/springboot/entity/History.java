@@ -98,6 +98,7 @@ public class History {  // 子テーブルの方です ある本に対する貸�
      * 貸し出し中である，ということは  まだ返却されていない  ということ
      * returnDateにまだ値が代入されていないことを表します
      * 貸し出された時に初めてHistory型のオブジェクトが生成されるこの時には returnDate は 参照型の規定値(デフォルト値) のnull になってます
+     * また，貸し出された時に初めてHistory型のオブジェクトが生成されるために， このオブジェクトについては，貸し出し前の状態を考える必要はありません
      * @return true:貸出中 <br /> false:貸出中ではない
      */
     public Boolean isLent() {
@@ -107,8 +108,54 @@ public class History {  // 子テーブルの方です ある本に対する貸�
         return false;  // 貸し出し中では無い falseを返す
     }
 
+    /**
+     * 貸し出し中なのか調べて 文字列で表示する
+     * @return String
+     */
+    public String lentStr() {
+        String str = "";
+        if(this.isLent()) {
+            str = "貸し出し中";
+        } else {
+            str = "配架中";
+        }
+        return str;
+    }
+
+    /**
+     * 履歴の情報を画面に出力する
+     * @return String
+     */
+    public String print() {
+    	String  str1 = "タイトル: " + this.book.getTitle() + ", 著者: " + this.book.getAuthors() + ", 出版社: " 
+    			+ this.book.getPublisher() + ", 発行年: " +  this.book.getPublishYear()+ ", 書架状況: " +  this.lentStr();
+    	String separator = System.lineSeparator();  // システムに依存する改行になる
+    	String str2 = ", 会員ID: " + this.member.getId()+ ", 会員名: " +  this.member.getName();
+    	String str3 = this.lendDate.toString() + " ~ ";
+    	String str4 = "";
+    	if(this.returnDate != null) {
+    		str4 = this.lendDate.toString();
+    	}
+    	return str1 + separator + str2 + str3 + str4;
+    }
 	
-	
+	// リレーションの情報にアクセスする アクセッサ
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
+	}
+
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
 	// アクセッサ
 	public int getId() {
 		return id;

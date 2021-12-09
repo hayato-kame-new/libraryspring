@@ -9,7 +9,7 @@
      font-size: 44px;
 	 margin-bottom: 50px;
 }
-.book_item {
+.book_item, .member_item{
 	margin-right: 40px;
 }
 </style>
@@ -52,10 +52,7 @@
 					<a href="/book_search" th:href="@{/book_search}"><button type="button"  >書籍 検索画面へ</button></a>
 				</div>
 				
-				<!-- 書籍の全部から履歴を検索する -->
-				<div>
-					<a href="/history" th:href="@{/history}"><button type="button"  >書籍 貸し出し履歴 検索画面へ</button></a>
-				</div>
+				
 			</div>
 			
 			<div class="member_item"><!-- フレックスアイテム -->
@@ -72,6 +69,19 @@
 				</div>
 				
 			</div>
+			
+			<div class="history_item"><!-- フレックスアイテム -->
+			
+				<div>
+					<a href="/history" th:href="@{/history}"><button type="button"  >貸し出し・返却画面へ</button></a>
+				</div>
+				<!-- 書籍の全部から履歴を検索する -->
+				<div>
+					<a href="/history_search" th:href="@{/history_search}"><button type="button"  >貸し出し履歴 検索画面へ</button></a>
+				</div>			
+			</div>
+			
+			
 		</div>	
 		<div>
 			<form th:action="@{/logout}" method="post">

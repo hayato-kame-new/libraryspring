@@ -108,6 +108,9 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 		
 	}
 	
+	
+
+	
 
 	// アクセッサ
 	public int getId() {
