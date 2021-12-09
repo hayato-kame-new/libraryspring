@@ -60,6 +60,16 @@ public class MemberController {
 		return "member/members";
 	}
 	
+	// 詳細表示
+	@RequestMapping(value = "/show", method=RequestMethod.GET)
+	public ModelAndView show(
+			@RequestParam(name = "id")Integer id,
+			ModelAndView mav
+			) {
+		
+		mav.setViewName("member/show");
+		return mav;
+	}
 	
 	/**
 	 * 会員 新規登録画面  編集画面   削除確認画面 を表示する
