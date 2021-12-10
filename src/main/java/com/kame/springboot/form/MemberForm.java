@@ -14,8 +14,8 @@ import org.hibernate.validator.constraints.Range;
 public class MemberForm {
 	
 	
-	// フォームのクラスに idはいらない hiddenタグで パラメータで 別に送るので
-	// あと、 action も　hiddenタグで パラメータで別に送る
+	// idも必要 @NotEmptyつけない hiddenで使うので入力チェックのアノテーションはいらない
+	private int id;
 	
 	@NotEmpty( message = "名前を入力してください")
 	@Size(max = 100, message = "名前は100文字以内で入力してください") //   minは書かないこと エラーメッセージ2つ出さないようにするため
@@ -108,6 +108,16 @@ public class MemberForm {
 
 	public void setDay(Integer day) {
 		this.day = day;
+	}
+
+
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	

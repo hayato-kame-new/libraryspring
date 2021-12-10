@@ -11,9 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 /**
  * 実際に図書館で本を借りる人が このMemberクラスのインスタンスです
@@ -87,37 +84,32 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 	 * @param name
 	 * @param tel
 	 * @param address
-	 */
-	public Member(String name, String tel, String address) {
+	 * @param birthDay
+	 */	
+	public Member(String name, String tel, String address, LocalDate birthDay) {
 		super();
 		this.name = name;
 		this.tel = tel;
 		this.address = address;
+		this.birthDay = birthDay;
 	}
 	
 	/**
-	 * 引数4つのコンストラクタ
+	 * 引数5つのコンストラクタ
 	 * @param id
 	 * @param name
 	 * @param tel
 	 * @param address
+	 * @param birthDay
 	 */
-	public Member(int id,
-			@NotEmpty(message = "名前を入力してください") @Size(min = 1, max = 100, message = "名前は100文字以内で入力してください") String name,
-			@NotEmpty(message = "電話番号を入力してください") @Pattern(regexp = "^\\d{2,4}-\\d{2,4}-\\d{4}$", message = "電話番号の形式で入力してください") String tel,
-			@NotEmpty(message = "住所を入力してください") @Size(min = 1, max = 100, message = "住所は100文字以内で入力してください") String address
-			) {
+	public Member(int id, String name, String tel, String address, LocalDate birthDay) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.tel = tel;
 		this.address = address;
-		
+		this.birthDay = birthDay;
 	}
-	
-	
-
-	
 
 	// アクセッサ
 	public int getId() {

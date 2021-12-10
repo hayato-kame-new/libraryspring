@@ -1,5 +1,7 @@
 package com.kame.springboot.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,13 +50,18 @@ public class MemberService {
 	
 		 // createNativeQueryは普通のSQL文です JPQLではない  PostgreSQLは テーブル名 カラム名全て小文字にすること
 		 // id が serial シリアルなので、insertする時には、値がなくていい 自動採番するカラムです
-		 // Query query = entityManager.createNativeQuery("insert into members (name, tel, address) values (?, ?, ?) ");
+		 // Query query = entityManager.createNativeQuery("insert into members (name, tel, address, birthday) values (?, ?, ?, ?) ");
 		 //  ? のプレースホルダーでもいいし こっちでもいい
-		 Query query = entityManager.createNativeQuery("insert into members (name, tel, address) values (:a, :b, :c) ");
+		 Query query = entityManager.createNativeQuery("insert into members (name, tel, address, birthday) values (:a, :b, :c, :d) ");
 		 
 		 query.setParameter("a", member.getName());
 		 query.setParameter("b", member.getTel());
 		 query.setParameter("c", member.getAddress());
+		 
+		 // java.time.LocalDate から java.sql.Date へ変換してからセットする
+		 LocalDate localDate = member.getBirthDay();
+		 java.sql.Date javaSqlDate = java.sql.Date.valueOf(localDate);
+		 query.setParameter("d", javaSqlDate);
 		 
 		 int result = query.executeUpdate(); // 戻り値は 更新や削除をしたエンティティの数か返る
 		 
@@ -84,6 +91,8 @@ public class MemberService {
 		  String name = "";
 		  String tel = "";
 		  String address = "";
+		  java.sql.Date javaSqlDate = null;
+		  LocalDate birthday = null;
 		  while(itr.hasNext()) {
 			  Object[] obj = (Object[]) itr.next();
 			  
@@ -92,8 +101,10 @@ public class MemberService {
 			  name = String.valueOf(obj[1]);  // String型に キャストするんじゃなくて メソッドを使ってString型へ変換する
 			  tel = String.valueOf(obj[2]);
 			  address = String.valueOf(obj[3]);
+			  javaSqlDate = (Date) (obj[4]);
+			  birthday = javaSqlDate.toLocalDate();
 		  }
-		 Member member = new Member(id, name, tel, address);
+		 Member member = new Member(id, name, tel, address, birthday);
 		 return member;
 	 }
 	 
@@ -103,12 +114,16 @@ public class MemberService {
 	  * @return true:成功<br /> false:失敗
 	  */
 	 public boolean update(Member member) {
-		 Query query = entityManager.createNativeQuery("update members set (name, tel, address) = (?, ?, ?) where id = ? ");
+		 Query query = entityManager.createNativeQuery("update members set (name, tel, address, birthday) = (?, ?, ?, ?) where id = ? ");
 		 
 		 query.setParameter(1, member.getName());
 		 query.setParameter(2, member.getTel());
 		 query.setParameter(3, member.getAddress());
-		 query.setParameter(4, member.getId());
+		 
+		 LocalDate localDate = member.getBirthDay();
+		 java.sql.Date javaSqlDate = java.sql.Date.valueOf(localDate);
+		 query.setParameter(4, javaSqlDate);
+		 query.setParameter(5, member.getId());
 		 
 		 int result = query.executeUpdate();
 		if (result != 1) { // 失敗

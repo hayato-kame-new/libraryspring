@@ -93,7 +93,7 @@ public class MemberController {
 			@ModelAttribute("memberForm") MemberForm memberForm,  // フォームクラスを使う
 			@RequestParam(name = "action")String action, // 必須パラメータ
 			// aリンクの ？以降のクエリー文字列で、編集editの時に ?action=edit&id=2 などという形で送られてくる
-			@RequestParam(name = "id", required = false)Integer id, // 任意パラメータ 編集の時だけ送られてきてるので
+			@RequestParam(name = "id", required = false)Integer id, //削除のために必要 任意パラメータ 編集の時だけ送られてきてるので
 			ModelAndView mav			
 			) {
 		
@@ -112,7 +112,8 @@ public class MemberController {
 			// リクエストハンドラで定義した@ModelAttribute("memberForm") MemberForm memberForm の フォームのオブジェクトに上書きをする
 			// そして、それを mav.addObject("memberForm", memberForm);することが必要
 			
-			member = memberService.findMemberDataById(id);
+			// member = memberService.findMemberDataById(id);  // こっちでもいい
+			member = memberService.findMemberDataById(memberForm.getId());
 			
 			// フォームオブジェクトに上書きする
 			memberForm.setName(member.getName());
@@ -135,7 +136,8 @@ public class MemberController {
 			// 主キーのidから、Bookオブジェクトを取得して、
 			// リクエストハンドラで定義した@ModelAttribute("member") Member member の フォームのオブジェクトに上書きをする
 			
-			member = memberService.findMemberDataById(id);
+			 member = memberService.findMemberDataById(id);
+			
 			mav.addObject("member", member);  // 必要 フォームに初期値として、表示するために
 			break;
 		
@@ -160,8 +162,8 @@ public class MemberController {
 	@RequestMapping( value = "/member_add_edit", method=RequestMethod.POST)
 	public ModelAndView memberAddEdit(
 			@RequestParam( name = "action")String action,  // 必須のパラメータ hidden
-			@RequestParam( name = "id")Integer id, // 必須のパラメータ  idは新規では 0なので 0で渡ってくる 編集の時にはidが入ってる
-			@ModelAttribute("member")@Validated Member member,   // @Validatedをつけることによってバリデーション機能が働きます
+			@RequestParam( name = "id", required = false)Integer id, // 新規の時には無いのでnull  required = false で任意パラメータにする
+			@ModelAttribute("memberForm")@Validated MemberForm memberForm,   // @Validatedをつけることによってバリデーション機能が働きます
 			BindingResult result,
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
 		    HttpServletRequest request, // requestオブジェクトから取得したい時に
@@ -174,14 +176,21 @@ public class MemberController {
         	mav.setViewName("member/form");       	
         	mav.addObject("msg", "入力エラーが発生しました。");
 			mav.addObject("action", action);
+			mav.addObject("memberForm", memberForm);  // 必要
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
 		
 		// バリデーションエラーがなかったら 処理を進める フォームのオブジェクトから取得する
-	//  int id = book.getId();  // 編集の時には入ってる 新規の時にはフォームはないのでint型のデフォルト値(規定値) 0 のままです
-//		String name = member.getName();
-//		String tel = member.getTel();
-//		String address = member.getAddress();
+	  // int id = memberForm.getId();  // 編集の時には入ってる 新規の時にはフォームはないのでint型のデフォルト値(規定値) 0 のままです
+		String name = memberForm.getName();
+		String tel = memberForm.getTel();
+		String address = memberForm.getAddress();
+		int year = memberForm.getYear();
+		int month = memberForm.getMonth();
+		int day = memberForm.getDay();
+		LocalDate birthday = LocalDate.of(year, month, day);
+		
+		Member member = null;
 		
 		// バリデーションエラーがなかったら actionによって分岐処理を進める
 		
@@ -190,7 +199,7 @@ public class MemberController {
 	    switch(action) {
 	    case "add":
 	    	// 新規登録する  新規の時には フォームのオブジェクト を利用して
-	    	// フォームオブジェクトにフォームの値が入ってるのでそのまま登録できる
+	    	member = new Member(name, tel, address, birthday);
 	    	success = memberService.create(member);
 	    	if(success == false) { // データベース登録失敗
 				// 失敗のメッセージとreturnする
@@ -206,6 +215,7 @@ public class MemberController {
 	    	
 	    case "edit":
 	    	// 書籍 編集する フォームオブジェクトにフォームの値が入ってるので そのまま引数にして更新できる
+	    	member = new Member(id, name, tel, address, birthday);
 	    	success = memberService.update(member);
 	    	
 	    	if(success == false) { // データベース更新失敗
