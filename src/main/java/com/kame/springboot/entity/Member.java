@@ -1,5 +1,6 @@
 package com.kame.springboot.entity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -25,8 +26,9 @@ import javax.validation.constraints.Size;
 @Table(name = "members")  // 小文字で
 public class Member {  // Memberの方が 主エンティティ   Historyエンティティが 従エンティティ
 	
-	// 後で、フォームの入力チェックのバリデーションも追加すること 
-	// 別にフォームのクラスは作らないのでこのクラスにバリデーションのアノテーションをつける
+	
+	// 別にフォームのクラスを作りましたのでこのクラスには入力チェックの バリデーションのアノテーションをつけない
+	// このエンティティクラスには データベースとの関係のアノテーションだけつけてください
 	
 	/*
 	 * membersテーブルは  historiesテーブルの親テーブルになる historiesテーブルとリレーションがある
@@ -38,26 +40,31 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 	@GeneratedValue(strategy = GenerationType.IDENTITY)  // GenerationType.AUTO  こっちじゃない これだとうまくいきません
 	private int id;  // 参照されてるフィールド  リレーションあり Historyエンティティの memberIdフィールドとリレーションあり
 	
-	
-	@NotEmpty( message = "名前を入力してください")
-	@Size(max = 100, message = "名前は100文字以内で入力してください") //   minは書かないこと エラーメッセージ2つ出さないようにするため
+	// フォームクラスがあるので、入力のバリデーションのアノテーションはフォームクラスの方でつけます
+//	@NotEmpty( message = "名前を入力してください")
+//	@Size(max = 100, message = "名前は100文字以内で入力してください") //   minは書かないこと エラーメッセージ2つ出さないようにするため
 	@Column( name = "name")  // ユニーク制約はつけません
 	private String name;  // このnameカラムを membersテーブルでは ユニークにしてるので、バリデーションにユニークを作ってカスタムアノテーションをつけること
 	// membersテーブルでは nameカラムにUNIQUEはつけません usersテーブルのユーザ名はユニークだけど このmembersテーブルのユーザ名は同姓同名を許してるので
 	// もしフォームクラスを作ったら、そちらにバリデーションのアノテーションをつける事になる
 	
-	
-	@NotEmpty( message = "電話番号を入力してください")
-	// @Pattern(regexp = "0\\d{1,4}-\\d{1,4}-\\d{4}", message = "電話番号の形式で入力してください")
-	@Pattern(regexp = "^\\d{2,4}-\\d{2,4}-\\d{4}$", message = "電話番号の形式で入力してください")
+	// フォームクラスがあるので、入力のバリデーションのアノテーションはフォームクラスの方でつけます
+//	@NotEmpty( message = "電話番号を入力してください")
+//	@Pattern(regexp = "^\\d{2,4}-\\d{2,4}-\\d{4}$", message = "電話番号の形式で入力してください")
 	@Column( name = "tel")
 	private String tel;
 	
-	
-	@NotEmpty( message = "住所を入力してください")
-	@Size(max = 100, message = "住所は100文字以内で入力してください")  // minは書かないこと エラーメッセージ2つ出さないようにするため
+	// フォームクラスがあるので、入力のバリデーションのアノテーションはフォームクラスの方でつけます
+//	@NotEmpty( message = "住所を入力してください")
+//	@Size(max = 100, message = "住所は100文字以内で入力してください")  // minは書かないこと エラーメッセージ2つ出さないようにするため
 	@Column( name = "address")
 	private String address;
+	
+	
+	
+	// 生年月日を追加
+	@Column( name = "birthday")
+	private LocalDate birthDay;
 
 	
 	// リレーションをHistoryエンティティクラス とつけること
@@ -146,6 +153,14 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public LocalDate getBirthDay() {
+		return birthDay;
+	}
+
+	public void setBirthDay(LocalDate birthDay) {
+		this.birthDay = birthDay;
 	}
 	
 

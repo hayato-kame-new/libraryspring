@@ -13,6 +13,20 @@
 ここで 編集ボタンも表示する
 ここで 削除ボタンも表示する
  -->
+ <!-- 後で変更 電話番号と 住所  編集ボタンと削除ボタン は show.htmlでボタン表示する show.htmlでは その会員の履歴も検索できるようにする -->
+ 
+ 	 <td>
+			  <!-- ? 以降の クエリー文字列  ?action=edit&id=1   などと表示される -->
+				<a th:href="@{/member_form(action=edit, id=${member.id})}"><button type="button" >会員 編集画面へ</button></a>
+			</td> 
+			<td>
+			 <!--  ? 以降の クエリー文字列  ?action=edit&id=1   などと表示される -->
+				<a th:href="@{/member_show( id=${member.id}) }"><button type="button" >会員 詳細画面へ</button></a>
+			</td>
+			<!-- 後で下を消す -->
+			<td>
+				<a th:href="@{/member_form(action=delete, id=${member.id})}"><button type="button" >会員 削除画面へ</button></a>
+			</td> 
 
 </body>
 </html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{history_search_page.title} - library|"></title>
+<!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス -->
+<style th:include="common/header :: common_header_style"></style>
+</head>
+<body> 
+<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス-->
+<div th:include="common/header :: common_header"></div>
+
+	 <div class="contents">
+		<h2 class="heading">貸し出し履歴検索ページ</h2>
+		<h4>条件を指定して貸し出し履歴情報を検索します</h4>
+	
+		<div>
+			<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+		</div>
+		
+		<div>
+			<form th:action="@{/logout}" method="post">
+		        <input type="submit" value="ログアウト" />
+		    </form>	
+		</div>
+	
+		<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
+		Maven プロジェクト（pom.xml ファイル）に追加されている 
+		現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
+		${#authentication.principal.password}
+		${#authentication.principal.authorities} で取得もできる
+		-->
+		<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div> -->
+		
+	<!-- 	<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
+		<div th:text="| password: ${#authentication.principal.password} です|"></div>
+		<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div>
+		 -->
+	 </div>
+</body>
+</html>

@@ -27,28 +27,20 @@
 <th:block th:if="${members.size() > 0}" >
 	<table>
 		<tr>
-			<th>ID</th><th>名前</th><th>電話番号</th><th>住所</th><th colspan="2"></th>
+			
+			<th>ID</th><th>名前</th><th colspan="1"></th>
 		</tr>
 		
 		<tr th:each="member : ${members}" >
 			<td th:text="${member.id}"></td>
 			<td th:text="${member.name}"></td>
-			<td th:text="${member.tel}"></td>
-			<td th:text="${member.address}"></td>
-			<!-- 後で変更 電話番号と 住所  編集ボタンと削除ボタン は show.htmlでボタン表示する show.htmlでは その会員の履歴も検索できるようにする -->
-			 <td>
-			  <!-- ? 以降の クエリー文字列  ?action=edit&id=1   などと表示される -->
-				<a th:href="@{/member_form(action=edit, id=${member.id})}"><button type="button" >会員 編集画面へ</button></a>
-			</td> 
+			
+		
 			<td>
-			 <!--  ? 以降の クエリー文字列  ?action=edit&id=1   などと表示される -->
+			 <!--  ? 以降の クエリー文字列  ?id=1   などと表示される -->
 				<a th:href="@{/member_show( id=${member.id}) }"><button type="button" >会員 詳細画面へ</button></a>
 			</td>
-			<!-- 後で下を消す -->
-			<td>
-				<a th:href="@{/member_form(action=delete, id=${member.id})}"><button type="button" >会員 削除画面へ</button></a>
-			</td> 
-
+		
 		</tr>
 	</table>
 	

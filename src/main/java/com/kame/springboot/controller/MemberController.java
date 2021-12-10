@@ -1,5 +1,7 @@
 package com.kame.springboot.controller;
 
+import java.time.LocalDate;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Member;
+import com.kame.springboot.form.MemberForm;
 import com.kame.springboot.service.MemberService;
 
 @Controller
@@ -79,12 +82,15 @@ public class MemberController {
 	 * 
 	 * 編集の時     ?action=edit&id=2  などになる
 	 * 削除の時     ?action=delete&id=2  などになる
+	 * @param memberForm
+	 * @param action
+	 * @param id
 	 * @param mav
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/member_form", method=RequestMethod.GET)
 	public ModelAndView memberForm(
-			@ModelAttribute("member") Member member,
+			@ModelAttribute("memberForm") MemberForm memberForm,  // フォームクラスを使う
 			@RequestParam(name = "action")String action, // 必須パラメータ
 			// aリンクの ？以降のクエリー文字列で、編集editの時に ?action=edit&id=2 などという形で送られてくる
 			@RequestParam(name = "id", required = false)Integer id, // 任意パラメータ 編集の時だけ送られてきてるので
@@ -94,19 +100,34 @@ public class MemberController {
 		mav.setViewName("member/form");
 		mav.addObject("action", action);  // フォームのビューへ送ること 必要
 		
+		Member member = null;
 		switch(action) {
 		case "add":
-			// そのまま 
+			// そのまま フォームのオブジェクトは 初期値のままでいい(各データ型の既定値(デフォルト値)）
 			break;
 			
 		case "edit":
 			// aリンクの idが クエリー文字列で送られてきてるので 
 			// 主キーのidから、Memberオブジェクトを取得して、
-			// リクエストハンドラで定義した@ModelAttribute("member") Member member の フォームのオブジェクトに上書きをする
-			// そして、それを mav.addObject("book", book);することが必要
+			// リクエストハンドラで定義した@ModelAttribute("memberForm") MemberForm memberForm の フォームのオブジェクトに上書きをする
+			// そして、それを mav.addObject("memberForm", memberForm);することが必要
 			
 			member = memberService.findMemberDataById(id);
-			mav.addObject("member", member);  // 必要 フォームに初期値として、表示するために
+			
+			// フォームオブジェクトに上書きする
+			memberForm.setName(member.getName());
+			memberForm.setTel(member.getTel());
+			memberForm.setAddress(member.getAddress());
+			
+			LocalDate localDateBirthday = member.getBirthDay();
+			Integer year = localDateBirthday.getYear();
+			Integer month = localDateBirthday.getMonthValue();
+			Integer day = localDateBirthday.getDayOfMonth();
+			memberForm.setYear(year);
+			memberForm.setMonth(month);
+			memberForm.setDay(day);
+			// 上書きしたフォームオブジェクトをビューに送る
+			mav.addObject("memberForm", memberForm);  // 必要 フォームに初期値として、表示するために
 			break;
 			
 		case "delete":

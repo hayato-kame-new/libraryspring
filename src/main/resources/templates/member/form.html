@@ -4,11 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
 <title th:text="|#{member_form_page.title} - library|"></title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
+
 <body>
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス-->
@@ -21,11 +22,12 @@
 
 <p th:if="${msg}" th:text="${msg}"></p>
 
-<form th:action="@{/member_add_edit}" method="post" th:object="${member}">
+<form th:action="@{/member_add_edit}" method="post" th:object="${memberForm}">
 
 	<input type="hidden" name="action" th:value="${action}" />
-	<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 編集の時には idが入ってるので使用できる -->
-	<input type="hidden" name="id" th:value="*{id}" />
+	<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 
+	編集の時には idが入ってるので使用できる  フォームのオブジェクトには関係なく 独立してパラメータで送る ${id} にする *{id} ではない-->
+	<input type="hidden" name="id" value="${id}" />
 	
 	<p th:if="${id != null && id != 0}" th:text="|会員ID: *{id}|" ></p>
 	
@@ -35,6 +37,26 @@
 		<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="err">
 		</div>				
 	</div>
+	
+	<div>
+        <select  name="year" class="js-changeYear" th:errorclass="err" >        	
+	            <option th:each="i : ${#numbers.sequence(#dates.format(new java.util.Date(), 'yyyy'), 1920)}"
+	                th:value="${i}" th:text="${i}" th:selected="${i == year}">
+	            </option>        
+        </select>
+
+        <select name="month" class="js-changeMonth" th:errorclass="err" >
+            <option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}"
+                th:text="${i}" th:selected="${i == month}">
+            </option>
+        </select>
+
+        <select name="day" class="js-changeDay" th:errorclass="err">
+            <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}"
+                th:text="${i}" th:selected="${i == day}">
+            </option>
+        </select>
+    </div>
 	
 	<div>
 		<label for="tel">電話: </label>
@@ -75,7 +97,7 @@
 <!-- Font Awesomeのための -->
 <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
 
-<!-- <script>
+<script>
 (function($){
     function formSetDay(){
       var lastday = formSetLastDay($('.js-changeYear').val(), $('.js-changeMonth').val());
@@ -102,7 +124,7 @@
       formSetDay();
     });
   })(jQuery);
-</script> -->
+</script> 
 
 <script>
 function beforeSubmit() {
