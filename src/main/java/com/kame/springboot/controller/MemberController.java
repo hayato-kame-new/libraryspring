@@ -63,25 +63,31 @@ public class MemberController {
 		return "member/members";
 	}
 	
-	// 詳細表示
-	@RequestMapping(value = "/show", method=RequestMethod.GET)
+	
+	/**
+	 * 会員 詳細画面を表示
+	 * @param id
+	 * @param mav
+	 * @return
+	 */
+	@RequestMapping(value = "member_show", method=RequestMethod.GET)
 	public ModelAndView show(
 			@RequestParam(name = "id")Integer id,
 			ModelAndView mav
 			) {
+		// 主キーid から Memberオブジェクトを取得する
+		Member member = memberService.findMemberDataById(id);
 		
 		mav.setViewName("member/show");
+		mav.addObject("member", member);
 		return mav;
 	}
 	
 	/**
-	 * 会員 新規登録画面  編集画面   削除確認画面 を表示する
-	 * 削除する際も、一度内容を確認してからなので 削除の確認画面を表示する
+	 * 会員 新規登録画面  編集画面 	 
 	 * aリンクの ?以降のクエリー文字列を取得する
 	 * 新規の時    ?action=add  になる  idのクエリー文字列はない 
-	 * 
 	 * 編集の時     ?action=edit&id=2  などになる
-	 * 削除の時     ?action=delete&id=2  などになる
 	 * @param memberForm
 	 * @param action
 	 * @param id
@@ -92,13 +98,14 @@ public class MemberController {
 	public ModelAndView memberForm(
 			@ModelAttribute("memberForm") MemberForm memberForm,  // フォームクラスを使う
 			@RequestParam(name = "action")String action, // 必須パラメータ
-			// aリンクの ？以降のクエリー文字列で、編集editの時に ?action=edit&id=2 などという形で送られてくる
-			@RequestParam(name = "id", required = false)Integer id, //削除のために必要 任意パラメータ 編集の時だけ送られてきてるので
+		
+			 @RequestParam(name = "id", required = false)Integer id, 
 			ModelAndView mav			
 			) {
 		
 		mav.setViewName("member/form");
 		mav.addObject("action", action);  // フォームのビューへ送ること 必要
+		
 		
 		Member member = null;
 		switch(action) {
@@ -112,7 +119,7 @@ public class MemberController {
 			// リクエストハンドラで定義した@ModelAttribute("memberForm") MemberForm memberForm の フォームのオブジェクトに上書きをする
 			// そして、それを mav.addObject("memberForm", memberForm);することが必要
 			
-			// member = memberService.findMemberDataById(id);  // こっちでもいい
+			// member = memberService.findMemberDataById(id);  // 編集の時にはどっちでもいい こっちでもいい
 			member = memberService.findMemberDataById(memberForm.getId());
 			
 			// フォームオブジェクトに上書きする
@@ -121,9 +128,9 @@ public class MemberController {
 			memberForm.setAddress(member.getAddress());
 			
 			LocalDate localDateBirthday = member.getBirthDay();
-			Integer year = localDateBirthday.getYear();
+			 Integer year = localDateBirthday.getYear();
 			Integer month = localDateBirthday.getMonthValue();
-			Integer day = localDateBirthday.getDayOfMonth();
+			 Integer day = localDateBirthday.getDayOfMonth();
 			memberForm.setYear(year);
 			memberForm.setMonth(month);
 			memberForm.setDay(day);
@@ -131,15 +138,6 @@ public class MemberController {
 			mav.addObject("memberForm", memberForm);  // 必要 フォームに初期値として、表示するために
 			break;
 			
-		case "delete":
-			// aリンクの idが クエリー文字列で送られてきてるので 
-			// 主キーのidから、Bookオブジェクトを取得して、
-			// リクエストハンドラで定義した@ModelAttribute("member") Member member の フォームのオブジェクトに上書きをする
-			
-			 member = memberService.findMemberDataById(id);
-			
-			mav.addObject("member", member);  // 必要 フォームに初期値として、表示するために
-			break;
 		
 		}
 		
@@ -241,6 +239,39 @@ public class MemberController {
  		redirectAttributes.addFlashAttribute("flashMsg" , flashMsg);
  		// 書籍一覧を表示する
  		 return new ModelAndView("redirect:/members");
+	}
+	
+	
+	
+	// 削除確認画面を表示する* 削除する際も、一度内容を確認してからなので 削除の確認画面を表示する
+	@RequestMapping( value = "/member_delete_confirm" , method=RequestMethod.GET)
+	public ModelAndView deleteConfirm(
+			@RequestParam(name = "id")Integer id,  // 必須パラメータ aリンクの idが クエリー文字列で送られてきてる
+			@ModelAttribute("memberForm") MemberForm memberForm,
+			ModelAndView mav
+			) {
+			mav.setViewName("member/confirm");
+				
+			Member member = memberService.findMemberDataById(id);  // 削除ときには idは aリンクのクエリー文字列から取得する
+				 
+			// フォームオブジェクトに上書きする
+		    memberForm.setId(member.getId());
+			memberForm.setName(member.getName());
+			memberForm.setTel(member.getTel());
+			memberForm.setAddress(member.getAddress());
+			
+			LocalDate localDateBirthday = member.getBirthDay();
+			Integer year = localDateBirthday.getYear();
+			Integer month = localDateBirthday.getMonthValue();
+			Integer day = localDateBirthday.getDayOfMonth();
+			memberForm.setYear(year);
+			memberForm.setMonth(month);
+			memberForm.setDay(day);
+			// 上書きしたフォームオブジェクトをビューに送る
+			mav.addObject("memberForm", memberForm);  // 必要 フォームに初期値として、表示するために
+			
+			return mav;
+		
 	}
 	
 	/**

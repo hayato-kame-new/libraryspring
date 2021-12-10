@@ -110,6 +110,15 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 		this.address = address;
 		this.birthDay = birthDay;
 	}
+	
+	
+	/**
+	 * 生年月日を表示する
+	 * @return String
+	 */
+	public String printBirthDay() {
+		 return String.valueOf(this.birthDay.getYear()) + "年" + String.valueOf(this.birthDay.getMonthValue()) + "月" + String.valueOf(this.birthDay.getDayOfMonth()) + "日";
+	}
 
 	// アクセッサ
 	public int getId() {

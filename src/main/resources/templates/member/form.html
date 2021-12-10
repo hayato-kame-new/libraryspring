@@ -18,7 +18,7 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h3 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : '会員 削除確認画面 この本を削除してよろしいですか?'}"></h3>
+<h3 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : '会員 削除確認画面 この会員を削除してよろしいですか?'}"></h3>
 
 <p  th:if="${msg}" th:text="${msg}"></p>
 
@@ -38,24 +38,24 @@
 		</div>				
 	</div>
 	
-	<div>
+	<div>誕生日: 
         <select  name="year" class="js-changeYear" th:errorclass="err" >        	
 	            <option th:each="i : ${#numbers.sequence(#dates.format(new java.util.Date(), 'yyyy'), 1920)}"
 	                th:value="${i}" th:text="${i}" th:selected="${i == memberForm.year}">
 	            </option>        
-        </select>
+        </select> 年
 
         <select name="month" class="js-changeMonth" th:errorclass="err" >
             <option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}"
                 th:text="${i}" th:selected="${i == memberForm.month}">
             </option>
-        </select>
+        </select> 月
 
         <select name="day" class="js-changeDay" th:errorclass="err">
             <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}"
                 th:text="${i}" th:selected="${i == memberForm.day}">
             </option>
-        </select>
+        </select> 日
     </div>
 	
 	<div>

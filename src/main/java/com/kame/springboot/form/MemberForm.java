@@ -50,6 +50,11 @@ public class MemberForm {
 	@Range(min= 1 , max= 31 )  // @Rangeは数値の値で、最小値と最大値を指定するものです。@Min、@Maxをまとめて設定するもの
 	private Integer day;  // 日 selectタグからの送信 name属性の値が day
 
+	
+	// 誕生日を表示する
+	public String birthdayPrint() {
+		return this.getYear().toString() + "年" + this.getMonth().toString() + "月" + this.getDay().toString() + "日";
+	}
 
 	public String getName() {
 		return name;
