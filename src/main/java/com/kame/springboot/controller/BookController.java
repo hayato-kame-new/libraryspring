@@ -56,7 +56,7 @@ public class BookController {
 			flashMsg = (String) model.getAttribute("flashMsg");  // Flash Scopeに保存してあるのは Object型のインスタンスなので キャストする
 		}
 		// ページネーションと idで ソートしたコレクション を取得
-		 Page<Book> bookPage = bookService.getAllBooks(pageable);
+		 Page<Book> bookPage = bookService.getPageableBooks(pageable);
 		 
 		 model.addAttribute("page", bookPage);  
 	     model.addAttribute("books", bookPage.getContent());
@@ -65,31 +65,6 @@ public class BookController {
 	        
         return "book/books";
     }
-	
-	/**
-	 * createNativeQueryメソッドだと、戻り値が List<Book> じゃないとダメなので
-	 * このやり方をします 表示はbooks2.htmlです うまくいかない
-	 * @param pageable
-	 * @param model
-	 * @return
-	 */
-//	@RequestMapping(value = "/books", method=RequestMethod.GET)
-//	public String index2( Pageable pageable, Model model) {
-//		List<Book> books = new ArrayList<Book>();
-//		 books = bookService.booksList();
-//		
-//		// List<Book>を Page<Book>へ変換するやり方 
-//		// Page<Book> page = new PageImpl<>(books);
-//		//  Page<Book> page = new PageImpl<>(books, pageable, books.size());
-//		// これもなんか違う
-//		Page<Book> bookPage = new PageImpl<Book>(books, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), books.size());
-//
-//		 model.addAttribute("books", books);
-//		 model.addAttribute("page", bookPage);
-//
-//        return "book/books2";
-//    }
-	
 	
 	/**
 	 * 書籍 新規登録画面  編集画面   削除確認画面 を表示する

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
-<title th:text="|#{book_search_page.title} - library|"></title>
+<title th:text="|#{user_search_page.title} - library|"></title>
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
@@ -11,43 +11,13 @@
 <body> 
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス-->
-	<div th:include="common/header :: common_header"></div>
-	 
+<div th:include="common/header :: common_header"></div>
+
 	 <div class="contents">
-		<h2 class="heading">書籍 検索ページ</h2>
-		<h4>条件を指定して書籍情報を検索します</h4>
-		
-		<p th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
-		
-		
-		<!-- ISBN検索のフォームも作る ユニークなので 完全一致検索にする-->
-		
-		
-		<!-- ジャンルは完全一致で検索 　タイトル と 著者は で 曖昧検索です  3つを AND検索で絞る  未入力でも検索できる 
-		ただし、3つとも未入力なら検索しないで リダイレクトをして フォーム再表示する stockappを参考にする-->
+		<h2 class="heading">ユーザー検索ページ</h2>
+		<h4>条件を指定してユーザー情報を検索します</h4>
+	
 		<div>
-			<form th:action="@{/book_search}" method="post">
-				<table>
-			 		<tr><td style="width:13ch;" ><label for="departmentId">ジャンル: </label></td>
-			 			<td ><select id="genre" name="genre"  size="4" style="width:150px;">
-					 		    <option value="" th:text="選択しない"></option>
-					        	<option th:each="element : ${genreMap}" th:value="${element.key}"  th:inline="text">[[${element.value}]]</option>
-					    	</select>
-				    	</td>
-			    	</tr>
-					<tr><td><label for="title_included">タイトルに含まれる文字: </label></td>
-						<td><input type="text" id="title_included" name="title_included" th:value="${title_included}"  /></td>
-					</tr>			
-					<tr><td><label for="authors_included">著者に含まれる文字: </label></td> 
-						<td><input type="text" id="authors_included" name="authors_included" th:value="${authors_included}"  /></td>
-					</tr>
-					<tr><td></td><td><input type="submit" value="検索する" /></td></tr>
-				</table>	
-				
-			</form>
-		</div>
-		
-		<div >
 			<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
 		</div>
 		

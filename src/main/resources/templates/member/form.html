@@ -18,11 +18,11 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h3 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : '会員 削除確認画面 この会員を削除してよろしいですか?'}"></h3>
+<h2 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : 'フォーム画面'}"></h2>
 
 <p  th:if="${msg}" th:text="${msg}"></p>
 
-<form th:action="@{/member_add_edit}" method="post" th:object="${memberForm}">
+<form th:action="@{/member_add_edit}" method="post" th:object="${memberForm}" onsubmit="return beforeSubmit()" >
 
 	<input type="hidden" name="action" th:value="${action}" />
 	<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 
@@ -72,20 +72,14 @@
 		</div>				
 	</div>
 		
-	<th:block th:if="${action.equals('add') || action.equals('edit')}">
+	<th:block th:if="${action.equals('add') || action.equals('edit')}"  >
 		<div>
 			<input type="submit" value="送信" />
 			<input type="reset" value="キャンセル">
 		</div>
 	</th:block>
 </form>
-	<th:block th:if="${action.equals('delete')}" >
-		<form th:action = @{/member_delete} method="post" th:object="${member}" onsubmit="return beforeSubmit()">
-		    <input type="hidden" name="id" th:value="${member.id}" />
-		    <input type="submit" value="削除します" />
-		</form>
 	
-	</th:block>
 
 <hr />
 
@@ -128,7 +122,7 @@
 
 <script>
 function beforeSubmit() {
-    if(window.confirm('本当に削除しますか？')) {
+    if(window.confirm('この内容でよろしいですか？')) {
       return true;
     } else {
       return false;

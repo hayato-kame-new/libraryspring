@@ -79,6 +79,17 @@ th:if="${session[SPRING_SECURITY_LAST_EXCEPTION] != null}"
 
 エラーメッセージを取得
 th:text="${session[SPRING_SECURITY_LAST_EXCEPTION].message}" -->
-
+	<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
+		Maven プロジェクト（pom.xml ファイル）に追加されている 
+		現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
+		${#authentication.principal.password}
+		${#authentication.principal.authorities} で取得もできる
+		-->
+		<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div> -->
+		
+	<!-- 	<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
+		<div th:text="| password: ${#authentication.principal.password} です|"></div>
+		<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div>
+		 -->
 </body>
 </html>
