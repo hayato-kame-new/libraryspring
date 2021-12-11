@@ -1,5 +1,6 @@
 package com.kame.springboot.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,16 +74,16 @@ public class BookController {
 	 * @param mav
 	 * @return
 	 */
-	@RequestMapping(value = "book_show", method=RequestMethod.GET)
+	@RequestMapping(value = "/book_show/{isbn}", method=RequestMethod.GET)
 	public ModelAndView show(
-			@RequestParam(name = "isbn")String isbn,
+			@PathVariable String isbn,
 			ModelAndView mav
 			) {
 		// 主キーid から Memberオブジェクトを取得する
-		Book book = bookService.findBookDataByIsbn(isbn);
+		List<Book> bookList = bookService.findBookDataByIsbn(isbn);
 		
 		mav.setViewName("book/show");
-		mav.addObject("book", book);
+		mav.addObject("bookList", bookList);
 		return mav;
 	}
 	
