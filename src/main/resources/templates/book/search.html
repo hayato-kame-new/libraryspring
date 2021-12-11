@@ -20,28 +20,40 @@
 		<p th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
 		
 		
-		<!-- ISBN検索のフォームも作る ユニークなので 完全一致検索にする-->
 		
-		
-		<!-- ジャンルは完全一致で検索 　タイトル と 著者は で 曖昧検索です  3つを AND検索で絞る  未入力でも検索できる 
-		ただし、3つとも未入力なら検索しないで リダイレクトをして フォーム再表示する stockappを参考にする-->
+		<!--  曖昧検索です  ４つを AND検索で絞る  未入力でも検索できる 
+		ただし、5つとも未入力なら検索しないで リダイレクトをして フォーム再表示する
+		検索用のBookSearchForm フォームクラスを定義してるのでそれを利用する -->
 		<div>
-			<form th:action="@{/book_search}" method="post">
+			<form th:action="@{/book_search}" method="post" th:object="${bookSearchForm}">
 				<table>
-			 		<tr><td style="width:13ch;" ><label for="departmentId">ジャンル: </label></td>
+				
+					<tr><td style="width:13ch;"><label for="isbn">ISBN: </label></td>
+						<td><input type="text" id="isbn" name="isbn" th:value="*{isbn}" /></td>
+					</tr>
+					
+			 		<tr><td style="width:13ch;" ><label for="genre">ジャンル: </label></td>
 			 			<td ><select id="genre" name="genre"  size="4" style="width:150px;">
 					 		    <option value="" th:text="選択しない"></option>
 					        	<option th:each="element : ${genreMap}" th:value="${element.key}"  th:inline="text">[[${element.value}]]</option>
 					    	</select>
 				    	</td>
 			    	</tr>
-					<tr><td><label for="title_included">タイトルに含まれる文字: </label></td>
-						<td><input type="text" id="title_included" name="title_included" th:value="${title_included}"  /></td>
-					</tr>			
-					<tr><td><label for="authors_included">著者に含まれる文字: </label></td> 
-						<td><input type="text" id="authors_included" name="authors_included" th:value="${authors_included}"  /></td>
+			    	
+					<tr><td><label for="title">タイトルに含まれる文字: </label></td>
+						<td><input type="text" id="title" name="title" th:value="*{title}"  /></td>
 					</tr>
-					<tr><td></td><td><input type="submit" value="検索する" /></td></tr>
+					
+					<tr><td><label for="authors">著者に含まれる文字: </label></td> 
+						<td><input type="text" id="authors" name="authors" th:value="*{authors}"  /></td>
+					</tr>
+					
+					<tr><td><label for="publisher">出版社に含まれる文字: </label></td> 
+						<td><input type="text" id="publisher" name="publisher" th:value="*{publisher}"  /></td>
+					</tr>
+					
+					<tr><td></td><td><input style="margin-right: 20px;" type="submit" value="検索する" /> <input type="reset" value="キャンセル"></td></tr>
+					
 				</table>	
 				
 			</form>
@@ -57,18 +69,61 @@
 		    </form>	
 		</div>
 	
-		<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
-		Maven プロジェクト（pom.xml ファイル）に追加されている 
-		現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
-		${#authentication.principal.password}
-		${#authentication.principal.authorities} で取得もできる
-		-->
-		<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div> -->
-		
-	<!-- 	<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
-		<div th:text="| password: ${#authentication.principal.password} です|"></div>
-		<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div>
-		 -->
+		<!-- 検索結果表示 -->
+		<p th:if="${resultMsg}" th:text="${resultMsg}"></p>
+		 <th:block th:if="${resultList == null || resultList.size() == 0}">
+			 <table>
+				<tr><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th><th></th><th></th><th></th></tr>
+				
+				<tr th:each="obj : ${resultList}" th:object="${obj}">	
+					<!-- <td th:text="${obj[0]}"></td> アクセスの仕方は これではないので注意-->
+					<td align="center" >
+						<a href="/detail" th:href="@{/detail/{isbn}(isbn=${obj.isbn})}" th:text="${obj.isbn}"></a>
+						<!-- フォームでHTTPメソッドGETで送ってもいい -->
+					<!-- 	<form method = "get" action="/detail" th:action = "@{/detail/{isbn}(isbn=${obj.isbn})}" >
+						 	<input type="hidden" name="isbn" th:value="${obj.isbn}" >
+						 	<input type="submit" value="詳細" >
+						 </form> -->
+					</td>
+					<td align="left" th:text="${obj.title}"></td>
+					<td align="left" th:text="${obj.authors}"></td>
+					
+					<!-- 書架状態 メソッドを使って表示後で変更 -->
+					<td></td>
+					<!-- <td align="center" th:text="${obj.orderDate}"></td> -->
+					<td align="center" >
+						<a  th:href="@{/order/{isbn}(isbn=${obj.isbn})}">●</a>
+					</td>
+					<td align="center">
+						<a href="/delivery" th:href="@{/delivery/{isbn}(isbn=${obj.isbn})}">●</a>
+					</td>
+					<td align="center" >
+						
+					</td>
+					<td>
+						<!-- フォームでHTTPメソッドGETで送ってもいい -->
+						<form method = "get" action="/detail" th:action = "@{/detail/{isbn}(isbn=${obj.isbn})}" >
+						 	<input type="hidden" name="isbn" th:value="${obj.isbn}" >
+						 	<input type="submit" value="詳細" >
+						 </form>
+					</td>
+					
+					<!-- <td>
+						 <form method = "get" action = "/emp_add_edit" >
+						 	<input type="hidden" name="employeeId" th:value="${obj[0]}" >
+						 	<input type="hidden" name="action" th:value="edit" >
+						 	<input type="submit" value="編集" >
+						 </form>		
+					</td>
+					<td>
+						<form method = "post" action = "/emp_delete" >
+							<input type="hidden" name="employeeId" th:value="${obj[0]}" >
+							<input type="submit" value="削除" >
+						</form>		
+					</td> -->
+				</tr> 
+			</table>
+		</th:block>
 	 </div>
 </body>
 </html>

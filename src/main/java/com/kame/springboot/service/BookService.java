@@ -173,5 +173,165 @@ public class BookService {
 		return true;  // 成功
 	 
 	 }
+	 
+	  	/**
+	  	 * And検索メソッド 曖昧検索 LIKE   リポジトリの自動生成機能は使えない
+	  	 * JPQLの文なので Book はエンティティを示す
+	  	 * 検索に必要なクエリを完成させ それの問い合わせにより得た結果を返す
+	  	 * 検索フォームにはユーザーによって入力されないフィールドもある なのでそれぞれの引数に値が入力されているのかを確認しています
+	  	 * 値が入力されていれば、条件の一部としてクエリに条件を付け足していきます
+	  	 * また、値が入力されている引数が複数あるようであればクエリに「AND」を付け足すようにしています
+	  	 * 例: authorに「村上春樹」、titleに「ノルウェイの森」と入力されており、それ以外は入力されなかった場合
+	  	 * SELECT b From books b WHERE b.author LIKE :author AND b.title LIKE :title
+	  	 * このクエリにsetParameterで値を割り当てています
+	  	 * 
+	  	 * @param isbn
+	  	 * @param genre
+	  	 * @param title
+	  	 * @param authors
+	  	 * @param publisher
+	  	 * @return
+	  	 */
+	    public List searchBookAnd(String isbn, String genre, String title, String authors, String publisher) {
+	    
+	    	StringBuilder sql = new StringBuilder();
+	    	
+	    	// 注意！！　JPQL文ですので、Bookはエンティティです なので大文字から始める
+	    	//sql.append("SELECT b From Book b WHERE ");  
+	    	sql.append("SELECT b From Book as b WHERE ");  // JPQLの文なので Book はエンティティを示す
+	    	 boolean isbnFlg = false;
+	    	 boolean genreFlg= false;
+	    	 boolean titleFlg= false;	    	
+	    	 boolean authorsFlg = false;
+	    	 boolean publisherFlg = false;
+	    	    	 
+	    	 boolean andFlg= false;
+	    	 
+	    	 if(!"".equals(isbn)) {
+	    	 sql.append("b.isbn LIKE :isbn");  
+	    	 isbnFlg = true;
+	    	 andFlg= true;
+	    	 }
+	    	 // ここ変更した
+	    	 if(!( genre == null ||  "選択しない".equals(genre))) {
+	    	 if (andFlg) sql.append(" AND ");
+	    	 sql.append("b.genre LIKE :genre");
+	    	 genreFlg = true;
+	    	 andFlg = true;
+	    	 }
+	    	 if(!"".equals(authors)) {
+	    	 if (andFlg) sql.append(" AND ");
+	    	sql.append("b.author LIKE :author"); 
+	    	authorsFlg = true;
+	    	 andFlg = true;
+	    	 }
+	    	 if(!"".equals(title)) {
+	    	 if (andFlg) sql.append(" AND ");
+	    	  sql.append("b.title LIKE :title");
+	    	  titleFlg = true;
+	    	 andFlg = true;
+	    	 }
+	    	 // 追加
+	    	 if(!"".equals(publisher)) {
+	    	 if (andFlg) sql.append(" AND ");
+	    	  sql.append("b.publisher LIKE :publisher");
+	    	  publisherFlg = true;
+	    	 andFlg = true;
+	    	 }
+			
+	    	 
+	    	 Query query = entityManager.createQuery(sql.toString());
+				if (isbnFlg) query.setParameter("isbn", "%" + isbn + "%");
+				 if (genreFlg) query.setParameter("genre", "%" + genre + "%");
+				if (authorsFlg) query.setParameter("author", "%" + authors + "%");
+				if (titleFlg) query.setParameter("title", "%" + title + "%");
+				// 追加
+				if (publisherFlg) query.setParameter("publisher", "%" + publisher + "%");
+				
+				return query.getResultList();
+	    	 	
+	    }
+	    
+		/**
+		 * 社員検索
+		 * @param departmentId
+		 * @param employeeId
+		 * @param word
+		 * @return List
+		 */
+//		@SuppressWarnings("unchecked")
+//		public List<Employee> find(String departmentId, String employeeId, String word) {
+//			// 注意 引数のdepartmentId は 空文字とnullの可能ある   employeeId と word は ""空文字の可能性ある
+	//
+//			String sql = "select * from employee";
+//			String where = ""; // where句
+//			int depIdIndex = 0; // プレースホルダーの位置を指定する 0だと、プレースホルダーは使用しないことになる
+//			int empIdIndex = 0;
+//			int wordIndex = 0;
+	//
+//			if (departmentId == null) {
+//				departmentId = "";
+//			}
+//			if (departmentId.equals("")) {
+//				// 未指定の時 何もしない depIdIndex 0 のまま変更無し
+//			} else {
+//				where = " where departmentid = ?"; // 代入する 注意カラム名を全て小文字にすること departmentid また、前後半角空白入れてつなぐので注意
+//				depIdIndex = 1; // 変更あり
+//			}
+	//
+//			if (employeeId.equals("")) {
+//				// 未指定の時 何もしない 
+//			} else {
+//				if (where.equals("")) { 
+//					where = " where employeeid = ?"; // 代入する カラム名を全て小文字 employeeid
+//					empIdIndex = 1;
+//				} else {
+//					where += " and employeeid = ?"; // where句はすでにあるので 二項演算子の加算代入演算子を使って連結 												
+//					empIdIndex = depIdIndex + 1;
+//				}
+//			}
+	//
+//			if (word.equals("")) {
+//				// 未指定の時何もしない
+//			} else {
+//				if (where.equals("")) { 
+//					where = " where name like ?"; // 代入  
+//					 wordIndex = 1;
+//				} else if (where.equals(" where departmentid = ?")) {
+//					where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+//					 wordIndex = depIdIndex + 1;
+//				} else if (where.equals(" where employeeid = ?")) {
+//					where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+//					 wordIndex = empIdIndex + 1;
+//				} else if (where.equals(" where departmentid = ? and employeeid = ?")) {
+//					where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+//					 wordIndex = depIdIndex + empIdIndex + 1;
+//				}
+//			}
+	//
+//			Query query = entityManager.createNativeQuery(sql + where);
+//			if (depIdIndex > 0) {
+//				query.setParameter(depIdIndex, departmentId);
+//			}
+//			if (empIdIndex > 0) {
+//				query.setParameter(empIdIndex, employeeId);
+//			}
+//			if (wordIndex > 0) {
+//				query.setParameter(wordIndex, "%" + word + "%");
+//			}
+//			return query.getResultList(); // 結果リスト 型のないリストを返す 
+//		}
+
+
+	    /**
+	     * isbnから指定したレコードを取得する。
+	     * @param isbn
+	     * @return
+	     */
+	    public List<Book> findBookDataByIsbn(String isbn){
+	      return bookRepository.findByIsbn(isbn);
+	    }
+
+	    
 
 }

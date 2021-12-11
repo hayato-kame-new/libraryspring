@@ -1,5 +1,7 @@
 package com.kame.springboot.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +14,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
 	// インタフェースなので 宣言だけ 抽象メソッド abstract メソッド本体{}書かない
 	 public Page<Book> findAll(Pageable pageable);
+
+	public List<Book> findByIsbn(String isbn);
 	
 }
