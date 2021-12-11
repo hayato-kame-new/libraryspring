@@ -21,6 +21,10 @@
 	<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス-->
 <div th:include="common/header :: common_header"></div>
+
+	<!-- git resetの後に、修正した内容をpushしようとすると、以前のコミットとコンフリクトしてエラーとなり、pushできません。
+
+そのため、「-f」オプションをつけて強制的にpushする必要があります。 -->
 	
     <div class="contents">
 		<h1 class="heading toptitle">図書館 Top Page</h1>
