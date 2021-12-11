@@ -20,13 +20,6 @@ public class HistoryService {
 		private EntityManager entityManager;
 		
 		
-		/**
-		 * ページネーションとソートを使って 履歴 全ての情報を取得
-		 * リポジトリのメソッド自動生成機能を使う
-		 * @param pageable
-		 * @return Page<History>
-		 */
-		
 	
 
 }

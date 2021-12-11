@@ -67,6 +67,25 @@ public class BookController {
     }
 	
 	/**
+	 * 書籍 詳細画面を表示
+	 * @param id
+	 * @param mav
+	 * @return
+	 */
+	@RequestMapping(value = "book_show", method=RequestMethod.GET)
+	public ModelAndView show(
+			@RequestParam(name = "isbn")String isbn,
+			ModelAndView mav
+			) {
+		// 主キーid から Memberオブジェクトを取得する
+		Book book = bookService.findBookDataByIsbn(isbn);
+		
+		mav.setViewName("book/show");
+		mav.addObject("book", book);
+		return mav;
+	}
+	
+	/**
 	 * 書籍 新規登録画面  編集画面   削除確認画面 を表示する
 	 * 削除する際も、一度内容を確認してからなので 削除の確認画面を表示する
 	 * aリンクの ?以降のクエリー文字列を取得する
