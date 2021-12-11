@@ -212,17 +212,12 @@ public class BookService {
 	    	 isbnFlg = true;
 	    	 andFlg= true;
 	    	 }
-	    	 // ここ変更した
-	    	 if(!( genre == null ||  "選択しない".equals(genre))) {
+	    	 // ここ変更した  後で直す 文学を選択したのに "0"になってる おかしい
+	    	//  if(!( genre == null ||  "選択しない".equals(genre))) {
+	    	if(!( genre == null ||  "".equals(genre))) {
 	    	 if (andFlg) sql.append(" AND ");
 	    	 sql.append("b.genre LIKE :genre");
 	    	 genreFlg = true;
-	    	 andFlg = true;
-	    	 }
-	    	 if(!"".equals(authors)) {
-	    	 if (andFlg) sql.append(" AND ");
-	    	sql.append("b.author LIKE :author"); 
-	    	authorsFlg = true;
 	    	 andFlg = true;
 	    	 }
 	    	 if(!"".equals(title)) {
@@ -230,6 +225,12 @@ public class BookService {
 	    	  sql.append("b.title LIKE :title");
 	    	  titleFlg = true;
 	    	 andFlg = true;
+	    	 }
+	    	 if(!"".equals(authors)) {
+	    		 if (andFlg) sql.append(" AND ");
+	    		 sql.append("b.authors LIKE :authors"); 
+	    		 authorsFlg = true;
+	    		 andFlg = true;
 	    	 }
 	    	 // 追加
 	    	 if(!"".equals(publisher)) {
@@ -243,7 +244,7 @@ public class BookService {
 	    	 Query query = entityManager.createQuery(sql.toString());
 				if (isbnFlg) query.setParameter("isbn", "%" + isbn + "%");
 				 if (genreFlg) query.setParameter("genre", "%" + genre + "%");
-				if (authorsFlg) query.setParameter("author", "%" + authors + "%");
+				if (authorsFlg) query.setParameter("authors", "%" + authors + "%");
 				if (titleFlg) query.setParameter("title", "%" + title + "%");
 				// 追加
 				if (publisherFlg) query.setParameter("publisher", "%" + publisher + "%");

@@ -3,9 +3,13 @@ package com.kame.springboot.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +39,7 @@ public class BookSearchController {
 	@RequestMapping(value = "/book_search_form", method=RequestMethod.GET)
 	public ModelAndView searchForm(
 			@ModelAttribute("bookSearchForm") BookSearchForm bookSearchForm,
-			Model model,  // Flash Scopeから 取り出しするのに必要
+			Model model,  // Flash Scopeから 取り出しするのに必要  5つとも全部検索条件入れてない時は、何もしないで リダイレクトしてくるから
 			ModelAndView mav) {
 		
 		String flashMsg = null;
@@ -45,9 +49,8 @@ public class BookSearchController {
 		}
 		mav.addObject("flashMsg", flashMsg);
 		
-		// その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか
-		List<Book> books = bookService.booksList();
-		mav.addObject("books", books);		
+//		List<Book> books = bookService.booksList();
+//		mav.addObject("books", books);		
 		mav.setViewName("book/search");  // templetesフォルダ以下の bookフォルダのsearch.htmlファイル
 		// ジャンルのセレクトボックスを表示するために
 		Map<Integer, String> genreMap = viewBean.getGenreMap();
@@ -60,13 +63,30 @@ public class BookSearchController {
 	// 指定した条件で AND検索 曖昧検索 
 	@RequestMapping(value = "/book_search", method=RequestMethod.POST)
 	public ModelAndView search(
-			@ModelAttribute("bookSearchForm") BookSearchForm bookSearchForm,
+			@ModelAttribute("bookSearchForm")@Validated BookSearchForm bookSearchForm,
 //			@RequestParam(name = "genre", required = false)String genre,  // 任意パラメータ required = false が必要です
-//			@RequestParam(name = "titleIncluded", required = false)String titleIncluded, // 任意パラメータ required = false が必要です
-//			@RequestParam(name = "authorsIncluded", required = false)String authorsIncluded, // 任意パラメータ required = false が必要です
+//			@RequestParam(name = "title", required = false)String title, // 任意パラメータ required = false が必要です
+//			@RequestParam(name = "authors", required = false)String authors, // 任意パラメータ required = false が必要です
 			RedirectAttributes redirectAttributes,  // リダイレクトするのに必要
+			BindingResult result,  // バリデーションに必要
+			HttpServletRequest request, // requestオブジェクトから取得したい時に
 			ModelAndView mav
 			) {
+		
+		// セレクトボックス表示用のgenreMap
+		 Map<Integer, String> genreMap = viewBean.getGenreMap();
+		
+		// まず、入力チェック バリデーションに引っ掛かったら
+		if (result.hasErrors()) {
+			// フォワード
+        	mav.setViewName("book/search");       	
+        	mav.addObject("msg", "入力エラーが発生しました。");
+			       
+    		// セレクトボックス表示用のgenreMap
+    		mav.addObject("genreMap", genreMap);
+    		
+        	return mav;  //returnで メソッドの即終了この後ろは実行されない
+		 }
 		
 		// もし、4つとも全部検索条件入れてない時は、何もしないで リダイレクトして、また、検索フォームに戻るだけ 何か入力してくださいのメッセージをつける
 		 if ("".equals(bookSearchForm.getIsbn()) && ( bookSearchForm.getGenre() == null || "選択しない".equals(bookSearchForm.getGenre())  ) && "".equals(bookSearchForm.getAuthors()) && "".equals(bookSearchForm.getTitle()) &&  "".equals(bookSearchForm.getPublisher())  ) {
@@ -88,7 +108,6 @@ public class BookSearchController {
 		 // 結果のリストを送り表示させる
 		 mav.addObject("resultList",resultList); 
 		// セレクトボックス表示用のgenreMap
-		 Map<Integer, String> genreMap = viewBean.getGenreMap();
 		mav.addObject("genreMap", genreMap);
 		int count = ((List<Book>) resultList).size();
 		String resultMsg = "検索結果" + count + "件です";

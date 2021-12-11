@@ -17,9 +17,11 @@
 		<h2 class="heading">書籍 検索ページ</h2>
 		<h4>条件を指定して書籍情報を検索します</h4>
 		
+		<!-- 何も条件を指定しなかった場合にまた、リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
 		<p th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
 		
-		
+		<!-- バリデーションエラーのメッセージ -->
+		<p th:if="${msg != null}" th:text="${msg}" ></p>
 		
 		<!--  曖昧検索です  ４つを AND検索で絞る  未入力でも検索できる 
 		ただし、5つとも未入力なら検索しないで リダイレクトをして フォーム再表示する
@@ -29,27 +31,41 @@
 				<table>
 				
 					<tr><td style="width:13ch;"><label for="isbn">ISBN: </label></td>
-						<td><input type="text" id="isbn" name="isbn" th:value="*{isbn}" /></td>
+						<td><input type="text" id="isbn" name="isbn" th:value="*{isbn}" th:errorclass="err"/>
+							<div th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" th:errorclass="err"></div>
+						</td>
 					</tr>
-					
+					 
 			 		<tr><td style="width:13ch;" ><label for="genre">ジャンル: </label></td>
 			 			<td ><select id="genre" name="genre"  size="4" style="width:150px;">
 					 		    <option value="" th:text="選択しない"></option>
-					        	<option th:each="element : ${genreMap}" th:value="${element.key}"  th:inline="text">[[${element.value}]]</option>
+					 		    <th:block th:each="element : ${genreMap}">
+									<option  th:value="${element.value}"  th:selected="${element.value == bookSearchForm.genre}"   th:inline="text">[[${element.value}]]</option>
+								</th:block>
 					    	</select>
+					    	<div th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}" th:errorclass="err"></div>
 				    	</td>
 			    	</tr>
 			    	
 					<tr><td><label for="title">タイトルに含まれる文字: </label></td>
-						<td><input type="text" id="title" name="title" th:value="*{title}"  /></td>
+						<td>
+							<input type="text" id="title" name="title" th:value="*{title}" th:errorclass="err" />
+							<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="err"></div>
+						</td>
 					</tr>
 					
 					<tr><td><label for="authors">著者に含まれる文字: </label></td> 
-						<td><input type="text" id="authors" name="authors" th:value="*{authors}"  /></td>
+						<td>
+							<input type="text" id="authors" name="authors" th:value="*{authors}" th:errorclass="err" />
+							<div th:if="${#fields.hasErrors('authors')}" th:errors="*{authors}" th:errorclass="err"></div>
+						</td>
 					</tr>
 					
 					<tr><td><label for="publisher">出版社に含まれる文字: </label></td> 
-						<td><input type="text" id="publisher" name="publisher" th:value="*{publisher}"  /></td>
+						<td>
+							<input type="text" id="publisher" name="publisher" th:value="*{publisher}" th:errorclass="err" />
+							<div th:if="${#fields.hasErrors('publisher')}" th:errors="*{publisher}" th:errorclass="err"></div>
+						</td>
 					</tr>
 					
 					<tr><td></td><td><input style="margin-right: 20px;" type="submit" value="検索する" /> <input type="reset" value="キャンセル"></td></tr>
@@ -69,7 +85,7 @@
 		    </form>	
 		</div>
 	
-		<!-- 検索結果表示 -->
+		<!-- 検索結果表示  その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか-->
 		<p th:if="${resultMsg}" th:text="${resultMsg}"></p>
 		 <th:block th:if="${resultList == null || resultList.size() == 0}">
 			 <table>
