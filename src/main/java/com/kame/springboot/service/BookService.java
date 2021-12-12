@@ -56,7 +56,8 @@ public class BookService {
 		// javax.persistence.Queryインタフェースの型のオブジェクトを生成する
 		Query query = entityManager.createNativeQuery("select * from books order by id asc");  // order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
 		// ページネーションを使うためには Listの代わりに Pageクラスを使いますが ここではList<Book> でしかできないので
-		 List<Book> list = (List<Book>)query.getResultList();  		
+		// query.getResultList()で取得したデータは List<Object[]>になってます 
+		List<Book> list = (List<Book>)query.getResultList();  		
 		return list;
 	}
 	 

@@ -1,5 +1,6 @@
 package com.kame.springboot.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Book;
+import com.kame.springboot.entity.History;
 import com.kame.springboot.form.BookSearchForm;
 import com.kame.springboot.service.BookService;
 
@@ -30,6 +32,13 @@ public class BookSearchController {
 	
 	@Autowired
 	ViewBean viewBean;
+	
+	/**
+	 * フィールドとして
+     * 本のインスタンスがキー その本に関する情報としてその本の今までの貸出記録が値
+     */
+    Map<Book, List<History>> historyMap = new HashMap<Book, List<History>>();
+
 	
 	/**
 	 * 書籍 検索画面を表示する
@@ -101,15 +110,16 @@ public class BookSearchController {
 
 			 return new ModelAndView("redirect:/book_search_form");  // 未入力なので、何もしないで /book_search_form へリダイレクトするだけ リダイレクトは、リダイレクト先のリクエストハンドラを実行させます。
 		 }   // フォームに何か入ってたら、検索を実行する
-			 
+			 // 
 		 Iterable resultList = bookService.searchBookAnd(bookSearchForm.getIsbn(), bookSearchForm.getGenre(), 
 					 bookSearchForm.getTitle(),bookSearchForm.getAuthors(), bookSearchForm.getPublisher());
 		
 		 // 何を入力して検索をかけたのか わかるように、検索結果後も、フォームに以前入力したものを表示させるため
 		 mav.addObject("bookSearchForm", bookSearchForm);  // フォームのオブジェクトとして送る th:object="${bookSearchForm}" として使う
 		 
-		 // 結果のリストを送り表示させる
-		 mav.addObject("resultList",resultList); 
+		 // 結果のリストを送り表示させる このリストに書架状態までくっつけて リストを作り直しして送ります
+		//  mav.addObject("resultList",resultList); 
+		 
 		// セレクトボックス表示用のgenreMap
 		mav.addObject("genreMap", genreMap);
 		int count = ((List<Book>) resultList).size();
@@ -117,7 +127,18 @@ public class BookSearchController {
 		mav.addObject("resultMsg", resultMsg);
 		mav.setViewName("book/search");
 		
-		// さらに、書架状態まで調べて送ります
+		// History実体は 貸し出しを完了する時点で historiesテーブルに保存する 全てhistoriesテーブルに保存していく
+		// bookid で絞って検索をすると
+		// historiesテーブルから select * from histories where bookid = ?  order by id desk limit 1; で探すと　最後の貸し出し履歴が取れる
+		// そのHistoryデータの returnDate が nullだったら、貸し出し中なので、それで状態がわかる nullじゃなかったら、書架状態は 書架にある
+		// さらに、書架状態まで調べて送ります?
+		for( Book book : (List<Book>)resultList) {
+			int id = book.getId();  // Bookインスタンスの主キーidが Historyインスタンスの bookidとリレーションがあります Historyインスタンスの bookidは Bookの idを参照してます
+			
+			
+			
+			
+		}
 		
 		 return mav;
 	}
