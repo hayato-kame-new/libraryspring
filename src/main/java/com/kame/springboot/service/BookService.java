@@ -48,7 +48,8 @@ public class BookService {
 	 * 登録してあるBookインスタンスを全て検索してListにして返す
 	 * createNativeQuery(メソッドは JPQLではなく、素のSQL文  PostgreSQLなので、 テーブル名やカラム名は全てを小文字にすること
 	 * order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
-	 * createNativeQueryメソッドだと、戻り値が List<Book> 
+	 * createNativeQueryメソッドだと、戻り値が List<Book>にできる
+	 *  query.getResultList()で取得したデータは List<Object[]>になってます  List<エンティティ> にキャストもできる 
 	 * 
 	 * @return List<Book>
 	 */
@@ -325,6 +326,7 @@ public class BookService {
 //		}
 
 
+	    // 使えるのか確認を後ですること
 	    /**
 	     * isbnから指定したレコードを取得する。
 	     * @param isbn

@@ -22,6 +22,7 @@ import com.kame.springboot.entity.Book;
 import com.kame.springboot.entity.History;
 import com.kame.springboot.form.BookSearchForm;
 import com.kame.springboot.service.BookService;
+import com.kame.springboot.service.HistoryService;
 
 
 @Controller
@@ -32,6 +33,9 @@ public class BookSearchController {
 	
 	@Autowired
 	ViewBean viewBean;
+	
+	@Autowired
+	HistoryService historyService;
 	
 	/**
 	 * フィールドとして
@@ -133,8 +137,10 @@ public class BookSearchController {
 		// そのHistoryデータの returnDate が nullだったら、貸し出し中なので、それで状態がわかる nullじゃなかったら、書架状態は 書架にある
 		// さらに、書架状態まで調べて送ります?
 		for( Book book : (List<Book>)resultList) {
-			int id = book.getId();  // Bookインスタンスの主キーidが Historyインスタンスの bookidとリレーションがあります Historyインスタンスの bookidは Bookの idを参照してます
-			
+			int bookId = book.getId();  // Bookインスタンスの主キーidが Historyインスタンスの bookidとリレーションがあります Historyインスタンスの bookidは Bookの idを参照してます
+			// このリストには 要素は1つ もしくは 要素はない 
+			// historiesテーブルから 書籍のIDで絞り込んで そして主キーでソートをして limit 1　で 最新の貸し出し履歴を取得してる
+			List<Object[]> Datalist = historyService.getOneBookHistoriesList(bookId);
 			
 			
 			
