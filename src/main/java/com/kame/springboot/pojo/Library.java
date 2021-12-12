@@ -72,10 +72,15 @@ public class Library {
      * 貸し出しができるか判定する 
      *
      * @param history   これから貸し出そうとしている History型の実体
-     * @param histories  これから貸し出そうとする本に関する これまでの貸し出し履歴であるHistory のリスト
+     * @param histories  これから貸し出そうとする本に関するこれまでの貸し出し履歴であるHistory のリスト
      * @return true:貸出可能 <br /> false:貸出不可
      */
-   Boolean canLend(History history, List<History> histories){
+    
+    // 第二引数変わりますので、このメソッドの内容を書き換えないとけません！！
+    // 第二引数は、History実体の本に関しての、今までの貸し出し履歴の中で一番最新の貸し出し履歴の情報が入ってる List<Object[]> historiesObjList
+      // 変更してから使うこと！！！！
+   // Boolean canLend(History history, List<History> histories){
+	   Boolean canLend(History history, List<Object[]> historiesObjList){
        // まず、これから貸し出そうとしている本が，この図書館システムが管理している本のリストshelf に存在するかを判定
        // containsメソッドで コレクション変数shelfの中に 引数に渡された本が含まれているかを判定する
        //  ! で 判定を逆にしてるから 含まれていなければ falseを返す

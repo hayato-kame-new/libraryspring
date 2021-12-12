@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{lending_form_page.title} - library|"></title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス -->
+<style th:include="common/header :: common_header_style"></style>
+</head>
+<body>
+<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス-->
+<div th:include="common/header :: common_header"></div>
+<!-- 三項演算子のネストの書き方
+<div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
+-->
+
+<h2 class="headingLenging" >貸し出しフォーム</h2>
+
+
+<form th:action="@{/lend}" method="post">
+	※ 1冊借りる
+	※ 本の裏に図書館で作成した本のID番号のシールが貼ってあるので、その番号を入力する(booksテーブルの主キーと同じ番号)
+	<div>
+	    <label for="memberId">会員のID番号を入力: </label>
+	    <input type="text" id="memberId" name="memberId" th:value="${memberId}" th:errorclass="err" />		
+		<div th:if="${#fields.hasErrors('memberId')}" th:errors="${memberId}" th:errorclass="err"></div>
+	</div>
+	<div>
+		<label for="bookId">本に貼ってるID番号を入力: </label> 
+		<input type="text" id="bookId" name="bookId" th:value="${bookId}" th:errorclass="err" />		
+		<div th:if="${#fields.hasErrors('bookId')}" th:errors="${bookId}" th:errorclass="err">
+		</div>				
+	</div>	
+	<div>
+		<input type="submit" value="送信" />
+		<input type="reset" value="キャンセル">
+	</div>
+</form>
+
+<p>確認用で表示してます、貸し出し可能の一覧と 不可(今貸出中)の一覧できるのかどうか</p>
+
+<div>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+</div>
+
+<!-- Font Awesomeのための -->
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
+
+<!-- <script>
+(function($){
+    function formSetDay(){
+      var lastday = formSetLastDay($('.js-changeYear').val(), $('.js-changeMonth').val());
+      var option = '';
+      for (var i = 1; i <= lastday; i++) {
+        if (i === $('.js-changeDay').val()){
+          option += '<option value="' + i + '" selected="selected">' + i + '</option>\n';
+        }else{
+          option += '<option value="' + i + '">' + i + '</option>\n';
+        }
+      }
+      $('.js-changeDay').html(option);
+    }
+
+    function formSetLastDay(year, month){
+      var lastday = new Array('', 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+      if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0){
+        lastday[2] = 29;
+      }
+      return lastday[month];
+    }
+
+    $('.js-changeYear, .js-changeMonth').change(function(){
+      formSetDay();
+    });
+  })(jQuery);
+</script> -->
+
+<!-- <script>
+function beforeSubmit() {
+    if(window.confirm('本当に削除しますか？')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+</script> -->
+</body>
+</html>

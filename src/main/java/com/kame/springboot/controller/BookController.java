@@ -157,15 +157,6 @@ public class BookController {
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
 		 
-		 // バリデーションエラーはなかったら フォームのオブジェクトから取得する
-		 //  int id = book.getId();  // 編集の時には入ってる 新規の時にはフォームはないのでint型のデフォルト値(規定値) 0 のままです
-//		  String isbn = book.getIsbn();
-//		  String genre = book.getGenre();
-//		  String title = book.getTitle();
-//		  String authors = book.getAuthors();
-//		  String publisher = book.getPublisher();
-//		  Integer publishYear = book.getPublishYear();
-		  
 		 // バリデーションエラーがなかったら actionによって分岐処理を進める
 		  
 	    boolean success = false;
@@ -213,7 +204,13 @@ public class BookController {
 		 return new ModelAndView("redirect:/books");
 	}
 	
-	// 削除画面表示
+	
+	/**
+	 * 書籍 削除画面表示
+	 * @param id
+	 * @param mav
+	 * @return
+	 */
 	@RequestMapping(value="/book_delete_confirm", method=RequestMethod.GET)
 	public ModelAndView delete(
 			@RequestParam(name = "id")Integer id, // 必須パラメータ

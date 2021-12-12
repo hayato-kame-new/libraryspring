@@ -83,15 +83,6 @@
 		</div>
 	</th:block>
 </form>
-	<th:block th:if="${action.equals('delete')}" >
-		<form th:action = @{/book_delete} method="post" th:object="${book}" onsubmit="return beforeSubmit()">
-		    <input type="hidden" name="id" th:value="${book.id}" />
-		    <input type="submit" value="削除します" />
-		</form>
-	
-	</th:block>
-
-<hr />
 
 <div>
 	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面へ戻る</button></a>

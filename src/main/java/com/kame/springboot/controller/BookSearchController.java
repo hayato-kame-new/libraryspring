@@ -1,7 +1,6 @@
 package com.kame.springboot.controller;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Book;
-import com.kame.springboot.entity.History;
 import com.kame.springboot.form.BookSearchForm;
 import com.kame.springboot.service.BookService;
 import com.kame.springboot.service.HistoryService;
@@ -39,12 +37,6 @@ public class BookSearchController {
 	@Autowired
 	HistoryService historyService;
 	
-	/**
-	 * フィールドとして
-     * 本のインスタンスがキー その本に関する情報としてその本の今までの貸出記録が値
-     */
-    Map<Book, List<History>> historyMap = new HashMap<Book, List<History>>();
-
 	
 	/**
 	 * 書籍 検索画面を表示する

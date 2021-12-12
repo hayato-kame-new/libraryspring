@@ -10,6 +10,9 @@ font-size: 17px; color: gray; margin: 10px 30px;}
 .headingDanger {
 	color: red;
 }
+.headingLenging {
+	color: green;
+}
 pre {
 font-size: 17px; color:gray; padding:5px 10px; border:1px solid gray;
 }
