@@ -19,10 +19,10 @@ import javax.persistence.Table;
  * @author skame
  *
  */
-@Entity  // つけてください  @Entityをつけて @Id をつけないと@OneToManyがつけられないしエラーになる
+@Entity  // つけてください  @Entityをつけて @Id をつけないと@OneToManyがつけられないしエラーになる 処理のメソッドは書かないLibraryクラスに書く
 @Table(name = "users")
 public class User {
-
+	// エンティティのクラスです ロジックは書かないこと リポジトリを組み込んだサービスをフィールドとしておかないこと
 	// フォームクラスSignupFormクラスも見てください！！ 入力チェックのアノテーションはそちらのフォームクラスにつけます
 	@Id // 主キー @Entityをつけたら これがないと起動しません
 	@Column(name = "id") // カラム名は、postgreSQL 全て小文字なので小文字にする リレーションのあるカラム

@@ -17,10 +17,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Entity  // エンティティのクラスです
+@Entity  //// エンティティのクラスです 処理のメソッドは書かないLibraryクラスに書く リポジトリを組み込んだサービスをフィールドとしておかないこと
 @Table(name = "books")  // 小文字で
 public class Book {  // Bookの方が 主エンティティ   Historyエンティティが 従エンティティ
-	
+	// エンティティクラスに書くのは テーブルのからむの対応するフィールドだけ あとはコンストラクタとアクセッサだけ
 	// フォームのクラスを作らないので バリデーションのアノテーションもつける 
 	// ＠NotBlank を使用しています
 		// ＠NotNull 又は ＠NotEmpty を使用した場合、半角スペースのみでもユーザー名として登録ができてしまいますが、この半角スペースのユーザー名ではログインすることができないためです

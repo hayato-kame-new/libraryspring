@@ -49,8 +49,6 @@ public class BookSearchController {
 		}
 		mav.addObject("flashMsg", flashMsg);
 		
-//		List<Book> books = bookService.booksList();
-//		mav.addObject("books", books);		
 		mav.setViewName("book/search");  // templetesフォルダ以下の bookフォルダのsearch.htmlファイル
 		// ジャンルのセレクトボックスを表示するために
 		Map<Integer, String> genreMap = viewBean.getGenreMap();
@@ -60,13 +58,18 @@ public class BookSearchController {
 	}
 	
 	
-	// 指定した条件で AND検索 曖昧検索 
+	/**
+	 * 指定した条件で AND検索 曖昧検索 をする
+	 * @param bookSearchForm
+	 * @param redirectAttributes
+	 * @param result
+	 * @param request
+	 * @param mav
+	 * @return
+	 */
 	@RequestMapping(value = "/book_search", method=RequestMethod.POST)
 	public ModelAndView search(
 			@ModelAttribute("bookSearchForm")@Validated BookSearchForm bookSearchForm,
-//			@RequestParam(name = "genre", required = false)String genre,  // 任意パラメータ required = false が必要です
-//			@RequestParam(name = "title", required = false)String title, // 任意パラメータ required = false が必要です
-//			@RequestParam(name = "authors", required = false)String authors, // 任意パラメータ required = false が必要です
 			RedirectAttributes redirectAttributes,  // リダイレクトするのに必要
 			BindingResult result,  // バリデーションに必要
 			HttpServletRequest request, // requestオブジェクトから取得したい時に
@@ -88,7 +91,7 @@ public class BookSearchController {
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
 		
-		// もし、4つとも全部検索条件入れてない時は、何もしないで リダイレクトして、また、検索フォームに戻るだけ 何か入力してくださいのメッセージをつける
+		// もし、5つとも全部検索条件入れてない時は、何もしないで リダイレクトして、また、検索フォームに戻るだけ 何か入力してくださいのメッセージをつける
 		 if ("".equals(bookSearchForm.getIsbn()) && ( bookSearchForm.getGenre() == null || "選択しない".equals(bookSearchForm.getGenre())  ) && "".equals(bookSearchForm.getAuthors()) && "".equals(bookSearchForm.getTitle()) &&  "".equals(bookSearchForm.getPublisher())  ) {
 		 // if ("".equals(bookDataSearchForm.getIsbn()) &&( genre == null || "選択しない".equals(genre)  ) && "".equals(title_included) && "".equals(authors_included) ) {
 			 // 何もしないでリダイレクトするだけ メッセージだけつける
@@ -113,6 +116,9 @@ public class BookSearchController {
 		String resultMsg = "検索結果" + count + "件です";
 		mav.addObject("resultMsg", resultMsg);
 		mav.setViewName("book/search");
+		
+		// さらに、書架状態まで調べて送ります
+		
 		 return mav;
 	}
 

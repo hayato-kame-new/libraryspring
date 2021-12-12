@@ -19,7 +19,8 @@ public class HistoryService {
 		@PersistenceContext // EntityManagerのBeanを自動的に割り当てるためのもの サービスクラスにEntityManagerを用意して使う。その他の場所には書けません。１箇所だけ
 		private EntityManager entityManager;
 		
-		
+		 
+
 	
 
 }
