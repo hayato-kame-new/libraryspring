@@ -44,19 +44,28 @@
 		<tr><th>ジャンル</th><td th:text="*{genre}"></td></tr>
 		<tr><th>タイトル</th><td th:text="*{title}"></td></tr>
 		<tr><th>著者</th><td th:text="*{authors}"></td></tr>
-		
+		<tr><th>出版社</th><td th:text="*{publisher}"></td></tr>
+		<tr><th>発行年</th><td th:text="*{publishYear}"></td></tr>
 		
 		<tr>
 			<th></th>
 			<td>
 			    <!-- 編集画面を表示する -->
-				<!-- <a style="margin-right: 20px" th:href="@{/member_form(action=edit, id=${member.id})}"><button class="editbtn" type="button" >会員編集</button></a> -->
-				<!-- 削除の時にも 一旦確認のため 内容表示の画面を表示する -->
-				<!-- <a th:href="@{/member_delete_confirm(id=${member.id})}"><button class="deletebtn" type="button" >会員削除</button></a> -->
+				<a style="margin-right: 20px" th:href="@{/book_form(action=edit, id=${book.id})}"><button class="editbtn" type="button" >書籍編集</button></a>
+				<!-- 削除の時にも 一旦確認のため 内容表示の画面を表示する /book_delete_confirm-->
+				ここでは削除ボタンはつけない
+				 <!-- <a th:href="@{/book_delete_confirm(id=${book.id})}"><button class="deletebtn" type="button" >書籍削除</button></a> -->
 			</td>
 		</tr>
 	
 </table>
 
+<div>
+	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面へ戻る</button></a>
+</div>
+
+<div>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+</div>
 </body>
 </html>

@@ -12,15 +12,6 @@
   padding: 10px 20px;
  }
  
- .deletebtn {
- 	background-color: red;
- 	color: white;
- 	font-size: bold;
- 	border-radius: 8px;
- 	padding: 5px;
- 	font-size: 16px;
- 	border: 1px solid #333;
- }
 </style>
 </head>
 <body>
@@ -28,7 +19,7 @@
 パスは templatesからのパス-->
 <div th:include="common/header :: common_header"></div>
 
-<h2 class="heading" >この会員を削除してよろしいですか？</h2>
+<h2 class="headingDanger" >この会員を削除してよろしいですか？</h2>
 
 <!-- 内容は 表示するだけなので テーブルタグでいい -->
 <table th:object="${memberForm}">

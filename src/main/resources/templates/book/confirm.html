@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{book_confirm_page.title} - library|"></title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス -->
+<style th:include="common/header :: common_header_style"></style>
+</head>
+<body>
+<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス-->
+<div th:include="common/header :: common_header"></div>
+<!-- 三項演算子のネストの書き方
+<div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
+-->
+
+<!-- <h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : '書籍 削除確認画面 この本を削除してよろしいですか?'}"></h2> -->
+<h2 class="headingDanger" >この書籍を削除してよろしいですか?</h2>
+
+<table  th:object="${book}">
+		<tr><th>ID</th><td th:text="*{id}"></td></tr>
+		<tr><th>ISBN</th><td th:text="*{isbn}"></td></tr>
+		<tr><th>ジャンル</th><td th:text="*{genre}"></td></tr>
+		<tr><th>タイトル</th><td th:text="*{title}"></td></tr>
+		<tr><th>著者</th><td th:text="*{authors}"></td></tr>
+		<tr><th>出版社</th><td th:text="*{publisher}"></td></tr>
+		<tr><th>発行年</th><td th:text="*{publishYear}"></td></tr>
+		
+		<tr>
+			<th></th>
+			<td>
+				<a th:href="@{/book_delete(id=${book.id})}"><button class="deletebtn" type="button" >書籍削除</button></a>
+			</td>
+		</tr>
+	
+</table>
+<div>
+	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面へ戻る</button></a>
+</div>
+
+<div>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+</div>
+<!-- Font Awesomeのための -->
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
+
+<!-- <script>
+(function($){
+    function formSetDay(){
+      var lastday = formSetLastDay($('.js-changeYear').val(), $('.js-changeMonth').val());
+      var option = '';
+      for (var i = 1; i <= lastday; i++) {
+        if (i === $('.js-changeDay').val()){
+          option += '<option value="' + i + '" selected="selected">' + i + '</option>\n';
+        }else{
+          option += '<option value="' + i + '">' + i + '</option>\n';
+        }
+      }
+      $('.js-changeDay').html(option);
+    }
+
+    function formSetLastDay(year, month){
+      var lastday = new Array('', 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+      if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0){
+        lastday[2] = 29;
+      }
+      return lastday[month];
+    }
+
+    $('.js-changeYear, .js-changeMonth').change(function(){
+      formSetDay();
+    });
+  })(jQuery);
+</script> -->
+
+<script>
+function beforeSubmit() {
+    if(window.confirm('本当に削除しますか？')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+</script>
+</body>
+</html>
