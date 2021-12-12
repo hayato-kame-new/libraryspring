@@ -19,6 +19,7 @@ public class HistorySearchController {
 	ViewBean viewBean;
 
 	// 検索画面表示
+	// いろんな条件で絞る
 	@RequestMapping( value = "/history_search",  method=RequestMethod.GET)
 	public ModelAndView searchForm(
 			ModelAndView mav

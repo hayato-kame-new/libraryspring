@@ -50,14 +50,14 @@ public class BookService {
 	 * order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
 	 * createNativeQueryメソッドだと、戻り値が List<Book>にできる
 	 *  query.getResultList()で取得したデータは List<Object[]>になってます  List<エンティティ> にキャストもできる 
-	 * 
+	 *  Iterable にキャストもできる (List<Book>)にキャストもできる
 	 * @return List<Book>
 	 */
 	 public List<Book> booksList() {
 		// javax.persistence.Queryインタフェースの型のオブジェクトを生成する
 		Query query = entityManager.createNativeQuery("select * from books order by id asc");  // order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
 		// ページネーションを使うためには Listの代わりに Pageクラスを使いますが ここではList<Book> でしかできないので
-		// query.getResultList()で取得したデータは List<Object[]>になってます 
+		// query.getResultList()で取得したデータは List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
 		List<Book> list = (List<Book>)query.getResultList();  		
 		return list;
 	}
@@ -106,6 +106,7 @@ public class BookService {
 		 query.setParameter(1, id);
 		 
 		 // query.getResultList()で取得したデータは List<Object[]>になってます
+		 //  Iterable にキャストもできる (List<Book>)にキャストもできる
 		 List<Object[]> resultDataList = query.getResultList();
 				
 		 Iterator itr =  resultDataList.iterator();
@@ -186,15 +187,17 @@ public class BookService {
 	  	 * 例: authorに「村上春樹」、titleに「ノルウェイの森」と入力されており、それ以外は入力されなかった場合
 	  	 * SELECT b From books b WHERE b.author LIKE :author AND b.title LIKE :title
 	  	 * このクエリにsetParameterで値を割り当てています
-	  	 * 
+	  	 *  query.getResultList()で取得したデータは List<Object[]>になってます
+	  	 *   Iterable にキャストもできる (List<Book>)にキャストもできる
+	  	 *  List<Object[]>
 	  	 * @param isbn
 	  	 * @param genre
 	  	 * @param title
 	  	 * @param authors
 	  	 * @param publisher
-	  	 * @return
+	  	 * @return List<Object[]>
 	  	 */
-	    public List searchBookAnd(String isbn, String genre, String title, String authors, String publisher) {
+	    public List<Object[]> searchBookAnd(String isbn, String genre, String title, String authors, String publisher) {
 	    
 	    	StringBuilder sql = new StringBuilder();
 	    	
@@ -252,7 +255,7 @@ public class BookService {
 				if (publisherFlg) query.setParameter("publisher", "%" + publisher + "%");
 				
 				return query.getResultList();
-	    	 	
+				// query.getResultList()で取得したデータは List<Object[]>になってます
 	    }
 	    
 		/**

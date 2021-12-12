@@ -33,11 +33,13 @@ public class HistoryService {
 		 * historiesテーブルから
 		 * 本のbookidで絞り込んで検索し、主キーidで逆にソートし １つだけ取得する 
 		 * 一番最近の貸し出し履歴のデータHistoryエンティティの実体を取得する
+		 * // query.getResultList()で取得したデータは List<Object[]>になってます  List<エンティティ> にキャストもできる 
+		 * Iterable にキャストもできる
 		 * @return List<Object[]>
 		 */
 		public List<Object[]> getOneBookHistoriesList(int bookId) {
 			// historiesテーブルから 本のbookidで絞り込んで検索 ソートして １つだけを取得 limit 1
-			Query query = entityManager.createNativeQuery("select * from histories where bookid = ?  order by id desk limit 1");  // order by id を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
+			Query query = entityManager.createNativeQuery("select * from histories where bookid = ?  order by id desc limit 1");  // order by id を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
 			
 			query.setParameter(1, bookId);
 			

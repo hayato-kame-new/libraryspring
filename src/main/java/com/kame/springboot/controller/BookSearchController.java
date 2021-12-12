@@ -1,6 +1,8 @@
 package com.kame.springboot.controller;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,7 +116,7 @@ public class BookSearchController {
 
 			 return new ModelAndView("redirect:/book_search_form");  // 未入力なので、何もしないで /book_search_form へリダイレクトするだけ リダイレクトは、リダイレクト先のリクエストハンドラを実行させます。
 		 }   // フォームに何か入ってたら、検索を実行する
-			 // 
+		 // 戻り値 List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
 		 Iterable resultList = bookService.searchBookAnd(bookSearchForm.getIsbn(), bookSearchForm.getGenre(), 
 					 bookSearchForm.getTitle(),bookSearchForm.getAuthors(), bookSearchForm.getPublisher());
 		
@@ -123,29 +125,65 @@ public class BookSearchController {
 		 
 		 // 結果のリストを送り表示させる このリストに書架状態までくっつけて リストを作り直しして送ります
 		//  mav.addObject("resultList",resultList); 
-		 
+		 		
+		// History実体は 貸し出しを完了する時点で historiesテーブルに保存する 全てhistoriesテーブルに保存していく
+		// bookid で絞って検索をすると
+		// historiesテーブルから select * from histories where bookid = ?  order by id desk limit 1; で探すと　最後の貸し出し履歴が取れる
+		// そのHistoryデータの returnDate が nullだったら、貸し出し中なので、それで状態がわかる nullじゃなかったら、書架状態は 書架にある
+		// さらに、書架状態まで調べて送ります?
+		 //Mapに変換するをnewして確保しておく
+		 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
+		
+		String status = "";
+		for( Book book : (List<Book>)resultList) {
+			int bookId = book.getId();  // Bookインスタンスの主キーidが Historyインスタンスの bookidとリレーションがあります Historyインスタンスの bookidは Bookの idを参照してます
+			// このリストには 要素は1つ もしくは 要素はない 
+			// historiesテーブルから 書籍のIDで絞り込んで そして主キーでソートをして limit 1　で 最新の貸し出し履歴を取得してる
+			List<Object[]> HistoryDatalist = historyService.getOneBookHistoriesList(bookId);
+			// これで最後の貸し出し履歴のHistoryのデータが取れたのか 確認をしたい！！！履歴がまだない時は []
+			int id = 0;
+			Date lendDate = null;
+			 Date returnDate = null;
+			 // int bookId = 0;
+			 int memberId = 0;	
+			 
+			for(Object[] obj : HistoryDatalist) {
+				System.out.println(obj[0]);
+				System.out.println(obj[1]);
+				System.out.println(obj[2]);
+				System.out.println(obj[3]);  // イラン
+				System.out.println(obj[4]);
+				id =  Integer.parseInt(String.valueOf(obj[0])); 
+				lendDate = (Date) obj[1];
+				returnDate = (Date) obj[2];
+				memberId = Integer.parseInt(String.valueOf(obj[4])); 
+			}
+			// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
+			// 貸出可能 書架の状態です
+			if(HistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
+				status = "書架";
+			} else if(HistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
+				// 最新の履歴の状態は 返却済みなのかどうか、 returnDate;  // 返却した日が nullなのかどうか
+				if(returnDate == null) {
+					// 貸し出し中です
+					status = "貸し出し中";
+				} else {
+					status = "書架";
+				}				
+			}
+			// Mapに詰める
+			statusMap.put(book, status);
+			
+		}
+		// Mapをビューへ送る
+		mav.addObject("statusMap",statusMap); 
+		
 		// セレクトボックス表示用のgenreMap
 		mav.addObject("genreMap", genreMap);
 		int count = ((List<Book>) resultList).size();
 		String resultMsg = "検索結果" + count + "件です";
 		mav.addObject("resultMsg", resultMsg);
 		mav.setViewName("book/search");
-		
-		// History実体は 貸し出しを完了する時点で historiesテーブルに保存する 全てhistoriesテーブルに保存していく
-		// bookid で絞って検索をすると
-		// historiesテーブルから select * from histories where bookid = ?  order by id desk limit 1; で探すと　最後の貸し出し履歴が取れる
-		// そのHistoryデータの returnDate が nullだったら、貸し出し中なので、それで状態がわかる nullじゃなかったら、書架状態は 書架にある
-		// さらに、書架状態まで調べて送ります?
-		for( Book book : (List<Book>)resultList) {
-			int bookId = book.getId();  // Bookインスタンスの主キーidが Historyインスタンスの bookidとリレーションがあります Historyインスタンスの bookidは Bookの idを参照してます
-			// このリストには 要素は1つ もしくは 要素はない 
-			// historiesテーブルから 書籍のIDで絞り込んで そして主キーでソートをして limit 1　で 最新の貸し出し履歴を取得してる
-			List<Object[]> Datalist = historyService.getOneBookHistoriesList(bookId);
-			
-			
-			
-		}
-		
 		 return mav;
 	}
 
