@@ -32,11 +32,11 @@
 			<th></th>
 			<td style="margin-top: 20px;">
 				<!-- 削除に必要なのは idだけなので idだけフォームで送ればいい -->
-				
-					<form th:action="@{/member_delete}" method="post" th:object="${memberForm}" onsubmit="return beforeSubmit()">
-						<input type="hidden" name="id" th:value="*{id}" />
-						<input class="deletebtn" type="submit" value="削除する" />
-					</form>
+			
+				<form th:action="@{/member_delete}" method="post" th:object="${memberForm}" onsubmit="return beforeSubmit()">
+					<input type="hidden" name="id" th:value="*{id}" />
+					<input class="deletebtn" type="submit" value="削除する" />
+				</form>
 				
 			</td>
 		</tr>

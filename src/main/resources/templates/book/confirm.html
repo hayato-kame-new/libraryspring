@@ -28,14 +28,18 @@
 		<tr><th>著者</th><td th:text="*{authors}"></td></tr>
 		<tr><th>出版社</th><td th:text="*{publisher}"></td></tr>
 		<tr><th>発行年</th><td th:text="*{publishYear}"></td></tr>
-		
 		<tr>
 			<th></th>
-			<td>
-				<a th:href="@{/book_delete(id=${book.id})}"><button class="deletebtn" type="button" >書籍削除</button></a>
+			<td style="margin-top: 20px;">
+				<!-- 削除に必要なのは idだけなので idだけフォームで送ればいい HTTPメソッドは POSTです-->
+			
+				<form th:action="@{/book_delete}" method="post" th:object="${book}" onsubmit="return beforeSubmit()">
+					<input type="hidden" name="id" th:value="*{id}" />
+					<input class="deletebtn" type="submit" value="削除する" />
+				</form>
+				
 			</td>
-		</tr>
-	
+		</tr>	
 </table>
 <div>
 	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面へ戻る</button></a>
