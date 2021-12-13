@@ -27,13 +27,13 @@
 	※ 本の裏に図書館で作成した本のID番号のシールが貼ってあるので、その番号を入力する(booksテーブルの主キーと同じ番号)
 	<div>
 	    <label for="memberId">会員のID番号を入力: </label>
-	    <input type="text" id="memberId" name="memberId" th:value="${memberId}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('memberId')}" th:errors="${memberId}" th:errorclass="err"></div>
+	    <input type="text" id="memberId" name="memberId" th:value="*{memberId}" th:errorclass="err" />		
+		<div th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" th:errorclass="err"></div>
 	</div>
 	<div>
 		<label for="bookId">本に貼ってるID番号を入力: </label> 
-		<input type="text" id="bookId" name="bookId" th:value="${bookId}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('bookId')}" th:errors="${bookId}" th:errorclass="err">
+		<input type="text" id="bookId" name="bookId" th:value="*{bookId}" th:errorclass="err" />		
+		<div th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}" th:errorclass="err">
 		</div>				
 	</div>	
 	<div>

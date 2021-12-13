@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 // フォームのクラス
 public class LendingForm {
 
+	
 	@NotNull(message = "書籍IDを入力してください")
 	private Integer bookId;
 	

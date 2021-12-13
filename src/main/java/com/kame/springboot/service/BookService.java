@@ -51,14 +51,14 @@ public class BookService {
 	 * createNativeQueryメソッドだと、戻り値が List<Book>にできる
 	 *  query.getResultList()で取得したデータは List<Object[]>になってます  List<エンティティ> にキャストもできる 
 	 *  Iterable にキャストもできる (List<Book>)にキャストもできる
-	 * @return List<Book>
+	 * @return List<Object[]>
 	 */
-	 public List<Book> booksList() {
+	 public List<Object[]> booksList() {
 		// javax.persistence.Queryインタフェースの型のオブジェクトを生成する
 		Query query = entityManager.createNativeQuery("select * from books order by id asc");  // order by employeeid を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
 		// ページネーションを使うためには Listの代わりに Pageクラスを使いますが ここではList<Book> でしかできないので
 		// query.getResultList()で取得したデータは List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
-		List<Book> list = (List<Book>)query.getResultList();  		
+		List<Object[]> list = query.getResultList();  		
 		return list;
 	}
 	 

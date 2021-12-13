@@ -53,8 +53,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     		) {
     	
     	mav.setViewName("lending/lendingForm");
-    	mav.addObject("bookId", null);
-    	mav.addObject("memberId", null);
+
     	return mav;
     }
     
@@ -91,7 +90,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 			// フォワード
         	mav.setViewName("lending/lendingForm");       	
         	mav.addObject("msg", "入力エラーが発生しました。");
-			
+        	mav.addObject("lendingForm", lendingForm);  // 必要です！！ 
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
     	

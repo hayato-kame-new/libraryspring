@@ -1,13 +1,17 @@
 package com.kame.springboot.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.kame.springboot.entity.Book;
 import com.kame.springboot.entity.History;
+import com.kame.springboot.entity.Member;
 import com.kame.springboot.service.BookService;
+import com.kame.springboot.service.MemberService;
 
 // 普通のシンプルなJavaのクラス(POJO)
 // 何のアノテーションもつけないただのクラスとして宣言をして、このクラスをBeanとして登録します まず、MyBootAppConfigクラスを定義する
@@ -25,8 +29,10 @@ public class Library {  // Beanとして使えるクラスにしています MyB
 	// @Repository を組み込んでる @Serviceのクラスにも、データベースとの間の記述だけ書くこと
 	
 	@Autowired
-	BookService bookService;  // これをエンティティのクラスのフィールドに書くと起動できなくなる　注意
+	BookService bookService;  // @Autowiredをつけた@Repositoryを組み込んだサービスクラスをエンティティのクラスのフィールドに書くと起動できなくなる　注意
 
+	@Autowired
+	MemberService memberService;  // @Autowiredをつけた@Repositoryを組み込んだサービスクラスをエンティティのクラスのフィールドに書くと起動できなくなる　注意
 	
 	 /**
      * 貸出し情報を表示する
@@ -75,11 +81,13 @@ public class Library {  // Beanとして使えるクラスにしています MyB
      * @return String
      */
     public String print(History history) {
-    	String  str1 = "タイトル: " + history.getBook().getTitle() + ", 著者: " +history.getBook().getAuthors() + ", 出版社: " 
-    			+ history.getBook().getPublisher() + ", 発行年: " +  history.getBook().getPublishYear() 
+    	Book book = bookService.findBookDataById(history.getBookId());
+    	Member member = memberService.findMemberDataById(history.getMemberId());
+    	String  str1 = "タイトル: " + book.getTitle() + ", 著者: " + book.getAuthors() + ", 出版社: " 
+    			+ book.getPublisher() + ", 発行年: " +  book.getPublishYear() 
     			+ ", 書架状況: " +  this.lentStr(history.getReturnDate());
     	String separator = System.lineSeparator();  // システムに依存する改行になる
-    	String str2 = ", 会員ID: " + history.getMember().getId()+ ", 会員名: " +  history.getMember().getName();
+    	String str2 = ", 会員ID: " + member.getId()+ ", 会員名: " +  member.getName();
     	String str3 = history.getLendDate().toString() + " ~ ";
     	String str4 = "";
     	if(history.getReturnDate() != null) {
@@ -105,11 +113,50 @@ public class Library {  // Beanとして使えるクラスにしています MyB
        // まず、これから貸し出そうとしている本が，この図書館システムが管理している本のリストshelf に存在するかを判定
        // containsメソッドで コレクション変数shelfの中に 引数に渡された本が含まれているかを判定する
        //  ! で 判定を逆にしてるから 含まれていなければ falseを返す
-	   List<Book> books = bookService.booksList();  // この図書館システムが保管する全ての本のリスト
-       if(!books.contains(history.getBook())){
+		   // query.getResultList()で取得したデータは List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
+	   List<Object[]> booksDataList = bookService.booksList();  // この図書館システムが保管する全ての本のリスト
+	   
+	   Iterator itr =  booksDataList.iterator();
+	   // booksDataList を  List<Book> のリストに詰め替える
+	   List<Book> booksList = new ArrayList<Book>();  // newして確保
+	   int id = 0;
+	   String isbn = "";
+		 String genre = "";
+		 String title = "";
+		 String authors = "";
+		 String publisher = "";
+		 Integer publishYear =null;
+		 
+		 while(itr.hasNext()) {
+			 Object[] obj = (Object[]) itr.next();
+			
+			 id = Integer.parseInt(String.valueOf(obj[0]));
+			 isbn = String.valueOf(obj[1]);
+			genre = String.valueOf(obj[2]);
+			title = String.valueOf(obj[3]);
+			authors = String.valueOf(obj[4]);
+			publisher = String.valueOf(obj[5]);
+			publishYear = Integer.parseInt(String.valueOf(obj[6]));
+			// Bookインスタンスを生成する
+			 Book book = new Book(id, isbn, genre, title, authors, publisher, publishYear);
+			 booksList.add(book);  // リストに追加する
+			 }
+	   
+//	   for(Book book : booksList) {
+//		   if(Objects.equals(book.getId(), history.getBook().getId())) {
+//			   return false;// これから貸し出そうとする本は、図書館システムには無い本なので 貸出できません
+//		   }
+//	   }
+		 // HistoryオブジェクトのbookIdフィールドから Bookがわかるので Bookインスタンスを取得
+		 Book book = bookService.findBookDataById(history.getBookId());
+		 // containsの中では equalsを使っています
+		 // equalsをオーバーライドして、等しいの定義付けをする必要があります
+		 
+		 
+	   if(!booksList.contains(book)){
            return false;  // これから貸し出そうとする本は、図書館システムには無い本なので 貸出できません
-//           // 貸出できないので、returnで即メソッドを終了させて、呼び出し元に引数の falseを返します。
-//           // このメソッドはreturnしたので、この行以降は実行されない
+           // 貸出できないので、returnで即メソッドを終了させて、呼び出し元に引数の falseを返します。
+           // このメソッドはreturnしたので、この行以降は実行されない
         }
 
        // これから貸し出そうとする本は、この図書館システムに有るので、貸出できます。(貸出中じゃなければ)

@@ -139,6 +139,65 @@ public class Book {  // Bookの方が 主エンティティ   Historyエンテ�
 		this.publisher = publisher;
 		this.publishYear = publishYear;
 	}
+	
+	/**
+	 * リストのcontainsメソッドの名では equalsメソッドが使われているので、
+	 * equalsメソッドをオーバーライドしないとBookオブジェクトが、同じだと判断できないので
+	 * 
+	 * 
+	 */
+	@Override
+	public boolean equals(Object other) {
+		// 引数で渡されたオブジェクトが、このオブジェクト自身であった場合 true
+		if (this == other) {
+			return true;
+		}
+		// 引数で渡されたオブジェクトが、Bookクラスのオブジェクトではない場合 false
+		if (!(other instanceof Book)) {
+			return false;
+		}
+		//フィールドを をそれぞれ比較し、等しければ true, 等しくなければ false
+		Book otherBook = (Book) other;
+		if (this.getId() == otherBook.getId()) {
+			return true;
+		}
+		if(this.getIsbn().equals(otherBook.getIsbn())) {
+			return true;
+		}
+		if(this.getGenre().equals(otherBook.getGenre())) {
+			return true;
+		}
+		if(this.getTitle().equals(otherBook.getTitle())) {
+			return true;
+		}
+		if(this.getAuthors().equals(otherBook.getAuthors())) {
+			return true;
+		}
+		if(this.getPublisher().equals(otherBook.getPublisher())) {
+			return true;
+		}
+		if (this.getPublishYear() == otherBook.getPublishYear()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	// equalsメソッドを実装した場合は、hashCodeメソッドも実装する必要があり
+	// equalsメソッドの結果がtrueとなるオブジェクトは、hashCodeメソッド呼び出しの結果同じ値を返す必要がある。
+	// (equalsがfalseとなるオブジェクトが同じhashCodeの結果を返すことは、かまわない)
+	public int hashCode() {
+		int result = 1; // 1でもいいです
+		result = 31 * result + id;
+		result = 31 * result + ((isbn == null) ? 0 : isbn.hashCode());
+		result = 31 * result + ((genre == null) ? 0 : genre.hashCode());
+		result = 31 * result + ((title == null) ? 0 : title.hashCode());
+		result = 31 * result + ((authors == null) ? 0 : authors.hashCode());
+		result = 31 * result + ((publisher == null) ? 0 : publisher.hashCode());
+		result = 31 * result + publishYear;
+		return result;
+	}
+
 
 
 	// アクセッサ

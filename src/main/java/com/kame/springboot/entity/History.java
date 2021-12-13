@@ -9,10 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @Entity  // エンティティのクラスです 処理のメソッドは書かないLibraryクラスに書く リポジトリを組み込んだサービスをフィールドとしておかないこと
 @Table(name = "histories")  // テーブル名全て小文字で
@@ -24,7 +20,8 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 	//	@Autowired
 	//	BookService bookService;  // これをするとエラーで起動できなくなる
 // 上のように、他のリポジトリを組み込んだらエラーになる！！エンティティクラスにはロジックは書かないこと ロジッククラスに書く
-	// フォームのクラスを作らないなら ここのクラスに、バリデーションのアノテーションもつける 
+	
+	// フォームのクラスLendingFormを作リマスので  ここのクラスに、入力チェックのバリデーションのアノテーションはつけません
 	
 	
 	//主キーの idカラムには@Idを必ずつける 無いとエラー @Entityをつけたら @Idをつけないと起動しないので注意する
@@ -40,8 +37,9 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 	
 	// iso = ISO.DATE だと 最も一般的な ISO 日付形式 yyyy-MM-dd  たとえば、"2000-10-31"  
 	// fallbackPatterns に設定したものは、エラーにしないで、受け取ってくれる
-	@DateTimeFormat(iso = ISO.DATE, fallbackPatterns = { "yyyy/MM/dd", "yyyy-MM-dd" })
-	@NotNull( message = "貸し出し日を入力してください") // 日付には、@NotNullを使う
+	// @DateTimeFormat(iso = ISO.DATE, fallbackPatterns = { "yyyy/MM/dd", "yyyy-MM-dd" })
+	// @NotNull( message = "貸し出し日を入力してください") // 日付には、@NotNullを使う
+	// フォームのクラスLendingFormを作リマスので  ここのクラスに、入力チェックのバリデーションのアノテーションはつけません
 	@Column( name = "lenddate") //  historiesテーブルの カラム名は全て小文字で
 	private Date lendDate;  // 貸し出しをした日  java.util.Date  
 	
@@ -50,7 +48,8 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 	/// iso = ISO.DATE だと 最も一般的な ISO 日付形式 yyyy-MM-dd  たとえば、"2000-10-31"  
 	// fallbackPatterns に設定したものは、エラーにしないで、受け取ってくれる
 	// @DateTimeFormat(pattern = "yyyy-MM-dd")  // これだけだと、他の形式だとエラーになるので
-	@DateTimeFormat(iso = ISO.DATE, fallbackPatterns = { "yyyy/MM/dd", "yyyy-MM-dd" })
+	//@DateTimeFormat(iso = ISO.DATE, fallbackPatterns = { "yyyy/MM/dd", "yyyy-MM-dd" })
+	// フォームのクラスLendingFormを作リマスので  ここのクラスに、入力チェックのバリデーションのアノテーションはつけません
 	@Column( name = "returndate") //  historiesテーブルの カラム名は全て小文字で  nullを許容する
 	private Date returnDate;  // 返却した日
 		
@@ -58,12 +57,14 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 //	private User user;  // これじゃなくて 参照するフィールドを持たせる
 	
 	 // リレーションのあるフィールド
-	  // フォームでは、hiddenフィールド で パラメータを リクエストハンドラへ送る
+	
+	// フォームのクラスLendingFormを作リマスので  ここのクラスに、入力チェックのバリデーションのアノテーションはつけません
 	@Column( name = "bookid") //  historiesテーブルの カラム名は全て小文字で
 	private int bookId;  // 貸し出し本booksテーブルの の idを参照してる  リレーションのあるフィールド
 	
 	// リレーションのあるフィールド
-	   // フォームでは、hiddenフィールド で パラメータを リクエストハンドラへ送る
+	  
+	// フォームのクラスLendingFormを作リマスので  ここのクラスに、入力チェックのバリデーションのアノテーションはつけません
 	@Column( name = "memberid")  // historiesテーブルの カラム名は全て小文字で
 	private int memberId;  //  会員membersテーブルのの idを参照してる  リレーションのあるフィールド 
 	
@@ -97,22 +98,6 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 		this.memberId = memberId;
 	}
 	
-	// リレーションの情報にアクセスする アクセッサ
-	public Book getBook() {
-		return book;
-	}
-
-	public void setBook(Book book) {
-		this.book = book;
-	}
-
-	public Member getMember() {
-		return member;
-	}
-
-	public void setMember(Member member) {
-		this.member = member;
-	}
 
 	// アクセッサ
 	public int getId() {
