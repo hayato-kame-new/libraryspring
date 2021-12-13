@@ -19,8 +19,10 @@
 
 <h2 class="headingLenging" >貸し出しフォーム</h2>
 
+<p th:if="${msg}" th:text="${msg}"></p>
+<p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
 
-<form th:action="@{/lend}" method="post">
+<form th:action="@{/lend}" method="post" th:object="${lendingForm}" >
 	※ 1冊借りる
 	※ 本の裏に図書館で作成した本のID番号のシールが貼ってあるので、その番号を入力する(booksテーブルの主キーと同じ番号)
 	<div>

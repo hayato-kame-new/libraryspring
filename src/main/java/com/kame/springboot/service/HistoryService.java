@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kame.springboot.entity.History;
 import com.kame.springboot.repository.HistoryRepository;
 
 @Service
@@ -50,6 +51,23 @@ public class HistoryService {
 			return Datalist;
 		}
 
-	
+	public boolean add(History history) {
+
+		Query query = entityManager.createNativeQuery("insert into histories (lenddate, returndate, bookid, memberid) values (:a, :b, :c, :d) " );
+		query.setParameter("a", history.getLendDate() );
+		query.setParameter("b", null );  // 返却はしてないので null   history.getReturndate() でもいい
+		query.setParameter("c", history.getBookId() );
+		query.setParameter("d", history.getMemberId() );
+		// insert などの更新系の時には executeUpdate()を使う
+		int result = query.executeUpdate(); // 戻り値は 更新や削除をしたエンティティの数か返る
+		 
+		 if(result != 1) {  // insert 1件 なので 1 が返れば成功   1以外 なら失敗
+			 // 失敗
+			 return false; // falseを返す 失敗したら、即returnして以下の行は実行されない 引数のfalseを呼び出し元へ返す
+		 }
+		 // 成功してるなら
+		 return true;	
+		
+	}
 
 }

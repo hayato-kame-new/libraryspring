@@ -1,4 +1,4 @@
-package com.kame.springboot.pojo;
+package com.kame.springboot.bean;
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +10,15 @@ import com.kame.springboot.entity.History;
 import com.kame.springboot.service.BookService;
 
 // 普通のシンプルなJavaのクラス(POJO)
-public class Library {
+// 何のアノテーションもつけないただのクラスとして宣言をして、このクラスをBeanとして登録します まず、MyBootAppConfigクラスを定義する
+/**
+ * このクラスは何のアノテーションもつけないただのクラスとして宣言をして
+ * MyBootAppConfigクラスのコンフィグのクラスでこのクラスをBeanとなるように設定していますので
+ * このクラスは他のクラスでは @Autowired　をつけてフィールドに宣言して使えます。
+ * @author skame
+ *
+ */
+public class Library {  // Beanとして使えるクラスにしています MyBootAppConfigクラスで設定しました
 	// ＠Entityのついたエンティティクラスに @Service @Repository のついてるのを @Autowiredで組み込むと
 	// リレーションついてるとエラーになるので 組み込まないで このLibraryクラスに書く
 	// @Entityクラスには テーブルについての記述だけ
@@ -19,6 +27,19 @@ public class Library {
 	@Autowired
 	BookService bookService;  // これをエンティティのクラスのフィールドに書くと起動できなくなる　注意
 
+	
+	 /**
+     * 貸出し情報を表示する
+     * @param history
+     */
+//    void printHistory(History history) {
+//        this.printBook(history.getBook());
+//        manager.print(history.getUser());
+//        System.out.println( history.getLendDate() + " ~ " + history.getReturnDate());
+//    }
+
+	
+	
 	  /**
      * 貸し出し中であるかを判定するメソッド 異なるパッケージから見えるようにするため publicにする
      * 貸し出し中であれば，true， 貸し出し中でなければfalseを返す
@@ -70,7 +91,7 @@ public class Library {
     
     /**
      * 貸し出しができるか判定する 
-     *
+     * public をつけないと 他のパッケージからは見えないので publicつける
      * @param history   これから貸し出そうとしている History型の実体
      * @param histories  これから貸し出そうとする本に関するこれまでの貸し出し履歴であるHistory のリスト
      * @return true:貸出可能 <br /> false:貸出不可
@@ -80,7 +101,7 @@ public class Library {
     // 第二引数は、History実体の本に関しての、今までの貸し出し履歴の中で一番最新の貸し出し履歴の情報が入ってる List<Object[]> historiesObjList
       // 変更してから使うこと！！！！
    // Boolean canLend(History history, List<History> histories){
-	   Boolean canLend(History history, List<Object[]> historiesObjList){
+	   public Boolean canLend(History history, List<Object[]> historiesObjList){
        // まず、これから貸し出そうとしている本が，この図書館システムが管理している本のリストshelf に存在するかを判定
        // containsメソッドで コレクション変数shelfの中に 引数に渡された本が含まれているかを判定する
        //  ! で 判定を逆にしてるから 含まれていなければ falseを返す
@@ -95,13 +116,16 @@ public class Library {
        // 次に、貸し出し中かどうか調べます
        // その本の貸出履歴が存在しない場合 つまり histories.size() == 0 は，今まで借りられたことがないため，貸し出し可能
        // その本の貸出履歴があったら histories.size() > 0 だったら、貸出可能かどうかを調べる
-       if(histories.size() > 0){  // その本に関する今までの貸出記録があれば
+      //  if(histories.size() > 0){  // その本に関する今までの貸出記録があれば
+       if(historiesObjList.size() > 0){  // 最後の貸し出し記録があれば
            // その本に関する最後の貸出記録の実態を取得する
            // List<History> は、 右辺が new ArrayList<Hirstory>(); で初期化されてるため、ArrayListは、中身は配列と同じ構造なので、
            //  履歴は順に格納されるため，最後の要素が貸し出し中でなければ貸し出し可能です
-           History lastHistory = histories.get(histories.size() - 1);
-           if(this.isLent(lastHistory.getReturnDate())){  // 最後の貸出記録を調べてる isLent(Date returnDate)は 貸出中ならtrueを返す
-               return false;  // isLent()かtrueを返したので、貸出中だから falseを返す 貸出不可です
+          //  History lastHistory = histories.get(histories.size() - 1);
+         //  if(this.isLent(lastHistory.getReturnDate())){  // 最後の貸出記録を調べてる isLent(Date returnDate)は 貸出中ならtrueを返す
+    	   Object[] obj = historiesObjList.get(0);
+    	   if(obj[2] != null) {
+    	   return false;  // isLent()かtrueを返したので、貸出中だから falseを返す 貸出不可です
            }
        }
        return true;  // 貸出可能です

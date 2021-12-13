@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{result_page.title} - library|"></title>
+<style>
+ .flashMsg {
+ 	color: skyblue;
+ }
+</style>
+<!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス -->
+<style th:include="common/header :: common_header_style"></style>
+</head>
+<body>
+<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス-->
+<div th:include="common/header :: common_header"></div>
+
+<h2 class="heading" >貸し出し完了</h2>
+
+<p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
+<h4>会員情報</h4>
+<h4>貸し出しした本</h4>
+
+
+CSVファイルへ出力する
+
+<div>
+	<a href="/find" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+</div>
+
+</body>
+</html>
