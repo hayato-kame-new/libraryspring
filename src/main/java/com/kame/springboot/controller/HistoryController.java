@@ -115,7 +115,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     		mav.addObject("msg", "貸し出しできません(貸し出し中)");
     		return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
     		
-    	} else { // その本は貸し出しできる 
+    	} else { // true その本は貸し出しできる 
     		
     		// 貸し出し処理をする historiesテーブルに登録する
     		// 上で生成した historyインスタンスを、引数に、登録する
@@ -133,33 +133,33 @@ public class HistoryController {  // 貸し出しに関するコントローラ
         	
     	}
     	
-    	// 成功 貸し出し処理を完了したら リダイレクトする
-    	// リダイレクトします リダイレクトは、フォワードと違って、リダイレクト先のリクエストハンドラを実行させます。フォワードは、ビューを表示させるだけ
-		// flashMsgは Flashスコープへ保存します スコープに置けるのは、参照型のインスタンスのみです。基本型(プリミティブ型)の変数は置けません intなら Integerの参照型にすれば置ける。
-		// (また、自作のクラスのインスタンスは、サーブレットなら、Beanのクラスにすることが必要です)
-		//  Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。
-        // Flash Scop は Request Scope より長く、Session Scope より短いイメージ  リダイレクト先のリクエストハンドラでは、Flash Scopeから取り出すには、Modelインスタンスの getAttributeメソッドを使う
-        // RedirectAttributesインスタンスの addFlashAttributeメソッドで Flash Scop に保存する
-		redirectAttributes.addFlashAttribute("flashMsg" , flashMsg);
-		// 貸し出し完了ページへ  リダイレクトして  貸し出した本を表示する
-		redirectAttributes.addFlashAttribute("history" , history);
+    	// 成功 貸し出し処理を完了したら 貸し出し完了ページへフォワードします
+    	mav.setViewName("lending/result");
+    	mav.addObject("flashMsg" , flashMsg);
+		
+		// 貸し出し完了ページへ   貸し出した本を表示する
+    	mav.addObject("history" , history);
+		
 		 Date lendDate = history.getLendDate();  // 貸し出した日にち
-		 // 返却予定日を取得する
+		// 貸し出した日にちの二週間後が 返却予定日
 		 Calendar calendar = Calendar.getInstance();
 	      calendar.setTime(lendDate);
 	      // 14日後
 	      calendar.add(Calendar.DAY_OF_MONTH, 14);
 	      Date twoWeekAfter = calendar.getTime();
-	      // 返却予定日をビューへ送る
-	      redirectAttributes.addFlashAttribute("twoWeekAfter" , twoWeekAfter);
-	      // 貸し出した本の情報を取得する それもビューへ送る
+	      // 返却予定日を 貸し出し完了ページへ送る
+	      mav.addObject("twoWeekAfter" , twoWeekAfter);
+	      
+	      // 貸し出した本の情報を取得する それも貸し出し完了ページへ送る
 	      Book book = bookService.findBookDataById(bookId);
-	      redirectAttributes.addFlashAttribute("book" , book);
-	      // 貸し出した会員の情報を取得する それもビューへ送る
+	      mav.addObject("book" , book);
+	     
+	      // 貸し出した会員の情報を取得する それも貸し出し完了ページへ送る
 	      Member member = memberService.findMemberDataById(memberId);
-	      redirectAttributes.addFlashAttribute("member" , member);
-	   // 貸出結果の画面へリダイレクト
-		 return new ModelAndView("redirect:/lending/result"); 
+	      mav.addObject("member" , member);
+	    
+	   // 貸出結果の画面へフォワードする
+		 return mav;
 
     }
 	

@@ -150,10 +150,9 @@ public class Library {  // Beanとして使えるクラスにしています MyB
 		 // HistoryオブジェクトのbookIdフィールドから Bookがわかるので Bookインスタンスを取得
 		 Book book = bookService.findBookDataById(history.getBookId());
 		 // containsの中では equalsを使っています
-		 // equalsをオーバーライドして、等しいの定義付けをする必要があります
-		 
-		 
-	   if(!booksList.contains(book)){
+		 // Bookクラスでequalsメソッドと hashCode()をオーバーライドして、等しいの定義付けをする必要があります
+		 		 
+	   if(!booksList.contains(book)){  // equalsメソッドと hashCode()メソッドをOverrideしたので 機能する
            return false;  // これから貸し出そうとする本は、図書館システムには無い本なので 貸出できません
            // 貸出できないので、returnで即メソッドを終了させて、呼び出し元に引数の falseを返します。
            // このメソッドはreturnしたので、この行以降は実行されない
@@ -163,18 +162,21 @@ public class Library {  // Beanとして使えるクラスにしています MyB
        // 次に、貸し出し中かどうか調べます
        // その本の貸出履歴が存在しない場合 つまり histories.size() == 0 は，今まで借りられたことがないため，貸し出し可能
        // その本の貸出履歴があったら histories.size() > 0 だったら、貸出可能かどうかを調べる
-      //  if(histories.size() > 0){  // その本に関する今までの貸出記録があれば
+        // その本に関する今までの貸出記録があれば
        if(historiesObjList.size() > 0){  // 最後の貸し出し記録があれば
            // その本に関する最後の貸出記録の実態を取得する
            // List<History> は、 右辺が new ArrayList<Hirstory>(); で初期化されてるため、ArrayListは、中身は配列と同じ構造なので、
            //  履歴は順に格納されるため，最後の要素が貸し出し中でなければ貸し出し可能です
           //  History lastHistory = histories.get(histories.size() - 1);
          //  if(this.isLent(lastHistory.getReturnDate())){  // 最後の貸出記録を調べてる isLent(Date returnDate)は 貸出中ならtrueを返す
+    	  // List<Object[]>  historiesObjList です
     	   Object[] obj = historiesObjList.get(0);
-    	   if(obj[2] != null) {
-    	   return false;  // isLent()かtrueを返したので、貸出中だから falseを返す 貸出不可です
+    	   if(obj[2] != null) {  //  returnDate が nullじゃない ので 返却済みで貸し出し可能
+    	   return false;  // falseを返す 貸出不可です
            }
        }
+       // その本に関する貸し出し記録はまだ無い(まだ１冊も貸し出されたことがない)
+       
        return true;  // 貸出可能です
    }
 

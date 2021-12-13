@@ -141,10 +141,9 @@ public class Book {  // Bookの方が 主エンティティ   Historyエンテ�
 	}
 	
 	/**
+	 * equalsオーバーライドする
 	 * リストのcontainsメソッドの名では equalsメソッドが使われているので、
 	 * equalsメソッドをオーバーライドしないとBookオブジェクトが、同じだと判断できないので
-	 * 
-	 * 
 	 */
 	@Override
 	public boolean equals(Object other) {
@@ -182,10 +181,17 @@ public class Book {  // Bookの方が 主エンティティ   Historyエンテ�
 		return false;
 	}
 
-	@Override
 	// equalsメソッドを実装した場合は、hashCodeメソッドも実装する必要があり
 	// equalsメソッドの結果がtrueとなるオブジェクトは、hashCodeメソッド呼び出しの結果同じ値を返す必要がある。
 	// (equalsがfalseとなるオブジェクトが同じhashCodeの結果を返すことは、かまわない)
+	/**
+	 * hashCode メソッドをオーバーライド
+	 * equalsメソッドを実装した場合は、hashCodeメソッドも実装する必要があり
+	 * equalsメソッドの結果がtrueとなるオブジェクトは、hashCodeメソッド呼び出しの結果同じ値を返す必要がある。
+	 *  (equalsがfalseとなるオブジェクトが同じhashCodeの結果を返すことは、かまわない)
+	 * インスタンスの同値性を確認できるメソッドが使えるようになりました
+	 */
+	@Override
 	public int hashCode() {
 		int result = 1; // 1でもいいです
 		result = 31 * result + id;

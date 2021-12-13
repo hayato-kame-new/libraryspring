@@ -22,10 +22,11 @@
 
 <p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
 <h4>会員情報</h4>
+会員番号だけ 個人情報は見えないように
+返却予定日
 <h4>貸し出しした本</h4>
-
-
-CSVファイルへ出力する
+本の情報
+CSVファイルへ出力する 個人情報見えないようにする
 
 <div>
 	<a href="/find" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>

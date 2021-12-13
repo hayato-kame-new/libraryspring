@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,8 +55,24 @@ public class HistoryService {
 	public boolean add(History history) {
 
 		Query query = entityManager.createNativeQuery("insert into histories (lenddate, returndate, bookid, memberid) values (:a, :b, :c, :d) " );
-		query.setParameter("a", history.getLendDate() );
-		query.setParameter("b", null );  // 返却はしてないので null   history.getReturndate() でもいい
+		
+		// history.getLendDate()  history.getReturnDate() は java.util.Date なので java.sql.Date へ変換をしてから
+		// query.setParameter の 第2引数へ渡すこと
+		
+		java.util.Date utilLendDate = history.getLendDate();
+		java.sql.Date sqlLendDate = new java.sql.Date( utilLendDate.getTime());
+		
+		// history.getReturnDate() は nullの可能性ある というか null
+		java.sql.Date sqlReturnDate = null;
+		if(history.getReturnDate() != null) { // nullエラー対策する
+			 sqlReturnDate = new java.sql.Date(history.getReturnDate().getTime());
+		}
+		// TemporalType.DATE  をつけないと もし sqlLendDate nullの時エラーになりますので つけること
+		// TemporalType.DATE は java.sql.Dataで登録するという意味
+		query.setParameter("a", sqlLendDate , TemporalType.DATE);
+		 // TemporalType.DATE は java.sql.Dataで登録するという意味 
+		// TemporalType.DATE  をつけないと、PostgresSQLだと nullをdate型のカラムに入れようとするとエラーになるため、これをつけてください
+		query.setParameter("b", sqlReturnDate, TemporalType.DATE);  // null になってる
 		query.setParameter("c", history.getBookId() );
 		query.setParameter("d", history.getMemberId() );
 		// insert などの更新系の時には executeUpdate()を使う
