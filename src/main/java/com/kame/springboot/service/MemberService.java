@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,7 +62,9 @@ public class MemberService {
 		 // java.time.LocalDate から java.sql.Date へ変換してからセットする
 		 LocalDate localDate = member.getBirthDay();
 		 java.sql.Date javaSqlDate = java.sql.Date.valueOf(localDate);
-		 query.setParameter("d", javaSqlDate);
+		 // TemporalType.DATE は java.sql.Dataで登録するという意味 
+			// TemporalType.DATE  をつけないと、PostgresSQLだと nullをdate型のカラムに入れようとするとエラーになるため、これをつけてください
+		 query.setParameter("d", javaSqlDate, TemporalType.DATE);
 		 
 		 int result = query.executeUpdate(); // 戻り値は 更新や削除をしたエンティティの数か返る
 		 
@@ -122,7 +125,9 @@ public class MemberService {
 		 
 		 LocalDate localDate = member.getBirthDay();
 		 java.sql.Date javaSqlDate = java.sql.Date.valueOf(localDate);
-		 query.setParameter(4, javaSqlDate);
+		 // TemporalType.DATE は java.sql.Dataで登録するという意味 
+			// TemporalType.DATE  をつけないと、PostgresSQLだと nullをdate型のカラムに入れようとするとエラーになるため、これをつけてください
+		 query.setParameter(4, javaSqlDate, TemporalType.DATE);
 		 query.setParameter(5, member.getId());
 		 
 		 int result = query.executeUpdate();

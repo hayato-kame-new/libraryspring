@@ -21,6 +21,7 @@ import com.kame.springboot.entity.Book;
 import com.kame.springboot.entity.History;
 import com.kame.springboot.entity.Member;
 import com.kame.springboot.form.LendingForm;
+import com.kame.springboot.form.ReturnForm;
 import com.kame.springboot.service.BookService;
 import com.kame.springboot.service.HistoryService;
 import com.kame.springboot.service.MemberService;
@@ -160,7 +161,45 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 	    
 	   // 貸出結果の画面へフォワードする
 		 return mav;
-
+    }
+    
+    // 返却画面を表示する
+    @RequestMapping( value = "/return_form", method=RequestMethod.GET)
+    public ModelAndView returnForm(
+    		@ModelAttribute("returnForm")ReturnForm returnForm,
+    		ModelAndView mav
+    		) {
+    	mav.setViewName("return/returnForm"); 
+    	
+    	return mav;
+    }
+    
+ // 返却する メソッド名にreturnは使えない予約語なので
+    @RequestMapping( value = "/return", method=RequestMethod.POST)
+    public ModelAndView returnBook(
+    		@ModelAttribute("returnForm")@Validated ReturnForm returnForm,
+    		BindingResult result,  // バリデーションエラーを取得するため
+			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
+		    HttpServletRequest request, // requestオブジェクトから取得したい時に
+    		ModelAndView mav
+    		) {
+    	
+    	// まず、バリデーションチェック エラーがあるかどうか
+    	
+    	
+    	
+    	int bookId = returnForm.getBookId();
+    	// bookIdを元に、その書籍の一番最後の貸し出し履歴を取得します historiesテーブルから取得する
+    	//  "select * from histories where bookid = ?  order by id desc limit 1"
+    	
+    	
+    	// その最後の貸し出し履歴の 返却日に今日の日付を入れます
+    	
+    	
+    	
+    	// それから、 データベースで updateします
+    	
+    	
     }
 	
 

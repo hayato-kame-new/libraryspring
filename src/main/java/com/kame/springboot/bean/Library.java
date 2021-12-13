@@ -141,12 +141,7 @@ public class Library {  // Beanとして使えるクラスにしています MyB
 			 Book book = new Book(id, isbn, genre, title, authors, publisher, publishYear);
 			 booksList.add(book);  // リストに追加する
 			 }
-	   
-//	   for(Book book : booksList) {
-//		   if(Objects.equals(book.getId(), history.getBook().getId())) {
-//			   return false;// これから貸し出そうとする本は、図書館システムには無い本なので 貸出できません
-//		   }
-//	   }
+
 		 // HistoryオブジェクトのbookIdフィールドから Bookがわかるので Bookインスタンスを取得
 		 Book book = bookService.findBookDataById(history.getBookId());
 		 // containsの中では equalsを使っています
