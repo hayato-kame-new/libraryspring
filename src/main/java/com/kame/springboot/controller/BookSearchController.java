@@ -138,6 +138,7 @@ public class BookSearchController {
 			
 			// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
 			String status = library.getStatusStr(LastHistoryDatalist);
+			
 //			int id = 0;
 //			Date lendDate = null;
 //			 Date returnDate = null;

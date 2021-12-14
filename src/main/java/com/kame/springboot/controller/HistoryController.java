@@ -2,7 +2,6 @@ package com.kame.springboot.controller;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,8 +109,6 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     	// membersテーブルから探す
     	Member member = memberService.findMemberDataById(memberId);
     	if(member == null) {
-    		System.out.println("存在しない");
-    		
     	// このIDの会員は この図書館システムには 存在しない会員なので 
     		// フォワード returnでこのリクエストハンドラを即終了する 以降の行は実行されない
     		mav.setViewName("lending/lendingForm");  
@@ -175,7 +172,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 		// 貸し出し完了ページへ   貸し出した本を表示する
     	mav.addObject("history" , history);
 		
-		 Date lendDate = history.getLendDate();  // 貸し出した日にち
+		 Date lendDate = history.getLendDate();
 		// 貸し出した日にちの二週間後が 返却予定日
 		 Calendar calendar = Calendar.getInstance();
 	      calendar.setTime(lendDate);
@@ -186,11 +183,24 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 	      mav.addObject("twoWeekAfter" , twoWeekAfter);
 	      
 	      // 貸し出した本の情報を取得する それも貸し出し完了ページへ送る
-	      Book book = bookService.findBookDataById(bookId);
-	      mav.addObject("book" , book);
+	    //   Book book = bookService.findBookDataById(bookId);
+	      // mav.addObject("book" , book);
+	      // Mapを送る
+	      List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(bookId);  // 更新後の  最新の状態を上書きする
+	    	 
+	    	// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
+	    	String status = library.getStatusStr(LastHistoryDatalist);
+	    	//Mapに変換するをnewして確保しておく  今後複数の本を同時に貸し出し 返却する時のためにMapで管理しておく
+			 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
+			 // Historyデータの bookidフィールドは Bookデータの主キーidを参照してるので Book情報を取得する
+			 Book book = bookService.findBookDataById(bookId);
+	    	statusMap.put(book, status);
+	    	mav.addObject("statusMap", statusMap);
+	    
+	      
 	     
-	      // 貸し出した会員の情報を取得する それも貸し出し完了ページへ送る
-	      // Member member = memberService.findMemberDataById(memberId);
+	      // 貸し出した会員の情報も貸し出し完了ページへ送る
+	     
 	      mav.addObject("member" , member);
 	    
 	   // 貸出結果の画面へフォワードする
@@ -299,30 +309,34 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     	// 更新した後に historiesテーブルから 書籍のIDで絞り込んで そして主キーでソートをして limit 1　で 最新の貸し出し履歴を取得してる
     	 LastHistoryDatalist = historyService.getLastHistoryData(bookId);  // 更新後の  最新の状態を上書きする
     	 
+    	// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
+    	String status = library.getStatusStr(LastHistoryDatalist);
+    	 
+    	 
     	   	// Iteratorを使ったやり方でもいい
-    	 Iterator itr =  LastHistoryDatalist.iterator();
-    	 while(itr.hasNext()) {
- 			Object[] obj = (Object[]) itr.next();
- 			id = Integer.parseInt(String.valueOf(obj[0]));
- 			lendDate = (Date) obj[1];
-			returnDate = (Date) obj[2];
-			memberId = Integer.parseInt(String.valueOf(obj[4])); 
- 		 }
-    	 String status = "";
-    	// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
-		// 貸出可能 書架の状態です
-		if(LastHistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
-			status = "書架";
-		} else if(LastHistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
-			// 最新の履歴の状態は 返却済みなのかどうか、 returnDate;  // 返却した日が nullなのかどうか
-			if(returnDate == null) {
-				// 貸し出し中です
-				status = "貸し出し中";
-			} else {
-				status = "書架";
-			}				
-		}
-    	   	 
+//    	 Iterator itr =  LastHistoryDatalist.iterator();
+//    	 while(itr.hasNext()) {
+// 			Object[] obj = (Object[]) itr.next();
+// 			id = Integer.parseInt(String.valueOf(obj[0]));
+// 			lendDate = (Date) obj[1];
+//			returnDate = (Date) obj[2];
+//			memberId = Integer.parseInt(String.valueOf(obj[4])); 
+// 		 }
+//    	 String status = "";
+//    	// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
+//		// 貸出可能 書架の状態です
+//		if(LastHistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
+//			status = "書架";
+//		} else if(LastHistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
+//			// 最新の履歴の状態は 返却済みなのかどうか、 returnDate;  // 返却した日が nullなのかどうか
+//			if(returnDate == null) {
+//				// 貸し出し中です
+//				status = "貸し出し中";
+//			} else {
+//				status = "書架";
+//			}				
+//		}
+//    	   	 
     	//Mapに変換するをnewして確保しておく  今後複数の本を同時に貸し出し 返却する時のためにMapで管理しておく
 		 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
 		 // Historyデータの bookidフィールドは Bookデータの主キーidを参照してるので Book情報を取得する
