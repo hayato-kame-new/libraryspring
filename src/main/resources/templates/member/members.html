@@ -38,7 +38,7 @@
 		
 			<td>
 			 <!--  ? 以降の クエリー文字列  ?id=1   などと表示される -->
-				<a th:href="@{/member_show( id=${member.id}) }"><button type="button" >会員 詳細画面へ</button></a>
+				<a th:href="@{/member_show( id=${member.id}) }"><button type="button" >会員 詳細画面</button></a>
 			</td>
 		
 		</tr>
@@ -47,13 +47,13 @@
 </th:block>
 </div>
 <div>
-	<a href="/member_form?action=add" th:href="@{/member_form(action=add)}"><button type="button" >会員 新規登録画面へ</button></a>
+	<a href="/member_form?action=add" th:href="@{/member_form(action=add)}"><button type="button" >会員 新規登録画面</button></a>
 </div>
 
 
 
 <div>
-	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 </div>
 
 <!-- 以降がページネーション部分 -->

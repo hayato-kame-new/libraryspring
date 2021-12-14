@@ -38,22 +38,22 @@
 
  <h2 class="heading" th:inline="text">書籍の詳細ページ</h2>
 
-<table th:each="book : ${bookDataList}" th:object="${book}">
-		<tr><th>ID</th><td th:text="*{id}"></td></tr>
-		<tr><th>ISBN</th><td th:text="*{isbn}"></td></tr>
-		<tr><th>ジャンル</th><td th:text="*{genre}"></td></tr>
-		<tr><th>タイトル</th><td th:text="*{title}"></td></tr>
-		<tr><th>著者</th><td th:text="*{authors}"></td></tr>
-		<tr><th>出版社</th><td th:text="*{publisher}"></td></tr>
-		<tr><th>発行年</th><td th:text="*{publishYear}"></td></tr>
-		
+<table th:each="element : ${statusMap}" >
+		<tr><th>ID</th><td th:text="${element.key.id}"></td></tr>
+		<tr><th>ISBN</th><td th:text="${element.key.isbn}"></td></tr>
+		<tr><th>ジャンル</th><td th:text="${element.key.genre}"></td></tr>
+		<tr><th>タイトル</th><td th:text="${element.key.title}"></td></tr>
+		<tr><th>著者</th><td th:text="${element.key.authors}"></td></tr>
+		<tr><th>出版社</th><td th:text="${element.key.publisher}"></td></tr>
+		<tr><th>発行年</th><td th:text="${element.key.publishYear}"></td></tr>
+		<tr><th>状態</th><td th:text="${element.value}"></td></tr>
 		<tr>
 			<th></th>
 			<td>
 			    <!-- 編集画面を表示する -->
 			<!-- 	<a style="margin-right: 20px" th:href="@{/book_form(action=edit, id=${book.id})}"><button class="editbtn" type="button" >書籍編集</button></a> -->
 				<!-- 削除の時にも 一旦確認のため 内容表示の画面を表示する /book_delete_confirm-->
-				ここでは削除ボタンはつけない
+				
 				 <!-- <a th:href="@{/book_delete_confirm(id=${book.id})}"><button class="deletebtn" type="button" >書籍削除</button></a> -->
 			</td>
 		</tr>
@@ -61,11 +61,15 @@
 </table>
 
 <div>
-	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面へ戻る</button></a>
+	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面</button></a>
 </div>
 
 <div>
-	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+	<a href="/book_search_form" th:href="@{/book_search_form}"><button type="button"  >書籍 検索画面</button></a>
+</div>
+
+<div>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 </div>
 </body>
 </html>

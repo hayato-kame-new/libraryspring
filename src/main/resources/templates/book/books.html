@@ -36,7 +36,7 @@
 			<td th:text="${book.authors}"></td>
 			<td>
 			 <!--  ? 以降の クエリー文字列  ?action=edit&id=1   などと表示される -->
-				<a th:href="@{/book_form(action=edit, id=${book.id})}"><button type="button" >書籍 編集画面へ</button></a>
+				<a th:href="@{/book_form(action=edit, id=${book.id})}"><button type="button" >書籍 編集画面</button></a>
 			</td>
 			<td>
 			<a th:href="@{/book_delete_confirm(id=${book.id})}"><button class="deletebtn" type="button" >書籍削除</button></a>
@@ -48,15 +48,15 @@
 </th:block>
 </div>
 <div>
-	<a href="/book_form?action=add" th:href="@{/book_form(action=add)}"><button type="button" >書籍 新規登録画面へ</button></a>
+	<a href="/book_form?action=add" th:href="@{/book_form(action=add)}"><button type="button" >書籍 新規登録画面</button></a>
 </div>
 
 <div>
-	<a href="/book_search_form" th:href="@{/book_search_form}"><button type="button"  >書籍 検索画面へ</button></a>
+	<a href="/book_search_form" th:href="@{/book_search_form}"><button type="button"  >書籍 検索画面</button></a>
 </div>
 
 <div>
-	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 </div>
 
 <!-- 以降がページネーション部分 -->

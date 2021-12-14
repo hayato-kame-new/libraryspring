@@ -98,13 +98,7 @@
 					
 					<!-- 書架状態 表示後で変更 -->
 					<td align="center" th:text="${element.value}"></td>
-					<!-- <td align="center" th:text="${obj.orderDate}"></td> -->
-					<!-- <td align="center" >
-						<a  th:href="@{/order/{isbn}(isbn=${obj.isbn})}">●</a>
-					</td>
-					<td align="center">
-						<a href="/delivery" th:href="@{/delivery/{isbn}(isbn=${obj.isbn})}">●</a>
-					</td>-->
+					
 					<td align="center" th:text="${element.key.authors}"></td>
 					<td>
 						<!-- フォームでHTTPメソッドGETで送ってもいい -->
@@ -114,31 +108,13 @@
 						 </form>
 					</td>
 					
-					<!-- <td>
-						 <form method = "get" action = "/emp_add_edit" >
-						 	<input type="hidden" name="employeeId" th:value="${obj[0]}" >
-						 	<input type="hidden" name="action" th:value="edit" >
-						 	<input type="submit" value="編集" >
-						 </form>		
-					</td>
-					<td>
-						<form method = "post" action = "/emp_delete" >
-							<input type="hidden" name="employeeId" th:value="${obj[0]}" >
-							<input type="submit" value="削除" >
-						</form>		
-					</td> -->
 				</tr> 
 			</table>
 		</th:block>
 		<div >
-			<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>
+			<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 		</div>
 		
-		<!-- <div>
-			<form th:action="@{/logout}" method="post">
-		        <input type="submit" value="ログアウト" />
-		    </form>	
-		</div> -->
 	 </div>
 </body>
 </html>

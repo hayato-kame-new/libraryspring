@@ -1,5 +1,6 @@
 package com.kame.springboot.controller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kame.springboot.bean.Library;
 import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Book;
 import com.kame.springboot.service.BookService;
+import com.kame.springboot.service.HistoryService;
 
 
 @Controller
@@ -35,6 +38,12 @@ public class BookController {
 	
 	@Autowired
 	ViewBean viewBean;
+	
+	@Autowired
+	HistoryService historyService;
+	
+	@Autowired
+	Library library;
 	
 	/**
 	 * 書籍一覧を表示する
@@ -81,15 +90,32 @@ public class BookController {
 			@PathVariable String isbn,  // パス変数 /book_show/{isbn} の {isbn} と同じ変数名にする
 			ModelAndView mav
 			) {
-		// ISBNから指定したレコードを取得する。 bookのデータを取得してる 
-		// リポジトリの辞書機能によって メソッド自動生成機能を使用してる 戻り値は  List<Book>
+		// ISBNから指定したレコードを取得する。 bookのデータを取得してる ISBN はユニークなので１つのデータが取得できる
+		// リポジトリの辞書機能によって メソッド自動生成機能を使用してる 戻り値は  List<Book> だが、中身は１つ もしくは []空
 		List<Book> bookDataList = bookService.findBookDataByIsbn(isbn);
 		
+		 //Mapに変換するをnewして確保しておく
+		 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
+				
 		mav.setViewName("book/show");
-		mav.addObject("bookDataList", bookDataList);  // 書籍の情報を送る
+		// mav.addObject("bookDataList", bookDataList);  // 書籍の情報を送る
+		Book book = null;
+		int id = 0;
+		if(bookDataList.size() > 0) {
+			book = bookDataList.get(0);
+			id = book.getId();
+		}
+				
 		// 書籍の状態(貸し出し中なのか 書架状態なのか)を表示するために
+		List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(id);
+//		
+//		// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
+	String status = library.getStatusStr(LastHistoryDatalist);
 		
-		
+	// Mapに詰める
+				statusMap.put(book, status);
+				mav.addObject("statusMap",statusMap); 
+			
 		return mav;
 	}
 	
