@@ -80,12 +80,12 @@
 		<p th:if="${resultMsg}" th:text="${resultMsg}"></p>
 		 <th:block th:if="${statusMap != null && statusMap.size() > 0}">
 			 <table>
-				<tr><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th><th></th><th></th><th></th></tr>
+				<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th><th></th><th></th><th></th></tr>
 				
 				<tr th:each="element : ${statusMap}" >	
 					
+					<td align="center" th:text="${element.key.id}"></td>
 					<td align="center" >
-					
 						<a href="/book_show" th:href="@{/book_show/{isbn}(isbn=${element.key.isbn})}" th:text="${element.key.isbn}"></a>
 						<!-- フォームでHTTPメソッドGETで送ってもいい -->
 					<!-- 	<form method = "get" action="/book_show" th:action = "@{/book_show/{isbn}(isbn=${obj.isbn})}" >
