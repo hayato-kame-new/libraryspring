@@ -39,7 +39,7 @@ public class HistoryService {
 		 * Iterable にキャストもできる
 		 * @return List<Object[]>
 		 */
-		public List<Object[]> getOneBookHistoriesList(int bookId) {
+		public List<Object[]> getLastHistoryData(int bookId) {
 			// historiesテーブルから 本のbookidで絞り込んで検索 ソートして １つだけを取得 limit 1
 			Query query = entityManager.createNativeQuery("select * from histories where bookid = ?  order by id desc limit 1");  // order by id を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
 			
@@ -52,6 +52,11 @@ public class HistoryService {
 			return Datalist;
 		}
 
+		/**
+		 * 貸し出し履歴Historyを historiesテーブルへ新規登録する
+		 * @param history
+		 * @return
+		 */
 	public boolean add(History history) {
 
 		Query query = entityManager.createNativeQuery("insert into histories (lenddate, returndate, bookid, memberid) values (:a, :b, :c, :d) " );
@@ -83,8 +88,31 @@ public class HistoryService {
 			 return false; // falseを返す 失敗したら、即returnして以下の行は実行されない 引数のfalseを呼び出し元へ返す
 		 }
 		 // 成功してるなら
-		 return true;	
+		 return true;			
+	}
+	
+	/**
+	 * 貸し出し記録を更新する 返却日を入れる
+	 * @param id
+	 * @return true:成功<br /> false:失敗
+	 */
+	public boolean update(int id) {
 		
+		 Query query = entityManager.createNativeQuery("update histories set returndate = ? where id = ? ");
+		 // 本日が返却日なので java.sql.Dateで本日を取得
+		 java.util.Date Utiltoday = new java.util.Date();
+		 java.sql.Date Sqltoday = new java.sql.Date(Utiltoday.getTime());
+		 
+		 query.setParameter(1, Sqltoday);
+		 query.setParameter(2, id);
+		 
+		 int result = query.executeUpdate();  // 更新をした件数が返る
+			if (result != 1) { // 失敗
+				return false; // 失敗したら false が返る
+				// ここでreturnしたら このメソッドは即終了するので以降は実行されない 引数の falseを呼び出し元へ返す
+			}
+			return true;  // 成功
+		 
 	}
 
 }

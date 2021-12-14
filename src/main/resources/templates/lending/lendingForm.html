@@ -19,7 +19,9 @@
 
 <h2 class="headingLenging" >貸し出しフォーム</h2>
 
+<!-- フォーム入力のバリデーションにエラーがあると msgにメッセージ -->
 <p th:if="${msg}" th:text="${msg}"></p>
+<!-- 貸し出しのデータベース処理に失敗すると flashMsg に失敗のメッセージ  -->
 <p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
 
 <form th:action="@{/lend}" method="post" th:object="${lendingForm}" >
@@ -43,7 +45,7 @@
 	</div>
 </form>
 
-<p>確認用で表示してます、貸し出し可能の一覧と 不可(今貸出中)の一覧できるのかどうか</p>
+<p>確認用で表示してます、貸し出し可能の一覧と 不可(今貸出中)の一覧を作り表示する</p>
 
 <div>
 	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>

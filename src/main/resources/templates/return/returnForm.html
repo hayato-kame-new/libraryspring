@@ -19,7 +19,9 @@
 
 <h2 class="headingLenging" >返却フォーム</h2>
 
+<!-- フォーム入力の バリデーションにエラーがあると msgにメッセージ -->
 <p th:if="${msg}" th:text="${msg}"></p>
+<!-- 返却のデータベース処理に失敗すると flashMsg に失敗のメッセージ  -->
 <p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
 
 <form th:action="@{/return}" method="post" th:object="${returnForm}" >
@@ -43,7 +45,7 @@
 ここに 貸し出し延長するボタンもつけます
 
 
-<p>確認用で表示してます、貸し出し可能の一覧と 不可(今貸出中)の一覧できるのかどうか</p>
+<p>確認用で表示してます、貸し出し可能の一覧と 不可(今貸出中)の一覧を作り表示する</p>
 
 <div>
 	<a href="/" th:href="@{/}"><button type="button" th:text="トップページへ戻る" ></button></a>

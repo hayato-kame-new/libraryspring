@@ -131,15 +131,15 @@ public class BookSearchController {
 			int bookId = book.getId();  // Bookインスタンスの主キーidが Historyインスタンスの bookidとリレーションがあります Historyインスタンスの bookidは Bookの idを参照してます
 			// このリストには 要素は1つ もしくは 要素はない 
 			// historiesテーブルから 書籍のIDで絞り込んで そして主キーでソートをして limit 1　で 最新の貸し出し履歴を取得してる
-			List<Object[]> HistoryDatalist = historyService.getOneBookHistoriesList(bookId);
-			// これで最後の貸し出し履歴のHistoryのデータが取れたのか 確認をしたい！！！履歴がまだない時は []
+			List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(bookId);
+			// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
 			int id = 0;
 			Date lendDate = null;
 			 Date returnDate = null;
 			 // int bookId = 0;
 			 int memberId = 0;	
 			 
-			for(Object[] obj : HistoryDatalist) {
+			for(Object[] obj : LastHistoryDatalist) {
 				System.out.println(obj[0]);
 				System.out.println(obj[1]);
 				System.out.println(obj[2]);
@@ -152,9 +152,9 @@ public class BookSearchController {
 			}
 			// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
 			// 貸出可能 書架の状態です
-			if(HistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
+			if(LastHistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
 				status = "書架";
-			} else if(HistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
+			} else if(LastHistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
 				// 最新の履歴の状態は 返却済みなのかどうか、 returnDate;  // 返却した日が nullなのかどうか
 				if(returnDate == null) {
 					// 貸し出し中です
