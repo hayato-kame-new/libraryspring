@@ -70,20 +70,26 @@ public class BookController {
 	
 	/**
 	 * 書籍 詳細画面を表示
+	 * ISBNをURLのクエリーパラメータで送ってくる
+	 * ISBNから指定したレコードを取得して表示をする。
 	 * @param id
 	 * @param mav
 	 * @return
 	 */
 	@RequestMapping(value = "/book_show/{isbn}", method=RequestMethod.GET)
 	public ModelAndView show(
-			@PathVariable String isbn,
+			@PathVariable String isbn,  // パス変数 /book_show/{isbn} の {isbn} と同じ変数名にする
 			ModelAndView mav
 			) {
-		// 主キーid から Memberオブジェクトを取得する
-		List<Book> bookList = bookService.findBookDataByIsbn(isbn);
+		// ISBNから指定したレコードを取得する。 bookのデータを取得してる 
+		// リポジトリの辞書機能によって メソッド自動生成機能を使用してる 戻り値は  List<Book>
+		List<Book> bookDataList = bookService.findBookDataByIsbn(isbn);
 		
 		mav.setViewName("book/show");
-		mav.addObject("bookList", bookList);
+		mav.addObject("bookDataList", bookDataList);  // 書籍の情報を送る
+		// 書籍の状態(貸し出し中なのか 書架状態なのか)を表示するために
+		
+		
 		return mav;
 	}
 	

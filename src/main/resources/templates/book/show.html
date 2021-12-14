@@ -38,7 +38,7 @@
 
  <h2 class="heading" th:inline="text">書籍の詳細ページ</h2>
 
-<table th:each="book : ${bookList}" th:object="${book}">
+<table th:each="book : ${bookDataList}" th:object="${book}">
 		<tr><th>ID</th><td th:text="*{id}"></td></tr>
 		<tr><th>ISBN</th><td th:text="*{isbn}"></td></tr>
 		<tr><th>ジャンル</th><td th:text="*{genre}"></td></tr>

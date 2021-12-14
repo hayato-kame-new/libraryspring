@@ -36,6 +36,7 @@ public class Library {  // Beanとして使えるクラスにしています MyB
 	
 	 /**
      * 貸出し情報を表示する
+     * このクラス内で使ってるメソッドです
      * @param history
      */
 //    void printHistory(History history) {
@@ -61,9 +62,48 @@ public class Library {  // Beanとして使えるクラスにしています MyB
         }
         return false;  // 貸し出し中では無い falseを返す
     }
+    
+    //状態を調べる
+	// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
+	// 貸出可能 書架の状態です
+    public String getStatusStr(List<Object[]> LastHistoryDatalist) {
+    	// 最後の貸し出し履歴のHistoryのデータ 履歴がまだない時は []
+		int id = 0;
+		Date lendDate = null;
+		 Date returnDate = null;
+		 //  int bookId = 0;
+		 int memberId = 0;	
+		 
+		for(Object[] obj : LastHistoryDatalist) {
+//			System.out.println(obj[0]);
+//			System.out.println(obj[1]);
+//			System.out.println(obj[2]);
+//			System.out.println(obj[3]);  
+//			System.out.println(obj[4]);
+			id =  Integer.parseInt(String.valueOf(obj[0])); 
+			// lendDate = (Date) obj[1];
+			returnDate = (Date) obj[2];
+			// bookIdは取らなくていい
+			memberId = Integer.parseInt(String.valueOf(obj[4])); 
+		}
+    	String status = "";
+    	if(LastHistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
+    		status = "書架";
+    	} else if(LastHistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
+    		// 最新の履歴の状態は 返却済みなのかどうか、 returnDate;  // 返却した日が nullなのかどうか
+    		if(returnDate == null) {
+    			// 貸し出し中です
+    			status = "貸し出し中";
+    		} else {
+    			status = "書架";
+    		}				
+    	}
+    	return status;
+    }
 
     /**
      * 貸し出し中なのか調べて 文字列で表示する
+     * このメソッドないで使ってる
      * @return String
      */
     public String lentStr(Date returnDate) {
@@ -96,64 +136,73 @@ public class Library {  // Beanとして使えるクラスにしています MyB
     	return str1 + separator + str2 + str3 + str4;
     }
     
+    /**
+     * この図書館システムに所蔵されているのかどうか調べる
+     * このhousesメソッドで判断して、この図書館システムに所蔵されていれば
+     * 次にcanLendメソッドで 貸出し可能か調べる
+     * @param history
+     * @param historiesObjList
+     * @return true:この図書館に所蔵されてる <br /> false:この図書館に所蔵されていない
+     */
+    public Boolean houses(History history, List<Object[]> historiesObjList){
+    	
+    	// まず、これから貸し出そうとしている本が，この図書館システムが管理している本のリスト に存在するかを判定
+        // containsメソッドで コレクション変数の中に 引数に渡された本が含まれているかを判定する
+        //  ! で 判定を逆にしてるから 含まれていなければ falseを返す
+ 		   // query.getResultList()で取得したデータは List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
+ 	   List<Object[]> booksDataList = bookService.booksList();  // この図書館システムが保管する全ての本のリスト
+ 	   
+ 	   Iterator itr =  booksDataList.iterator();
+ 	   // booksDataList を  List<Book> のリストに詰め替える
+ 	   List<Book> booksList = new ArrayList<Book>();  // newして確保
+ 	   int id = 0;
+ 	   String isbn = "";
+ 		 String genre = "";
+ 		 String title = "";
+ 		 String authors = "";
+ 		 String publisher = "";
+ 		 Integer publishYear =null;
+ 		 
+ 		 while(itr.hasNext()) {
+ 			 Object[] obj = (Object[]) itr.next();
+ 			
+ 			 id = Integer.parseInt(String.valueOf(obj[0]));
+ 			 isbn = String.valueOf(obj[1]);
+ 			genre = String.valueOf(obj[2]);
+ 			title = String.valueOf(obj[3]);
+ 			authors = String.valueOf(obj[4]);
+ 			publisher = String.valueOf(obj[5]);
+ 			publishYear = Integer.parseInt(String.valueOf(obj[6]));
+ 			// Bookインスタンスを生成する
+ 			 Book book = new Book(id, isbn, genre, title, authors, publisher, publishYear);
+ 			 booksList.add(book);  // リストに追加する
+ 			 }
+
+ 		 // HistoryオブジェクトのbookIdフィールドから Bookがわかるので Bookインスタンスを取得
+ 		 Book book = bookService.findBookDataById(history.getBookId());
+ 		 // containsの中では equalsを使っています
+ 		 // Bookクラスでequalsメソッドと hashCode()をオーバーライドして、等しいの定義付けをする必要があります
+ 		 		 
+ 	   if(!booksList.contains(book)){  // equalsメソッドと hashCode()メソッドをOverrideしたので 機能する
+            return false;  // これから貸し出そうとする本は、図書館システムには無い本なので 貸出できません
+            // 貸出できないので、returnで即メソッドを終了させて、呼び出し元に引数の falseを返します。
+            // このメソッドはreturnしたので、この行以降は実行されない
+         }
+ 	   return true; // この図書館に所蔵されています
+ 			  
+    }
+    
     
     /**
-     * 貸し出しができるか判定する 
+     * housesメソッドで判断して、この図書館システムに所蔵されていれば このメソッドで貸し出しができるか判定する 
      * public をつけないと 他のパッケージからは見えないので publicつける
      * @param history   これから貸し出そうとしている History型の実体
      * @param histories  これから貸し出そうとする本に関するこれまでの貸し出し履歴であるHistory のリスト
      * @return true:貸出可能 <br /> false:貸出不可
      */
-    
-    // 第二引数変わりますので、このメソッドの内容を書き換えないとけません！！
-    // 第二引数は、History実体の本に関しての、今までの貸し出し履歴の中で一番最新の貸し出し履歴の情報が入ってる List<Object[]> historiesObjList
-      // 変更してから使うこと！！！！
-   // Boolean canLend(History history, List<History> histories){
 	   public Boolean canLend(History history, List<Object[]> historiesObjList){
-       // まず、これから貸し出そうとしている本が，この図書館システムが管理している本のリストshelf に存在するかを判定
-       // containsメソッドで コレクション変数shelfの中に 引数に渡された本が含まれているかを判定する
-       //  ! で 判定を逆にしてるから 含まれていなければ falseを返す
-		   // query.getResultList()で取得したデータは List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
-	   List<Object[]> booksDataList = bookService.booksList();  // この図書館システムが保管する全ての本のリスト
-	   
-	   Iterator itr =  booksDataList.iterator();
-	   // booksDataList を  List<Book> のリストに詰め替える
-	   List<Book> booksList = new ArrayList<Book>();  // newして確保
-	   int id = 0;
-	   String isbn = "";
-		 String genre = "";
-		 String title = "";
-		 String authors = "";
-		 String publisher = "";
-		 Integer publishYear =null;
-		 
-		 while(itr.hasNext()) {
-			 Object[] obj = (Object[]) itr.next();
-			
-			 id = Integer.parseInt(String.valueOf(obj[0]));
-			 isbn = String.valueOf(obj[1]);
-			genre = String.valueOf(obj[2]);
-			title = String.valueOf(obj[3]);
-			authors = String.valueOf(obj[4]);
-			publisher = String.valueOf(obj[5]);
-			publishYear = Integer.parseInt(String.valueOf(obj[6]));
-			// Bookインスタンスを生成する
-			 Book book = new Book(id, isbn, genre, title, authors, publisher, publishYear);
-			 booksList.add(book);  // リストに追加する
-			 }
-
-		 // HistoryオブジェクトのbookIdフィールドから Bookがわかるので Bookインスタンスを取得
-		 Book book = bookService.findBookDataById(history.getBookId());
-		 // containsの中では equalsを使っています
-		 // Bookクラスでequalsメソッドと hashCode()をオーバーライドして、等しいの定義付けをする必要があります
-		 		 
-	   if(!booksList.contains(book)){  // equalsメソッドと hashCode()メソッドをOverrideしたので 機能する
-           return false;  // これから貸し出そうとする本は、図書館システムには無い本なので 貸出できません
-           // 貸出できないので、returnで即メソッドを終了させて、呼び出し元に引数の falseを返します。
-           // このメソッドはreturnしたので、この行以降は実行されない
-        }
-
-       // これから貸し出そうとする本は、この図書館システムに有るので、貸出できます。(貸出中じゃなければ)
+    
+       // 先に housesメソッドで調べてるので これから貸し出そうとする本は、この図書館システムに有るので、貸出できます。(貸出中じゃなければ)
        // 次に、貸し出し中かどうか調べます
        // その本の貸出履歴が存在しない場合 つまり histories.size() == 0 は，今まで借りられたことがないため，貸し出し可能
        // その本の貸出履歴があったら histories.size() > 0 だったら、貸出可能かどうかを調べる

@@ -98,7 +98,7 @@ public class BookService {
 	  * 書籍を主キーで検索して オブジェクトを返す 
 	  *  query.getResultList()で 取得したデータは List<Object[]>になってます
 	  * @param id
-	  * @return
+	  * @return Book
 	  */
 	 public Book findBookDataById(Integer id) {
 		
@@ -329,13 +329,16 @@ public class BookService {
 //		}
 
 
-	    // 使えるのか確認を後ですること
 	    /**
-	     * isbnから指定したレコードを取得する。
+	     * ISBNから指定したレコードを取得する。 ISBN はユニーク(一意制約)です
+	     * 
+	     *  リポジトリの辞書機能によって メソッド自動生成機能を使っている
+	     *  戻り値は  List<Book>
 	     * @param isbn
-	     * @return
+	     * @return  List<Book>
 	     */
 	    public List<Book> findBookDataByIsbn(String isbn){
+	    	// これはリポジトリのメソッド自動生成機能を使っています
 	      return bookRepository.findByIsbn(isbn);
 	    }
 

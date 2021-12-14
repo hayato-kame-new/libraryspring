@@ -80,7 +80,7 @@ public class MemberService {
 	  * 会員 を主キーで検索して オブジェクトを返す 
 	  *  query.getResultList()で 取得したデータは List<Object[]>になってます
 	  * @param id
-	  * @return Member
+	  * @return Member 見つからない場合は null
 	  */
 	 public Member findMemberDataById(Integer id) {
 	 
@@ -89,26 +89,31 @@ public class MemberService {
 		 // List<Object[]>   になってます
 		  List<Object[]> resultDataList = query.getResultList();
 		  // Iterator<Object[]> になってます
-		  Iterator<Object[]> itr = resultDataList.iterator();
-		  
-		  String name = "";
-		  String tel = "";
-		  String address = "";
-		  java.sql.Date javaSqlDate = null;
-		  LocalDate birthday = null;
-		  while(itr.hasNext()) {
-			  Object[] obj = (Object[]) itr.next();
+		  // 見つからない時には []になってるので、
+		  Member member = null;  // 見つからない時には []になってるので nullを代入してそれをreturnしてます
+		  if(resultDataList.size() > 0) {  // 見つかったので
+			  // 見つかったので Memeber型のオブジェクトに詰め替えてる
+			  Iterator<Object[]> itr = resultDataList.iterator();
 			  
-			// id は取得しなくてもいい
-			// id = Integer.parseInt(String.valueOf(obj[0]));
-			  name = String.valueOf(obj[1]);  // String型に キャストするんじゃなくて メソッドを使ってString型へ変換する
-			  tel = String.valueOf(obj[2]);
-			  address = String.valueOf(obj[3]);
-			  javaSqlDate = (Date) (obj[4]);
-			  birthday = javaSqlDate.toLocalDate();
+			  String name = "";
+			  String tel = "";
+			  String address = "";
+			  java.sql.Date javaSqlDate = null;
+			  LocalDate birthday = null;
+			  while(itr.hasNext()) {
+				  Object[] obj = (Object[]) itr.next();
+				  
+				  // id は取得しなくてもいい
+				  // id = Integer.parseInt(String.valueOf(obj[0]));
+				  name = String.valueOf(obj[1]);  // String型に キャストするんじゃなくて メソッドを使ってString型へ変換する
+				  tel = String.valueOf(obj[2]);
+				  address = String.valueOf(obj[3]);
+				  javaSqlDate = (Date) (obj[4]);
+				  birthday = javaSqlDate.toLocalDate();
+			  }
+			member = new Member(id, name, tel, address, birthday);
 		  }
-		 Member member = new Member(id, name, tel, address, birthday);
-		 return member;
+		 return member;  // 見つからない時には nullになってます
 	 }
 	 
 	 /**

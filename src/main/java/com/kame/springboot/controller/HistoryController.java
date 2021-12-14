@@ -104,6 +104,22 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     	
     	
     	// 貸出できるのか確認をまずする
+    	
+    	// 会員ID  memberIdから、その会員がこの図書館システムに登録している会員なのか調べる
+    	// historiesテーブルの memberIdカラムは リレーションで 親テーブルのmembersテーブルの 主キーidを参照していますので
+    	// membersテーブルから探す
+    	Member member = memberService.findMemberDataById(memberId);
+    	if(member == null) {
+    		System.out.println("存在しない");
+    		
+    	// このIDの会員は この図書館システムには 存在しない会員なので 
+    		// フォワード returnでこのリクエストハンドラを即終了する 以降の行は実行されない
+    		mav.setViewName("lending/lendingForm");  
+    		mav.addObject("msg", "貸し出しできません(会員は登録されていません)");
+    		return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
+    		
+    	}
+    	
     	// History実体を作り、調べる 貸出できないようなら、貸出フォームに戻り エラーメッセージを出す
     	// もし 3冊借りるなら 3つのHistory実体を作り出し、それぞれを調べる。
     	// History実体を作っても、まだ貸し出しをしてはいないので 貸し出しできるか調べて、できるならhistoriesテーブルに登録して 初めて貸し出し処理完了となる 
@@ -114,10 +130,23 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     	// その本の一番最新の貸し出し履歴 の情報が入ってるリストです
     	List<Object[]> LastHistoryData = historyService.getLastHistoryData(bookId);
     	
-    	// BeanクラスのLibraryクラスcanLendメソッドに使う
+  
     	String flashMsg = ""; 
+    	// まず、housesメソッドで その書籍がこの図書館システムの所蔵されている本なのかどうか、調べる
+    	// trueを返せば この図書館システムの所蔵されている本
+    	Boolean houses = library.houses(history, LastHistoryData);
+    	if(houses == false) {
+    		// そのIDの書籍は図書館システムにはない
+    		// フォワード returnでこのリクエストハンドラを即終了する 以降の行は実行されない
+    		mav.setViewName("lending/lendingForm");  
+    		mav.addObject("msg", "貸し出しできません(書籍は所蔵されていません)");
+    		return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
+    	}
+    	// この図書館システムの所蔵されている本なので、次に canLend メソッドで その本が貸出可能なのか調べる
+    	// 
     	Boolean canLend = library.canLend(history, LastHistoryData);
     	if(canLend == false) {  // その本は貸し出しできない
+    		//  貸し出し中
     		// フォワード
         	mav.setViewName("lending/lendingForm");  
     		mav.addObject("msg", "貸し出しできません(貸し出し中)");
@@ -161,7 +190,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 	      mav.addObject("book" , book);
 	     
 	      // 貸し出した会員の情報を取得する それも貸し出し完了ページへ送る
-	      Member member = memberService.findMemberDataById(memberId);
+	      // Member member = memberService.findMemberDataById(memberId);
 	      mav.addObject("member" , member);
 	    
 	   // 貸出結果の画面へフォワードする
