@@ -31,22 +31,24 @@
 		<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
 		<div th:text="| password: ${#authentication.principal.password} です|"></div>
 		<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div> -->
-<table th:object="${userDetails}">
-	<tr><th>ID</th><td th:text="*{id}"></td></tr>
-	<tr><th>名前</th><td th:text="${#authentication.principal.username}"></td></tr>
-	<tr><th>権限情報</th><td th:text="${#authentication.principal.authorities}"></td></tr>
-	<tr><th>年齢</th><td th:text="*{age}"></td></tr>
-	<tr><th>性別</th><td th:text="${userDetails.genderStr()}"></td></tr>
-	<tr><th>メールアドレス</th><td th:text="*{email}"></td></tr>
-	<tr><th>電話</th><td th:text="*{tel}"></td></tr>
-	<tr>
-		<th></th>
-		<td> 
-		    <!-- 認証ユーザの 編集画面を表示 -->
-			<a style="margin-right: 20px" th:href="@{/user_edit_form(action=edit, username=${#authentication.principal.username})}"><button class="editbtn" type="button" >ユーザー編集</button></a>
-	 	</td>
-	</tr>	
-</table>
+<div>
+	<table th:object="${userDetails}">
+		<tr><th>ID</th><td th:text="*{id}"></td></tr>
+		<tr><th>名前</th><td th:text="${#authentication.principal.username}"></td></tr>
+		<tr><th>権限情報</th><td th:text="${#authentication.principal.authorities}"></td></tr>
+		<tr><th>年齢</th><td th:text="*{age}"></td></tr>
+		<tr><th>性別</th><td th:text="${userDetails.genderStr()}"></td></tr>
+		<tr><th>メールアドレス</th><td th:text="*{email}"></td></tr>
+		<tr><th>電話</th><td th:text="*{tel}"></td></tr>
+		<!-- <tr>
+			<th></th>
+			<td> 
+			    認証ユーザの 編集画面を表示
+				<a style="margin-right: 20px" th:href="@{/user_edit_form( username=${#authentication.principal.username})}"><button class="editbtn" type="button" >ユーザー編集</button></a>
+		 	</td>
+		</tr>	 -->
+	</table>
+</div>
 <div>
 	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 </div>

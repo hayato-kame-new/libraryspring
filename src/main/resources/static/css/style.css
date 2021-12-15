@@ -17,7 +17,7 @@ font-size: 17px; color: gray; margin: 10px 30px;}
 	color: lightsalmon;
 }
 .headingUser {
-	color: mediumslateblue;
+	color: plum;
 }
 pre {
 font-size: 17px; color:gray; padding:5px 10px; border:1px solid gray;
@@ -26,10 +26,10 @@ tr {
 margin: 5px;
 }
 th {
-padding: 5px; color:white; background:darkgray;
+padding: 5px 7px; color:white; background:darkgray;
 }
 td {
-padding: 5px; color:black; background:#f0f0f0;
+padding: 5px 7px; color:black; background:#f0f0f0;
 }
 div { margin-bottom: 15px; }
 .err { color: red; }
@@ -38,8 +38,8 @@ div { margin-bottom: 15px; }
  	color: darkgreen;
  	font-size: bold;
  	border-radius: 7px;
- 	padding: 5px;
- 	font-size: 16px;
+ 	padding: 4px;
+ 	font-size: 15px;
  	border: 1px solid #333;
  }
  .deletebtn {
@@ -47,8 +47,8 @@ div { margin-bottom: 15px; }
  	color: white;
  	font-size: bold;
  	border-radius: 7px;
- 	padding: 5px;
- 	font-size: 16px;
+ 	padding: 4px;
+ 	font-size: 15px;
  	border: 1px solid #333;
  }
  .msg {

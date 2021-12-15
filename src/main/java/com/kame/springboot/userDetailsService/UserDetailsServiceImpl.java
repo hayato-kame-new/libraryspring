@@ -30,6 +30,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	// ユーザー登録に必要 @Autowired アノテーションを使用して、SecurityConfig クラスで Bean 定義した PasswordEncode を取得します
 	@Autowired
     PasswordEncoder passwordEncoder;
+	
+	// ユーザー一覧
+//	@Override
+//	public UserDetails getAllUsers()  {
+//			
+//	}
 
 	/*
 	  UserDetailsService インターフェイスには次のようになっています

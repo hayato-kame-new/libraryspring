@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
-<title th:text="|#{user_search_page.title} - library|"></title>
+<title th:text="|#{users_page.title} - library|"></title>
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
@@ -14,14 +14,11 @@
 <div th:include="common/header :: common_header"></div>
 
 	 <div class="contents">
-		<h2 class="heading">ユーザー検索ページ</h2>
-		<h4>条件を指定してユーザー情報を検索します</h4>
-	
-	
-	
-	
-	
-	
+		<h2 class="heading">ユーザー一覧ページ</h2>
+		
+		
+		
+		
 		<div>
 			<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 		</div>

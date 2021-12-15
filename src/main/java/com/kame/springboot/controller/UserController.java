@@ -1,8 +1,13 @@
 package com.kame.springboot.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,43 +17,65 @@ import com.kame.springboot.userDetails.UserDetailsImpl;
 import com.kame.springboot.userDetailsService.UserDetailsServiceImpl;
 
 @Controller
-public class UserShowController {
+public class UserController {
 	
 	// サービスクラスをフィールドとして宣言して @Autowierd で取り込む
 	@Autowired
 	UserDetailsServiceImpl userDetailsServiceImpl;
 	
-	
-//	@GetMapping
-//    public String index () {
+	// ユーザ一覧を表示する
+	// 詳細は、自分のだけしか見れないように注意する
+	@RequestMapping(value = "/users", method=RequestMethod.GET)
+	public String index(
+			@PageableDefault(page = 0, size = 10, sort = { "id" }) Pageable pageable, // id でソートしてる 重要
+			Model model
+			) {
+		
+		// ページネーションと idで ソートしたコレクション を取得
+//		Page<UserDetails> userPage = userDetailsServiceImpl.getAllUsers(pageable);
+//		model.addAttribute("page", userPage);
+//		model.addAttribute("members", userPage.getContent());
 //		
-//		// SecurityContextHolder からユーザー情報を取得する 
-//		//  SecurityContextHolderからAuthenticationオブジェクトを取得 
-//		SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication authentication = context.getAuthentication();
-//        
-//     // Authenticationオブジェクトからユーザー情報を取得
-//        System.out.println(authentication.getName());  // ユーザー名を表示
-//        System.out.println(authentication.getAuthorities());  // 権限情報を表示
-//        System.out.println(authentication.toString());
-//        
-//      
-//     // Authenticationオブジェクトからユーザー情報を取得
-//        UserDetails principal = (UserDetails) authentication.getPrincipal();
+//		
+//		
+		return "member/members";
+
+	}
+	
+//	@RequestMapping( value = "/user_show", method=RequestMethod.GET)
+//	public ModelAndView userShow(
+//			// org.springframework.security.core.annotation.AuthenticationPrincipal
+//			@AuthenticationPrincipal UserDetailsImpl userDetails,  // ＠AuthenticationPrincipal からユーザー情報を取得する
+//			@RequestParam("username")String username,  // 認証ユーザの名前 
+//			HttpServletRequest request,  // 使いたいので引数に宣言しておく
+//			ModelAndView mav) {
+//		
+//		SecurityContext context = SecurityContextHolder.getContext(); // SecurityContextHolder からユーザー情報を取得する 
+//		Authentication authentication = context.getAuthentication(); //  SecurityContextHolderからAuthenticationオブジェクトを取得
+//     
+//		System.out.println(authentication.getName());  // ユーザー名を表示  // Authenticationオブジェクトからユーザー情報を取得
+//	      System.out.println(authentication.getAuthorities());  // 権限情報を表示  // Authenticationオブジェクトからユーザー情報を取得
+//	      System.out.println(authentication.toString());  // Authenticationオブジェクトからユーザー情報を取得
+//	      
+//	      
+//	      UserDetails principal = (UserDetails) authentication.getPrincipal(); // Authenticationオブジェクトからユーザー情報を取得
 //        System.out.println(principal.getUsername());  // ユーザー名を表示
 //        System.out.println(principal.getPassword());  // パスワードを表示
 //        System.out.println(principal.getAuthorities());  // 権限情報を表示
 //        System.out.println(principal.toString());
-              
-//        return "index";
-//    }
+//        return mav;
+//	}
+	
 
+	// HttpServletRequestからログインユーザーを引っこ抜くこともできるのでやってみる
+	
 	
 	@RequestMapping( value = "/user_show", method=RequestMethod.GET)
 	public ModelAndView userShow(
 			// org.springframework.security.core.annotation.AuthenticationPrincipal
 			@AuthenticationPrincipal UserDetailsImpl userDetails,  // ＠AuthenticationPrincipal からユーザー情報を取得する
 			@RequestParam("username")String username,  // 認証ユーザの名前 
+			HttpServletRequest request,  // 使いたいので引数に宣言しておく
 			ModelAndView mav) {
 		// ＠AuthenticationPrincipal からユーザー情報を取得する
 		// ユーザー情報は、アノテーション ＠AuthenticationPrincipal を使用すると、より簡単に取得することができます
