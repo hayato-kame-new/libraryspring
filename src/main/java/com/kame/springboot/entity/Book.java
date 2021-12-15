@@ -37,14 +37,14 @@ public class Book {  // Bookの方が 主エンティティ   Historyエンテ�
 	private int id;  // 主キー 自動採番  リレーションあり 他のテーブルから参照されています  こっちbooksテーブルが主テーブルです
 	
 	
-	// 後で このISBN に入力チェックのバリデーションで ユニークを作ってつけてください
+	
 	// アノテーションを作る
 	
-	// 追加 ISBN は 13桁です
+	// 追加 ISBN は 13桁です ユニークにはしません なぜなら、図書館システムが同じISBNの本を複数持つこともあるから
 	@NotEmpty(message="ISBNを入力してください")
 	 // @Size(min = 13, max = 13, message = "ISBNは13文字で入力してください")  // isbn VARCHAR(40) NOT NULL UNIQUE,  日本語の漢字なら 39文字までOK
 	 @Pattern(regexp = "^[0-9]{13}$", message = "ISBNは13桁の半角数字で入力してください")
-	@Column(name = "isbn")  // ユニーク 世界でただ一つ  isbn VARCHAR(40) NOT NULL UNIQUE
+	@Column(name = "isbn")  // ユニークではありません  
 	private String isbn;  // 2007年以降の新刊のコードから13ケタになっています。10桁 から 13桁に変更している
 	// booksテーブルでは isbnカラムにUNIQUEをつけてるので、isbn VARCHAR(40) NOT NULL UNIQUE このカラムに入力チェックのバリデーションで ユニークを作ってつける
 	// もしフォームクラスを作ったら、そちらにバリデーションのアノテーションをつける事になる

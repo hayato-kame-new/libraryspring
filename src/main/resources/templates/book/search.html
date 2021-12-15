@@ -84,15 +84,11 @@
 				
 				<tr th:each="element : ${statusMap}" >	
 					
-					<td align="center" th:text="${element.key.id}"></td>
 					<td align="center" >
-						<a href="/book_show" th:href="@{/book_show/{isbn}(isbn=${element.key.isbn})}" th:text="${element.key.isbn}"></a>
-						<!-- フォームでHTTPメソッドGETで送ってもいい -->
-					<!-- 	<form method = "get" action="/book_show" th:action = "@{/book_show/{isbn}(isbn=${obj.isbn})}" >
-						 	<input type="hidden" name="isbn" th:value="${obj.isbn}" >
-						 	<input type="submit" value="詳細" >
-						 </form> -->
+						<a th:href="@{/book_show/{id}(id=${element.key.id})}" th:text="${element.key.id}"></a>
 					</td>
+				
+					<td align="center" th:text="${element.key.isbn}"></td>
 					<td align="left" th:text="${element.key.title}"></td>
 					<td align="left" th:text="${element.key.authors}"></td>
 					
@@ -102,8 +98,8 @@
 					<td align="center" th:text="${element.key.authors}"></td>
 					<td>
 						<!-- フォームでHTTPメソッドGETで送ってもいい -->
-						<form method = "get" action="/book_show" th:action = "@{/book_show/{isbn}(isbn=${element.key.isbn})}" >
-						 	<input type="hidden" name="isbn" th:value="${element.key.isbn}" >
+						<form method = "get"  th:action = "@{/book_show/{id}(id=${element.key.id})}" >
+						 	<input type="hidden" name="id" th:value="${element.key.id}" >
 						 	<input type="submit" value="詳細" >
 						 </form>
 					</td>

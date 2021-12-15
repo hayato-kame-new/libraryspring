@@ -78,33 +78,43 @@ public class BookController {
     }
 	
 	/**
-	 * 書籍 詳細画面を表示
-	 * ISBNをURLのクエリーパラメータで送ってくる
-	 * ISBNから指定したレコードを取得して表示をする。
+	 * 書籍 詳細画面を表示 
+	 * idをURLのクエリーパラメータで送ってくる
+	 * idから指定したレコードを取得して表示をする。
 	 * @param id
 	 * @param mav
 	 * @return
 	 */
-	@RequestMapping(value = "/book_show/{isbn}", method=RequestMethod.GET)
+	@RequestMapping(value = "/book_show/{id}", method=RequestMethod.GET)
 	public ModelAndView show(
-			@PathVariable String isbn,  // パス変数 /book_show/{isbn} の {isbn} と同じ変数名にする
+			@PathVariable Integer id,  // パス変数 /book_show/{id} の {id} と同じ変数名にする
 			ModelAndView mav
 			) {
-		// ISBNから指定したレコードを取得する。 bookのデータを取得してる ISBN はユニークなので１つのデータが取得できる
-		// リポジトリの辞書機能によって メソッド自動生成機能を使用してる 戻り値は  List<Book> だが、中身は１つ もしくは []空
-		List<Book> bookDataList = bookService.findBookDataByIsbn(isbn);
 		
+		// 作り直し 主キーで検索すること
+		
+		
+		//  bookのデータを取得してる ISBN はテーブル定義では ユニークにしない、なぜなら、同じ書籍を複数図書館システムが持つこともあるから
+		// リポジトリの辞書機能によって メソッド自動生成機能を使用してる 戻り値は  List<Book> だが、中身は複数もありうる 無い時は []空
+		// List<Book> books = bookService.findBookDataByIsbn(isbn); // 複数ありうるので違う
+		Book book = bookService.findBookDataById(id);
+		// bookは nullもありうる
+		if(book == null) {
+			// 主キーで探してもなかった、場合、図書館システムに登録されてない書籍なので
+			// エラーメッセージを出して
+			// フォワードすること
+			
+		}
 		 //Mapに変換するをnewして確保しておく
 		 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
 				
-		mav.setViewName("book/show");
 		// mav.addObject("bookDataList", bookDataList);  // 書籍の情報を送る
-		Book book = null;
-		int id = 0;
-		if(bookDataList.size() > 0) {
-			book = bookDataList.get(0);
-			id = book.getId();
-		}
+//		Book book = null;
+//		int id = 0;
+//		if(bookDataList.size() > 0) {
+//			book = bookDataList.get(0);
+//			id = book.getId();
+//		}
 				
 		// 書籍の状態(貸し出し中なのか 書架状態なのか)を表示するために
 		List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(id);
@@ -116,6 +126,7 @@ public class BookController {
 				statusMap.put(book, status);
 				mav.addObject("statusMap",statusMap); 
 			
+				mav.setViewName("book/show");
 		return mav;
 	}
 	
@@ -190,6 +201,13 @@ public class BookController {
 		 }
 		 
 		 // バリデーションエラーがなかったら actionによって分岐処理を進める
+		 
+		 // 新規登録でも、編集でも、同じISBNの本でも、複数冊所蔵することもありうる。人気本などは
+		 // それぞれの本は主キーで管理されてるので、別々の本だけど、同じISBNの本だから、3冊あったら3冊のうち
+		 // １さつだけ貸出中とか、わかるようにしたい。
+		 
+		 
+		 
 		  
 	    boolean success = false;
 	    String flashMsg = "";

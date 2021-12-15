@@ -108,30 +108,34 @@ public class BookService {
 		 // query.getResultList()で取得したデータは List<Object[]>になってます
 		 //  Iterable にキャストもできる (List<Book>)にキャストもできる
 		 List<Object[]> resultDataList = query.getResultList();
-				
-		 Iterator itr =  resultDataList.iterator();
-		
-		 String isbn = "";
-		 String genre = "";
-		 String title = "";
-		 String authors = "";
-		 String publisher = "";
-		 Integer publishYear =null;
-		 
-		 while(itr.hasNext()) {
-			Object[] obj = (Object[]) itr.next();
-			// id は取得しなくてもいい
-			// id = Integer.parseInt(String.valueOf(obj[0]));
-			isbn = String.valueOf(obj[1]);
-			genre = String.valueOf(obj[2]);
-			title = String.valueOf(obj[3]);
-			authors = String.valueOf(obj[4]);
-			publisher = String.valueOf(obj[5]);
-			publishYear = Integer.parseInt(String.valueOf(obj[6]));
+		 // まず、nullを代入
+		 Book book = null;  // resultDataList が []だった場合に Bookインスタンスの中身は nullにして返す
+		 if(resultDataList.size() > 0) {
+			 
+			 Iterator itr =  resultDataList.iterator();
+			 
+			 String isbn = "";
+			 String genre = "";
+			 String title = "";
+			 String authors = "";
+			 String publisher = "";
+			 Integer publishYear =null;
+			 
+			 while(itr.hasNext()) {
+				 Object[] obj = (Object[]) itr.next();
+				 // id は取得しなくてもいい
+				 // id = Integer.parseInt(String.valueOf(obj[0]));
+				 isbn = String.valueOf(obj[1]);
+				 genre = String.valueOf(obj[2]);
+				 title = String.valueOf(obj[3]);
+				 authors = String.valueOf(obj[4]);
+				 publisher = String.valueOf(obj[5]);
+				 publishYear = Integer.parseInt(String.valueOf(obj[6]));
+			 }
+			 // Bookインスタンスをnewで生成する
+			  book = new Book(id, isbn, genre, title, authors, publisher, publishYear);
 		 }
-		 // Bookインスタンスを生成する
-		 Book book = new Book(id, isbn, genre, title, authors, publisher, publishYear);
-		 // Bookインスタンスを返す
+				
 		 return book;		 
 	 }
 	 
@@ -330,12 +334,14 @@ public class BookService {
 
 
 	    /**
-	     * ISBNから指定したレコードを取得する。 ISBN はユニーク(一意制約)です
+	     * ISBNから指定したレコードを取得する。 
+	     * ISBN で探した時には、同じISBNの本が複数見つかることもある
+	     * 人気本は、ハリーポッター１巻など 図書館システムに複数所蔵することもあるので
 	     * 
 	     *  リポジトリの辞書機能によって メソッド自動生成機能を使っている
-	     *  戻り値は  List<Book>
+	     *  戻り値は  List<Book> 複数見つかる場合もある
 	     * @param isbn
-	     * @return  List<Book>
+	     * @return  List<Book> 複数見つかる場合もある
 	     */
 	    public List<Book> findBookDataByIsbn(String isbn){
 	    	// これはリポジトリのメソッド自動生成機能を使っています
