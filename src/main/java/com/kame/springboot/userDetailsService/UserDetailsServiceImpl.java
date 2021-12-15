@@ -137,7 +137,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	/**
 	 * データベースに同一ユーザー名が既に登録されているかを確認する
 	 * @param username
-	 * @return
+	 * @return true:すでにその名前は登録されているの false: その名前はまだ登録されてない
 	 */
 	public boolean isExistUser(String username) {
         String sql = "SELECT COUNT(*) FROM users WHERE name = ?";
@@ -147,4 +147,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         return true;
     }
+	
+	
 }

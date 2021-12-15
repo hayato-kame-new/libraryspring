@@ -14,6 +14,7 @@ import com.kame.springboot.entity.User;
  *
  */
 public class UserDetailsImpl implements UserDetails {
+	// メソッドなどを使う時には、userDetails.genderStr()  などと使います UserDetailsImpl.genderStr() では無い
 	
 	/*
 	 * UserDetails インターフェイスには次のようなメソッドが用意されています 抽象メソッドが宣言されてる {}の本体は無い
@@ -38,9 +39,9 @@ public class UserDetailsImpl implements UserDetails {
 	 usernameフィールド  passwordフィールドは、User user;をフィールに宣言したので、コメントアウトする
 	 */
 	
-	// private String username;
+	// private String username;  // Userの方へ移動
 	
-	// private String password;
+	// private String password; // Userの方へ移動
 	
 	private Collection<GrantedAuthority> authorities;
 	
@@ -81,6 +82,20 @@ public class UserDetailsImpl implements UserDetails {
 		this.authorities = authorities;
 		this.user = user;  // これに変更しました
 	}
+	
+	 /**
+     * 性別を文字で表すインスタンスメソッド
+     * @return str
+     */
+    public String genderStr() {
+        String str = "";
+        if(this.getGender() == 1) {
+            str = "男";
+        }else if (this.getGender() == 2) {
+            str = "女";
+        }
+        return str;
+    }
 	
 
 	@Override

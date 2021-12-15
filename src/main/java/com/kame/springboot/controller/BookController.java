@@ -250,6 +250,12 @@ public class BookController {
 			) {
 		mav.setViewName("book/confirm");
 		Book book = bookService.findBookDataById(id);
+		
+		// Mapを渡す
+		// 貸出中だったら、削除できないので、statusも表示する
+		// メッセージも送る statusが 貸出中だったら、貸出中なので、削除できませんのメッセージを表示する
+		
+		
 		mav.addObject("book", book);  // 必要 フォームに初期値として、表示するために
 		return mav;
 	}
@@ -272,6 +278,8 @@ public class BookController {
 			// HttpServletRequest request,  // requestオブジェクトから取得したい時に
 			ModelAndView mav
 			) {
+		
+		// 貸出中だったら、削除できませんので、それを書く
 		
 		String flashMsg = "";
 		// 削除は 主キーidがあればできる

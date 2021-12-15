@@ -16,6 +16,9 @@ font-size: 17px; color: gray; margin: 10px 30px;}
 .headingReturn {
 	color: lightsalmon;
 }
+.headingUser {
+	color: mediumslateblue;
+}
 pre {
 font-size: 17px; color:gray; padding:5px 10px; border:1px solid gray;
 }
@@ -34,7 +37,7 @@ div { margin-bottom: 15px; }
  	background-color: white;
  	color: darkgreen;
  	font-size: bold;
- 	border-radius: 8px;
+ 	border-radius: 7px;
  	padding: 5px;
  	font-size: 16px;
  	border: 1px solid #333;
@@ -43,7 +46,7 @@ div { margin-bottom: 15px; }
  	background-color: red;
  	color: white;
  	font-size: bold;
- 	border-radius: 8px;
+ 	border-radius: 7px;
  	padding: 5px;
  	font-size: 16px;
  	border: 1px solid #333;

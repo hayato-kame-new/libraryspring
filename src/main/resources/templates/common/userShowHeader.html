@@ -20,8 +20,7 @@
 		 <p class="header_right" th:text="'ユーザーID: ' + ${#authentication.principal.id} + '  ユーザ名: '+ ${#authentication.principal.username} + 'さん'"></p>
 	     <p class="header_right"  th:text="'現在時刻: ' + ${#dates.format(new java.util.Date(), 'yyyy/MM/dd HH:mm')} "></p>   
     	<div class="header_right">
-    		<!-- 自分自身だったら表示してます -->
-			<a  th:href="@{/user_show(username=${#authentication.principal.username})}"><button type="button" >ユーザー情報 画面</button></a>			
+			<!-- <a  href="/user" th:href="@{/user}"><button type="button" >ユーザー情報 画面</button></a>	 -->
 			<form style="display:inline-block" th:action="@{/logout}" method="post">
 		        <input type="submit" value="ログアウト" />
 		    </form>			

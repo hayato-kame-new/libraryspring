@@ -63,7 +63,8 @@ public class User {
     
 	// @Entityをつけて @Id をつけないと@OneToManyがつけられない
 
-
+	
+// 参考
 	// mappedByに指定する値は「対応する(＠ManyToOneがついた)フィールド変数名」になります。
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL) // 相手側の@ManyToOneが着いてるのがUser user; なので mappedBy = "user"
 //	List<Schedule> Schedules;
@@ -100,20 +101,6 @@ public class User {
 		this.email = email;
 		this.tel = tel;
 	}
-
-	 /**
-     * 性別を文字で表すインスタンスメソッド
-     * @return str
-     */
-    public String genderStr() {
-        String str = "";
-        if(this.gender == 1) {
-            str = "男";
-        }else if (this.gender == 2) {
-            str = "女";
-        }
-        return str;
-    }
 
 	// アクセッサ
 	public int getId() {

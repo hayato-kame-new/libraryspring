@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link th:href="@{/css/style.css}" rel="stylesheet"/>
+<title th:text="|#{user_show_page.title} - library|"></title>
+<!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス -->
+<style th:include="common/header :: common_header_style"></style>
+<style>
+ td {
+  padding: 10px 20px;
+ }
+
+</style>
+</head>
+<body>
+<!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
+パスは templatesからのパス-->
+<div th:include="common/userShowHeader :: common_header"></div>
+
+ <h2 class="headingUser" th:inline="text">[[${#authentication.name}]]さんの詳細ページ</h2>
+<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
+		Maven プロジェクト（pom.xml ファイル）に追加されている 
+		現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
+		${#authentication.principal.password}
+		${#authentication.principal.authorities} で取得もできる
+		-->
+		<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div>
+		
+		<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
+		<div th:text="| password: ${#authentication.principal.password} です|"></div>
+		<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div> -->
+<table th:object="${userDetails}">
+	<tr><th>ID</th><td th:text="*{id}"></td></tr>
+	<tr><th>名前</th><td th:text="${#authentication.principal.username}"></td></tr>
+	<tr><th>権限情報</th><td th:text="${#authentication.principal.authorities}"></td></tr>
+	<tr><th>年齢</th><td th:text="*{age}"></td></tr>
+	<tr><th>性別</th><td th:text="${userDetails.genderStr()}"></td></tr>
+	<tr><th>メールアドレス</th><td th:text="*{email}"></td></tr>
+	<tr><th>電話</th><td th:text="*{tel}"></td></tr>
+	<tr>
+		<th></th>
+		<td> 
+		    <!-- 認証ユーザの 編集画面を表示 -->
+			<a style="margin-right: 20px" th:href="@{/user_edit_form(action=edit, username=${#authentication.principal.username})}"><button class="editbtn" type="button" >ユーザー編集</button></a>
+	 	</td>
+	</tr>	
+</table>
+<div>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
+</div>
+
+</body>
+</html>
