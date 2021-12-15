@@ -67,7 +67,7 @@ public class UserController {
 //	}
 	
 
-	// HttpServletRequestからログインユーザーを引っこ抜くこともできるのでやってみる
+	// HttpServletRequestからログインユーザーを取り出すこともできる
 	
 	
 	@RequestMapping( value = "/user_show", method=RequestMethod.GET)
@@ -94,10 +94,6 @@ public class UserController {
 		System.out.println(userDetails.getAge().toString());  // 年齢を表示 参照型なら toString()を使える 基本型(プリミティブ型)には使えない
 		System.out.println(userDetails.getTel());  // 電話番号を表示
 		System.out.println(userDetails.getEmail());  // メールアドレスを表示
-		
-		// 認証ユーザの名前 はユニークなのusersテーブルから ユーザ名で検索できます 
-		// 追加した geder age email tel フィールドの値の情報はusersテーブルから取得する
-		// idもusersテーブルから取得する
 		
 		// userDetailsをビューに送ればいい
 		mav.addObject("userDetails", userDetails);

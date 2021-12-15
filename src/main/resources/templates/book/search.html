@@ -78,35 +78,34 @@
 	
 		<!-- 検索結果表示  その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか-->
 		<p th:if="${resultMsg}" th:text="${resultMsg}"></p>
-		 <th:block th:if="${statusMap != null && statusMap.size() > 0}">
-			 <table>
-				<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th><th></th><th></th><th></th></tr>
-				
-				<tr th:each="element : ${statusMap}" >	
+		<div>
+			 <th:block th:if="${statusMap != null && statusMap.size() > 0}">
+				 <table>
+					<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>出版社</th><th>書架状態</th><th></th></tr>
 					
-					<td align="center" >
-						<a th:href="@{/book_show/{id}(id=${element.key.id})}" th:text="${element.key.id}"></a>
-					</td>
-				
-					<td align="center" th:text="${element.key.isbn}"></td>
-					<td align="left" th:text="${element.key.title}"></td>
-					<td align="left" th:text="${element.key.authors}"></td>
-					
-					<!-- 書架状態 表示後で変更 -->
-					<td align="center" th:text="${element.value}"></td>
-					
-					<td align="center" th:text="${element.key.authors}"></td>
-					<td>
-						<!-- フォームでHTTPメソッドGETで送ってもいい -->
-						<form method = "get"  th:action = "@{/book_show/{id}(id=${element.key.id})}" >
-						 	<input type="hidden" name="id" th:value="${element.key.id}" >
-						 	<input type="submit" value="詳細" >
-						 </form>
-					</td>
-					
-				</tr> 
-			</table>
-		</th:block>
+					<tr th:each="element : ${statusMap}" >	
+						
+						<td align="center" >
+							<a th:href="@{/book_show/{id}(id=${element.key.id})}" th:text="${element.key.id}"></a>
+						</td>				
+						<td align="center" th:text="${element.key.isbn}"></td>
+						<td align="left" th:text="${element.key.title}"></td>
+						<td align="left" th:text="${element.key.authors}"></td>
+						<td align="left" th:text="${element.key.publisher}"></td>
+						<!-- 書架状態 表示後で変更 -->
+						<td align="center" th:text="${element.value}"></td>
+						<td>
+							<!-- フォームでHTTPメソッドGETで送ってもいい -->
+							<form method = "get"  th:action = "@{/book_show/{id}(id=${element.key.id})}" >
+							 	<input type="hidden" name="id" th:value="${element.key.id}" >
+							 	<input type="submit" value="詳細" >
+							 </form>
+						</td>
+						
+					</tr> 
+				</table>
+			</th:block>
+		</div>
 		<div >
 			<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 		</div>

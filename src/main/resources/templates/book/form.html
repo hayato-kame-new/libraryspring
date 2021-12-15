@@ -20,69 +20,68 @@
 <h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : 'フォーム画面'}"></h2>
 
 <p th:if="${msg}" th:text="${msg}"></p>
-
-<form th:action="@{/book_add_edit}" method="post" th:object="${book}">
-
-	<input type="hidden" name="action" th:value="${action}" />
-	<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 編集の時には idが入ってるので使用できる -->
-	<input type="hidden" name="id" th:value="*{id}" />
+<div>
+	<form th:action="@{/book_add_edit}" method="post" th:object="${book}">
 	
-	<p th:if="${id != null && id != 0}" th:text="|書籍登録ID: *{id}|" ></p>
-	
-	<div>
-		<label for="isbn">ISBN: </label> 
-		<input type="text" id="isbn" name="isbn" th:value="*{isbn}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" th:errorclass="err">
-		</div>				
-	</div>
-	
-	<div>
-	    <label for="genre">ジャンル: </label>
-		<select name="genre" id="genre" size="4" >
-			<!-- <option  >選択しない</option> -->
-			<th:block th:each="element : ${genreMap}">
-				<option  th:value="${element.value}"  th:selected="${element.value == book.genre}"   th:inline="text">[[${element.value}]]</option>
-			</th:block>
-		</select>		
-		<div th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}" th:errorclass="err">
-		</div>	
-	</div>
-	
-	<div>
-		<label for="title">タイトル: </label> 
-		<input type="text" id="title" name="title" th:value="*{title}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="err">
-		</div>				
-	</div>
-	
-	<div>
-		<label for="authors">著者: </label>
-		<input type="text" id="authors" name="authors" th:value="*{authors}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('authors')}" th:errors="*{authors}" th:errorclass="err">
-		</div>				
-	</div>
-	
-	<div>
-		<label for="publisher">出版社: </label>
-		<input type="text" id="publisher" name="publisher" th:value="*{publisher}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('publisher')}" th:errors="*{publisher}" th:errorclass="err">
-		</div>				
-	</div>
-	
-	<div>
-		<label for="publishYear">発行年: </label>
-		<input type="text" id="publishYear" name="publishYear" th:value="*{publishYear}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('publishYear')}" th:errors="*{publishYear}" th:errorclass="err">
+		<input type="hidden" name="action" th:value="${action}" />
+		<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 編集の時には idが入ってるので使用できる -->
+		<input type="hidden" name="id" th:value="*{id}" />
+		
+		<p th:if="${id != null && id != 0}" th:text="|書籍登録ID: *{id}|" ></p>
+		
+		<div>
+			<label style="width:7ch;" for="isbn">ISBN: </label> 
+			<input type="text" id="isbn" name="isbn" th:value="*{isbn}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" th:errorclass="err">
+			</div>				
 		</div>
-	</div>
-	
-	<th:block th:if="${action.equals('add') || action.equals('edit')}">
+		
+		<div>
+		    <label style="width:7ch;" for="genre">ジャンル: </label>
+			<select name="genre" id="genre" size="4" style="width:150px;" >
+				<!-- <option  >選択しない</option> -->
+				<th:block th:each="element : ${genreMap}">
+					<option  th:value="${element.value}"  th:selected="${element.value == book.genre}"   th:inline="text">[[${element.value}]]</option>
+				</th:block>
+			</select>		
+			<div th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}" th:errorclass="err">
+			</div>	
+		</div>
+		
+		<div>
+			<label style="width:7ch;" for="title">タイトル: </label> 
+			<input type="text" id="title" name="title" th:value="*{title}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="err">
+			</div>				
+		</div>
+		
+		<div>
+			<label style="width:7ch;" for="authors">著者: </label>
+			<input type="text" id="authors" name="authors" th:value="*{authors}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('authors')}" th:errors="*{authors}" th:errorclass="err">
+			</div>				
+		</div>
+		
+		<div>
+			<label style="width:7ch;" for="publisher">出版社: </label>
+			<input type="text" id="publisher" name="publisher" th:value="*{publisher}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('publisher')}" th:errors="*{publisher}" th:errorclass="err">
+			</div>				
+		</div>
+		
+		<div>
+			<label style="width:7ch;" for="publishYear">発行年: </label>
+			<input type="text" id="publishYear" name="publishYear" th:value="*{publishYear}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('publishYear')}" th:errors="*{publishYear}" th:errorclass="err">
+			</div>
+		</div>
+		
 		<div>
 			<input type="submit" value="送信" />
 			<input type="reset" value="キャンセル">
 		</div>
-	</th:block>
-</form>
+	</form>
+</div>
 
 <div>
 	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面</button></a>
