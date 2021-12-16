@@ -27,34 +27,43 @@
 		ただし、全部を未入力なら検索しないで リダイレクトをして フォーム再表示する
 		検索用のBookSearchForm フォームクラスを定義してるのでそれを利用する -->
 		<div>
+		 	※ 検索したい本のIDを入力    書籍に図書館システムで使用する識別番号IDが貼ってあるので、そのIDを入力する(booksテーブルの主キーになってる)
+	    	※ 検索したい会員のIDを入力    図書館システムに登録してある会員ID(ユーザでは無い)
+			※ 検索結果の表示件数を選択    図書館システムに登録してある貸出記録の最近のものから表示
 			<form th:action="@{/history_search}" method="post" th:object="${historySearchForm}">
 				<table>
-				 	※ 検索したい本のIDを入力    書籍に図書館システムで使用する識別番号IDが貼ってあるので、そのIDを入力する(booksテーブルの主キーになってる)
-					<tr><td style="width:13ch;"><label for="bookId">本のID: </label></td>
+					<tr>
+						<td style="width:10ch;">
+							<label for="bookId">本のID: </label>
+						</td>
 						<td><input type="text" id="bookId" name="bookId" th:value="*{bookId}" th:errorclass="err"/>
 							<div th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}" th:errorclass="err"></div>
 						</td>
 					</tr>
 					 
-			    	※ 検索したい会員のIDを入力    図書館システムに登録してある会員ID(ユーザでは無い)
-					<tr><td><label for="title">会員ID: </label></td>
+					<tr>
+						<td style="width:10ch;">
+							<label for="title">会員ID: </label>
+						</td>
 						<td>
 							<input type="text" id="memberId" name="memberId" th:value="*{memberId}" th:errorclass="err" />
 							<div th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" th:errorclass="err"></div>
 						</td>
 					</tr>
-					※ 検索結果の表示件数を選択    図書館システムに登録してある貸出記録の最近のものから表示
-			 		<tr><td style="width:13ch;" ><label for="genre">表示件数: </label></td>
+			 		<tr>
+				 		<td style="width:10ch;" >
+				 			<label for="genre">表示件数: </label>
+				 		</td>
 			 			<td ><select id="countDisplay" name="countDisplay"  size="4" style="width:150px;">
 					 		    <option value="" th:text="全て"></option>
 					 		    <option value="10" th:text="10件"></option>
 					 		    <option value="20" th:text="20件"></option>
-					 		    <option value="20" th:text="30件"></option>
+					 		    <option value="30" th:text="30件"></option>
 					    	</select>
 					    	<div th:if="${#fields.hasErrors('countDisplay')}" th:errors="*{countDisplay}" th:errorclass="err"></div>
 				    	</td>
 			    	</tr>
-					
+					<tr><td></td><td><input style="margin-right: 20px;" type="submit" value="検索する" /> <input type="reset" value="キャンセル"></td></tr>
 				</table>	
 				
 			</form>
