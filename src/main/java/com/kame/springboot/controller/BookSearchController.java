@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -40,6 +42,10 @@ public class BookSearchController {
 	@Autowired
 	Library library;  // Beanのクラスとして設定したクラスを組み込む
 	
+	// リクエストハンドラでセッションスコープ使う、異なるコントローラと共有する セッションスコープBeanをつかうため
+	@Autowired
+	HttpSession session;
+
 	
 	/**
 	 * 書籍 検索画面を表示する
@@ -173,8 +179,12 @@ public class BookSearchController {
 			statusMap.put(book, status);
 			
 		}
-		// Mapをビューへ送る
+		// Mapをフォワードしてビューへ送る
 		mav.addObject("statusMap",statusMap); 
+		// また、後で使うので Map を　セッションスコープにも保存しておく 
+		// セッションに保存したものは 取り出して使ったら 明示的に破棄しておくこと session.removeAttribute("map");
+		// 後で、
+		session.setAttribute("map",statusMap);  // mapという名前でセッションスコープへ保存しました
 		
 		// セレクトボックス表示用のgenreMap
 		mav.addObject("genreMap", genreMap);
@@ -186,6 +196,54 @@ public class BookSearchController {
 		 return mav;
 	}
 	
-	
+	//検索結果の後、詳細と結果のリストを見れる画面を表示する
+	@RequestMapping(value = "/book_show_list", method=RequestMethod.GET)
+	public ModelAndView showList(
+			@RequestParam (name = "id")Integer id,  // aリンクの ?以降の クエリー文字列から取得する
+			ModelAndView mav
+			) {
+		Book book = bookService.findBookDataById(id);
+		// bookは nullもありうる
+		if(book == null) {
+			// 主キーで探してもなかった、場合、図書館システムに登録されてない書籍なので
+			// エラーメッセージを出して
+			// フォワードすること
+			
+		}
+		 //Mapに変換するをnewして確保しておく
+		 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
+				
+		// mav.addObject("bookDataList", bookDataList);  // 書籍の情報を送る
+//		Book book = null;
+//		int id = 0;
+//		if(bookDataList.size() > 0) {
+//			book = bookDataList.get(0);
+//			id = book.getId();
+//		}
+				
+		// 書籍の状態(貸し出し中なのか 書架状態なのか)を表示するために
+		// List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(id);
+		List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(id);
+//		
+//		// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
+		String status = library.getStatusStr(LastHistoryDatalist);
+		
+	// Mapに詰める
+		statusMap.put(book, status);
+		mav.addObject("statusMap",statusMap);
+		
+		Map<Book, String> map = new LinkedHashMap<Book , String>();  // newで確保する
+		// セッションから取り出す
+		if(session.getAttribute("map") != null) {
+			map = (Map<Book, String>) session.getAttribute("map");
+			// 取り出したあとは
+		// 	session.removeAttribute("map");   // 取り出したあとは,まだ使うのでここでは 削除しない ここで削除すると不都合
+			// セッションスコープからは明示的に削除すること どこかで  今のところ、Springが計らってくれてるので削除してないので
+			// サーブレットだったら、自分で明示的に削除すること  今回は、削除をしないで、 上書きして利用する
+		}
+		mav.addObject("map", map);  // 以前検索した結果を表示したいので
+		mav.setViewName("book/show");
+		return mav;
+	}
 
 }

@@ -59,7 +59,36 @@
 			</tr> -->
 	</table>
 </div>
+<th:block th:if="${map}" >
+		<!-- 先ほど検索した検索結果も  表示  -->
+		検索結果のリスト
+		<div>
+			 <th:block th:if="${map != null && map.size() > 0}">
+				 <table>
+					<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>出版社</th><th>書架状態</th><th></th></tr>
+					
+					<tr th:each="element : ${map}" >	
+						
+						<td align="center" >
+							<a  th:href="@{/book_show_list(id=${element.key.id})}" th:text="${element.key.id}"></a>
+							 
+						</td>				
+						<td align="center" th:text="${element.key.isbn}"></td>　
+						<td align="left" th:text="${element.key.title}"></td>
+						<td align="left" th:text="${element.key.authors}"></td>
+						<td align="left" th:text="${element.key.publisher}"></td>
+						<!-- 書架状態 表示後で変更 -->
+						<td align="center" th:text="${element.value}"></td>
+						<td>
+							 <a  th:href="@{/book_show_list(id=${element.key.id})}"><button type="button">詳細</button></a>
+						</td>
+						
+					</tr> 
+				</table>
+			</th:block>
+		</div>
 
+</th:block>
 <div>
 	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面</button></a>
 </div>

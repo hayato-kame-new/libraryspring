@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,6 +45,10 @@ public class BookController {
 	
 	@Autowired
 	Library library;
+	
+	// リクエストハンドラでセッションスコープ使う、異なるコントローラと共有する セッションスコープBeanをつかうため
+		@Autowired
+		HttpSession session;
 	
 	/**
 	 * 書籍一覧を表示する
@@ -87,13 +92,14 @@ public class BookController {
 	 * @return
 	 */
 	@RequestMapping(value = "/book_show/{id}", method=RequestMethod.GET)
+	
 	public ModelAndView show(
-			@PathVariable Integer id,  // パス変数 /book_show/{id} の {id} と同じ変数名にする
-		
+			@PathVariable Integer id,  // パス変数 /book_show/{id} の {id} と同じ変数名にする 必須パラメータ
+			
 			ModelAndView mav
 			) {
 		
-		
+	
 		//  主キーid で探す bookのデータを取得 ISBNでは探さない はテーブル定義では ユニークにしなてない、なぜなら、同じ書籍を複数図書館システムが持つこともあるから
 		// リポジトリの辞書機能によって メソッド自動生成機能を使用してる 戻り値は  List<Book> だが、中身は複数もありうる 無い時は []空
 		// List<Book> books = bookService.findBookDataByIsbn(isbn); // 複数ありうるので違う
@@ -117,6 +123,7 @@ public class BookController {
 //		}
 				
 		// 書籍の状態(貸し出し中なのか 書架状態なのか)を表示するために
+		// List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(id);
 		List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(id);
 //		
 //		// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
@@ -125,7 +132,9 @@ public class BookController {
 	// Mapに詰める
 		statusMap.put(book, status);
 		mav.addObject("statusMap",statusMap);
-	
+		
+		
+		
 		mav.setViewName("book/show");
 		return mav;
 	}

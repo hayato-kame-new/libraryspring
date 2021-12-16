@@ -86,21 +86,17 @@
 					<tr th:each="element : ${statusMap}" >	
 						
 						<td align="center" >
-							<a th:href="@{/book_show/{id}(id=${element.key.id})}" th:text="${element.key.id}"></a> 
-							
+							<a  th:href="@{/book_show_list(id=${element.key.id})}" th:text="${element.key.id}"></a>
+							 
 						</td>				
-						<td align="center" th:text="${element.key.isbn}"></td>
+						<td align="center" th:text="${element.key.isbn}"></td>　
 						<td align="left" th:text="${element.key.title}"></td>
 						<td align="left" th:text="${element.key.authors}"></td>
 						<td align="left" th:text="${element.key.publisher}"></td>
 						<!-- 書架状態 表示後で変更 -->
 						<td align="center" th:text="${element.value}"></td>
 						<td>
-							<!-- フォームでHTTPメソッドGETで送ってもいい method = "get" です formのデフォルトが GETなので省略もできます -->
-							<form method = "get"  th:action = "@{/book_show/{id}(id=${element.key.id})}" > 
-								
-							 	<input type="submit" value="詳細" />
-							 </form>
+							 <a  th:href="@{/book_show_list(id=${element.key.id})}"><button type="button">詳細</button></a>
 						</td>
 						
 					</tr> 
