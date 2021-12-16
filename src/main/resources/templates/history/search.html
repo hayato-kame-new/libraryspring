@@ -11,34 +11,84 @@
 <body> 
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス-->
-<div th:include="common/header :: common_header"></div>
-
+	<div th:include="common/header :: common_header"></div>
+	 
 	 <div class="contents">
-		<h2 class="heading">貸し出し履歴検索ページ</h2>
-		<h4>条件を指定して貸し出し履歴情報を検索します</h4>
-	
+		<h2 class="heading">貸出履歴 検索ページ</h2>
+		<h4>条件を指定して貸出履歴を検索します</h4>
+		
+		<!-- 何も条件を指定しなかった場合にまた、リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
+		<p th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
+		
+		<!-- バリデーションエラーのメッセージ -->
+		<p th:if="${msg != null}" th:text="${msg}" ></p>
+		
+		<!--  曖昧検索です  AND検索で絞る  未入力でも検索できる 
+		ただし、全部を未入力なら検索しないで リダイレクトをして フォーム再表示する
+		検索用のBookSearchForm フォームクラスを定義してるのでそれを利用する -->
 		<div>
+			<form th:action="@{/history_search}" method="post" th:object="${historySearchForm}">
+				<table>
+				 	※ 検索したい本のIDを入力    書籍に図書館システムで使用する識別番号IDが貼ってあるので、そのIDを入力する(booksテーブルの主キーになってる)
+					<tr><td style="width:13ch;"><label for="bookId">本のID: </label></td>
+						<td><input type="text" id="bookId" name="bookId" th:value="*{bookId}" th:errorclass="err"/>
+							<div th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}" th:errorclass="err"></div>
+						</td>
+					</tr>
+					 
+			    	※ 検索したい会員のIDを入力    図書館システムに登録してある会員ID(ユーザでは無い)
+					<tr><td><label for="title">会員ID: </label></td>
+						<td>
+							<input type="text" id="memberId" name="memberId" th:value="*{memberId}" th:errorclass="err" />
+							<div th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" th:errorclass="err"></div>
+						</td>
+					</tr>
+					※ 検索結果の表示件数を選択    図書館システムに登録してある貸出記録の最近のものから表示
+			 		<tr><td style="width:13ch;" ><label for="genre">表示件数: </label></td>
+			 			<td ><select id="countDisplay" name="countDisplay"  size="4" style="width:150px;">
+					 		    <option value="" th:text="全て"></option>
+					 		    <option value="10" th:text="10件"></option>
+					 		    <option value="20" th:text="20件"></option>
+					 		    <option value="20" th:text="30件"></option>
+					    	</select>
+					    	<div th:if="${#fields.hasErrors('countDisplay')}" th:errors="*{countDisplay}" th:errorclass="err"></div>
+				    	</td>
+			    	</tr>
+					
+				</table>	
+				
+			</form>
+		</div>
+		
+	
+		<!-- 検索結果表示  その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか-->
+		<p th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
+		<div>
+			 <th:block th:if="${historySearchMap != null && historySearchMap.size() > 0}">
+				 <table>
+					<tr><th>本のID</th><th>会員のID</th><th>貸し出し日</th><th>返却日</th><th>書架状態</th><th></th></tr>
+					
+					<tr th:each="element : ${historySearchMap}" >	
+					
+						<td align="center" th:text="${element.key.bookId}"></td>				
+						<td align="center" th:text="${element.key.memberId}"></td>　
+						<td align="left" th:text="${element.key.lendDate}"></td>
+						<td align="left" th:text="${element.key.returnDate}"></td>
+						<td align="left" th:text="${element.key.publisher}"></td>
+						<!-- 書架状態 表示後で変更 -->
+						<td align="center" th:text="${element.value}"></td>
+						<td>
+							 <a  th:href="@{/book_show_list(id=${element.key.id})}"><button type="button">詳細</button></a>
+						</td>
+						
+					</tr> 
+				</table>
+			</th:block>
+		</div>
+		<div >
 			<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 		</div>
 		
-		<div>
-			<form th:action="@{/logout}" method="post">
-		        <input type="submit" value="ログアウト" />
-		    </form>	
-		</div>
-	
-		<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
-		Maven プロジェクト（pom.xml ファイル）に追加されている 
-		現在やり取りをしている プリンシパル（認証主体：principal）を取得することで ${#authentication.principal.username}
-		${#authentication.principal.password}
-		${#authentication.principal.authorities} で取得もできる
-		-->
-		<!-- <div th:text="'こんにちは ' + ${#authentication.name} + ' さん'"></div> -->
-		
-	<!-- 	<div th:text="| Hello!! ${#authentication.principal.username} さん|"></div>
-		<div th:text="| password: ${#authentication.principal.password} です|"></div>
-		<div th:text="| 権限情報: ${#authentication.principal.authorities} |"></div>
-		 -->
 	 </div>
 </body>
 </html>

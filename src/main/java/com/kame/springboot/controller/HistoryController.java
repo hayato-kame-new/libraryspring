@@ -347,4 +347,18 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     	return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
 	
     }
+    
+    
+   // 図書館の所蔵の書籍全てから 貸出記録を条件を指定して検索する画面の表示
+//    @RequestMapping( value = "/history_search_form", method=RequestMethod.GET)
+//    public ModelAndView historySearchForm(
+//    		@ModelAttribute("historySearchForm")HistorySearchForm historySearchForm,
+//    		ModelAndView mav
+//    		) {
+//    	   	
+//    }
+    
+    
+    // POSTでは、historiesテーブルからの検索結果と、状態をMapにしてからビューへ渡す
+    
 }

@@ -17,31 +17,31 @@ public class SignupForm {
 	// この半角スペースのユーザー名ではログインすることができないためです
 	// なお、Spring MVC では「文字列の入力フィールドに未入力の状態でフォームを送信した場合、デフォルトではフォームオブジェクトにnullではなく、空文字がバインドされる
 	// 入力チェック用のアノテーションだけつける
-	@NotBlank  // これにしてください 
+	@NotBlank(message = "ユーザ名を入力してください")  // ＠NotBlankにしてください  Null、空文字、空白をエラーとする
 	@Size(min = 1, max = 50, message = "ユーザー名は1文字以上50文字以下で入力してください")
 	private String username;   // usersテーブルの nameカラム
 	
-	@NotBlank  //   Null、空文字、空白をエラーとする これにしてください
-    @Size(min = 6, max = 20, message = "passwordは1文字以上50文字以下で入力してください")
+	@NotBlank(message = "パスワードを入力してください")  //  ＠NotBlankにしてください  Null、空文字、空白をエラーとする
+    @Size(min = 6, max = 20, message = "パスワードは6文字以上20文字以下で入力してください")
 	private String password;
 
 	// usersテーブルのカラムをemail gender age tel の４つ追加したので フォームも追加する
-	@NotBlank  // これにしてください
-	@Email  // javax.validation.constraints.Email
+	@NotBlank(message = "メールアドレスを入力してください")   // これにしてください
+	@Email(message = "メールアドレスの形式で入力してください")  // javax.validation.constraints.Email
 	private String email;
 	
-	@NotNull
+	@NotNull(message = "性別を選択してください") // Integerは @NotNull 
 	@Min(value=1, message = "性別を選択してください")
 	@Max(value=2, message = "性別を選択してください")
 	private Integer gender; // 性別 1: 男  2: 女    性別は Integerで管理する
 	
 	// @PositiveOrZero  // これでもいい
-	@NotNull  
+	@NotNull(message = "年齢を入力してください") // Integerは @NotNull  
 	@Min(0)
 	@Max(110)
 	private Integer age;
 	
-	@NotBlank  // これにしてください
+	@NotBlank(message = "電話番号を入力してください")  // 文字列は @NotBlankにしてください
 	@Pattern(regexp = "0\\d{1,4}-\\d{1,4}-\\d{4}", message = "電話番号の形式で入力してください")
 	private String tel;
 	
