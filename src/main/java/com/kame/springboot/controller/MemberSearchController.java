@@ -24,8 +24,11 @@ public class MemberSearchController {
 	 * @param mav
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/member_search", method=RequestMethod.GET)
-	public ModelAndView searchForm(ModelAndView mav) {
+	@RequestMapping(value = "/member_search_form", method=RequestMethod.GET)
+	public ModelAndView searchForm(
+			
+			ModelAndView mav
+			) {
 		
 		
 		

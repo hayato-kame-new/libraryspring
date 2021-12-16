@@ -136,13 +136,9 @@ public class MemberController {
 			memberForm.setDay(day);
 			// 上書きしたフォームオブジェクトをビューに送る
 			mav.addObject("memberForm", memberForm);  // 必要 フォームに初期値として、表示するために
-			break;
-			
-		
-		}
-		
-		return mav;
-		
+			break;		
+		}		
+		return mav;		
 	}
 		
 	
@@ -317,4 +313,7 @@ public class MemberController {
 		return new ModelAndView("redirect:/members");
 		
 	}
+	
+	// 会員を検索する
+	
 }

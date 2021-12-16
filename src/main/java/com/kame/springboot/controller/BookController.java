@@ -79,6 +79,7 @@ public class BookController {
 	
 	/**
 	 * 書籍 詳細画面を表示 
+	 * 検索結果の表示は、searchAfterShow リクエストハンドラで処理してます
 	 * idをURLのクエリーパラメータで送ってくる
 	 * idから指定したレコードを取得して表示をする。
 	 * @param id
@@ -88,13 +89,12 @@ public class BookController {
 	@RequestMapping(value = "/book_show/{id}", method=RequestMethod.GET)
 	public ModelAndView show(
 			@PathVariable Integer id,  // パス変数 /book_show/{id} の {id} と同じ変数名にする
+		
 			ModelAndView mav
 			) {
 		
-		// 作り直し 主キーで検索すること
 		
-		
-		//  bookのデータを取得してる ISBN はテーブル定義では ユニークにしない、なぜなら、同じ書籍を複数図書館システムが持つこともあるから
+		//  主キーid で探す bookのデータを取得 ISBNでは探さない はテーブル定義では ユニークにしなてない、なぜなら、同じ書籍を複数図書館システムが持つこともあるから
 		// リポジトリの辞書機能によって メソッド自動生成機能を使用してる 戻り値は  List<Book> だが、中身は複数もありうる 無い時は []空
 		// List<Book> books = bookService.findBookDataByIsbn(isbn); // 複数ありうるので違う
 		Book book = bookService.findBookDataById(id);
@@ -120,15 +120,17 @@ public class BookController {
 		List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(id);
 //		
 //		// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
-	String status = library.getStatusStr(LastHistoryDatalist);
+		String status = library.getStatusStr(LastHistoryDatalist);
 		
 	// Mapに詰める
-				statusMap.put(book, status);
-				mav.addObject("statusMap",statusMap); 
-			
-				mav.setViewName("book/show");
+		statusMap.put(book, status);
+		mav.addObject("statusMap",statusMap);
+	
+		mav.setViewName("book/show");
 		return mav;
 	}
+	
+	
 	
 	/**
 	 * 書籍 新規登録画面  編集画面 表示
@@ -165,6 +167,9 @@ public class BookController {
 		}		
 		return mav;		
 	}
+	
+	
+	
 	
 	/**
 	 * 書籍 新規登録   編集  をする

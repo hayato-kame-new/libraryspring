@@ -201,7 +201,7 @@ public class BookService {
 	  	 * @param publisher
 	  	 * @return List<Object[]>
 	  	 */
-	    public List<Object[]> searchBookAnd(String isbn, String genre, String title, String authors, String publisher) {
+	    public List<Object[]> searchBookAND(String isbn, String genre, String title, String authors, String publisher) {
 	    
 	    	StringBuilder sql = new StringBuilder();
 	    	
@@ -224,16 +224,16 @@ public class BookService {
 	    	 // ここ変更した  後で直す 文学を選択したのに "0"になってる おかしい
 	    	//  if(!( genre == null ||  "選択しない".equals(genre))) {
 	    	if(!( genre == null ||  "".equals(genre))) {
-	    	 if (andFlg) sql.append(" AND ");
-	    	 sql.append("b.genre LIKE :genre");
-	    	 genreFlg = true;
-	    	 andFlg = true;
+	    	  if (andFlg) sql.append(" AND ");
+	    	  sql.append("b.genre LIKE :genre");
+	    	  genreFlg = true;
+	    	  andFlg = true;
 	    	 }
 	    	 if(!"".equals(title)) {
-	    	 if (andFlg) sql.append(" AND ");
-	    	  sql.append("b.title LIKE :title");
-	    	  titleFlg = true;
-	    	 andFlg = true;
+    		   if (andFlg) sql.append(" AND ");
+	    	   sql.append("b.title LIKE :title");
+	    	   titleFlg = true;
+	    	   andFlg = true;
 	    	 }
 	    	 if(!"".equals(authors)) {
 	    		 if (andFlg) sql.append(" AND ");
@@ -247,6 +247,78 @@ public class BookService {
 	    	  sql.append("b.publisher LIKE :publisher");
 	    	  publisherFlg = true;
 	    	 andFlg = true;
+	    	 }
+			
+	    	 
+	    	 Query query = entityManager.createQuery(sql.toString());
+				if (isbnFlg) query.setParameter("isbn", "%" + isbn + "%");
+				 if (genreFlg) query.setParameter("genre", "%" + genre + "%");
+				if (authorsFlg) query.setParameter("authors", "%" + authors + "%");
+				if (titleFlg) query.setParameter("title", "%" + title + "%");
+				// 追加
+				if (publisherFlg) query.setParameter("publisher", "%" + publisher + "%");
+				
+				return query.getResultList();
+				// query.getResultList()で取得したデータは List<Object[]>になってます
+	    }
+	    
+	    
+	    /**
+	     * OR検索 書籍検索
+	     * 指定した条件で OR検索 曖昧検索 をする
+	     * @param isbn
+	     * @param genre
+	     * @param title
+	     * @param authors
+	     * @param publisher
+	     * @return List<Object[]>
+	     */
+	    public List<Object[]> searchBookOR(String isbn, String genre, String title, String authors, String publisher) {
+		    
+	    	StringBuilder sql = new StringBuilder();
+	    	
+	    	// 注意！！　JPQL文ですので、Bookはエンティティです なので大文字から始める
+	    	//sql.append("SELECT b From Book b WHERE ");  
+	    	sql.append("SELECT b From Book as b WHERE ");  // JPQLの文なので Book はエンティティを示す
+	    	 boolean isbnFlg = false;
+	    	 boolean genreFlg= false;
+	    	 boolean titleFlg= false;	    	
+	    	 boolean authorsFlg = false;
+	    	 boolean publisherFlg = false;
+	    	    	 
+	    	 boolean orFlg= false;
+	    	 
+	    	 if(!"".equals(isbn)) {
+	    	 sql.append("b.isbn LIKE :isbn");  
+	    	 isbnFlg = true;
+	    	 orFlg= true;
+	    	 }
+	    	 // ここ変更した  後で直す 文学を選択したのに "0"になってる おかしい
+	    	//  if(!( genre == null ||  "選択しない".equals(genre))) {
+	    	if(!( genre == null ||  "".equals(genre))) {
+	    	  if (orFlg) sql.append(" OR ");
+	    	  sql.append("b.genre LIKE :genre");
+	    	  genreFlg = true;
+	    	  orFlg = true;
+	    	 }
+	    	 if(!"".equals(title)) {
+    		   if (orFlg) sql.append(" OR ");
+	    	   sql.append("b.title LIKE :title");
+	    	   titleFlg = true;
+	    	   orFlg = true;
+	    	 }
+	    	 if(!"".equals(authors)) {
+	    		 if (orFlg) sql.append(" OR ");
+	    		 sql.append("b.authors LIKE :authors"); 
+	    		 authorsFlg = true;
+	    		 orFlg = true;
+	    	 }
+	    	 // 追加
+	    	 if(!"".equals(publisher)) {
+	    	 if (orFlg) sql.append(" OR ");
+	    	  sql.append("b.publisher LIKE :publisher");
+	    	  publisherFlg = true;
+	    	 orFlg = true;
 	    	 }
 			
 	    	 

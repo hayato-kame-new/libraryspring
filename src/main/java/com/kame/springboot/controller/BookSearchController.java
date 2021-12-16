@@ -112,7 +112,7 @@ public class BookSearchController {
 			 return new ModelAndView("redirect:/book_search_form");  // 未入力なので、何もしないで /book_search_form へリダイレクトするだけ リダイレクトは、リダイレクト先のリクエストハンドラを実行させます。
 		 }   // フォームに何か入ってたら、検索を実行する
 		 // 戻り値 List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
-		 Iterable resultList = bookService.searchBookAnd(bookSearchForm.getIsbn(), bookSearchForm.getGenre(), 
+		 Iterable resultList = bookService.searchBookAND(bookSearchForm.getIsbn(), bookSearchForm.getGenre(), 
 					 bookSearchForm.getTitle(),bookSearchForm.getAuthors(), bookSearchForm.getPublisher());
 		
 		 // 何を入力して検索をかけたのか わかるように、検索結果後も、フォームに以前入力したものを表示させるため
@@ -179,10 +179,13 @@ public class BookSearchController {
 		// セレクトボックス表示用のgenreMap
 		mav.addObject("genreMap", genreMap);
 		int count = ((List<Book>) resultList).size();
-		String resultMsg = "検索結果" + count + "件です";
-		mav.addObject("resultMsg", resultMsg);
+		String searchResultMsg = "検索結果" + count + "件です";
+		mav.addObject("searchResultMsg", searchResultMsg);
+	
 		mav.setViewName("book/search");
 		 return mav;
 	}
+	
+	
 
 }

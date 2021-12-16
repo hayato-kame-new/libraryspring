@@ -19,10 +19,9 @@ public class MemberForm {
 	
 	@NotEmpty( message = "名前を入力してください")
 	@Size(max = 100, message = "名前は100文字以内で入力してください") //   minは書かないこと エラーメッセージ2つ出さないようにするため
-	private String name;  // このnameカラムを membersテーブルでは ユニークにしてるので、バリデーションにユニークを作ってカスタムアノテーションをつけること
+	private String name;  
 	// membersテーブルでは nameカラムにUNIQUEはつけません usersテーブルのユーザ名はユニークだけど このmembersテーブルのユーザ名は同姓同名を許してるので
-	// もしフォームクラスを作ったら、そちらにバリデーションのアノテーションをつける事になる
-	
+
 	
 	@NotEmpty( message = "電話番号を入力してください")
 	// @Pattern(regexp = "0\\d{1,4}-\\d{1,4}-\\d{4}", message = "電話番号の形式で入力してください")

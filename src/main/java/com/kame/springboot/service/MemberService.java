@@ -159,5 +159,78 @@ public class MemberService {
 		 }
 		 return true;  // 成功
 	 }
+	 
+	 /**
+		 * 会員検索
+		 * @param departmentId
+		 * @param employeeId
+		 * @param word
+		 * @return List<Object[]>
+		 */
+		@SuppressWarnings("unchecked")
+		public List<Object[]> find(String departmentId, String employeeId, String word) {
+			// 注意 引数のdepartmentId は 空文字とnullの可能ある   employeeId と word は ""空文字の可能性ある
+	
+			String sql = "select * from employee";
+			String where = ""; // where句
+			int depIdIndex = 0; // プレースホルダーの位置を指定する 0だと、プレースホルダーは使用しないことになる
+			int empIdIndex = 0;
+			int wordIndex = 0;
+	
+			if (departmentId == null) {
+				departmentId = "";
+			}
+			if (departmentId.equals("")) {
+				// 未指定の時 何もしない depIdIndex 0 のまま変更無し
+			} else {
+				where = " where departmentid = ?"; // 代入する 注意カラム名を全て小文字にすること departmentid また、前後半角空白入れてつなぐので注意
+				depIdIndex = 1; // 変更あり
+			}
+	
+			if (employeeId.equals("")) {
+				// 未指定の時 何もしない 
+			} else {
+				if (where.equals("")) { 
+					where = " where employeeid = ?"; // 代入する カラム名を全て小文字 employeeid
+					empIdIndex = 1;
+				} else {
+					where += " and employeeid = ?"; // where句はすでにあるので 二項演算子の加算代入演算子を使って連結 												
+					empIdIndex = depIdIndex + 1;
+				}
+			}
+	
+			if (word.equals("")) {
+				// 未指定の時何もしない
+			} else {
+				if (where.equals("")) { 
+					where = " where name like ?"; // 代入  
+					 wordIndex = 1;
+				} else if (where.equals(" where departmentid = ?")) {
+					where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+					 wordIndex = depIdIndex + 1;
+				} else if (where.equals(" where employeeid = ?")) {
+					where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+					 wordIndex = empIdIndex + 1;
+				} else if (where.equals(" where departmentid = ? and employeeid = ?")) {
+					where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+					 wordIndex = depIdIndex + empIdIndex + 1;
+				}
+			}
+	
+			Query query = entityManager.createNativeQuery(sql + where);
+			if (depIdIndex > 0) {
+				query.setParameter(depIdIndex, departmentId);
+			}
+			if (empIdIndex > 0) {
+				query.setParameter(empIdIndex, employeeId);
+			}
+			if (wordIndex > 0) {
+				query.setParameter(wordIndex, "%" + word + "%");
+			}
+			// query.getResultList()で取得したデータは List<Object[]>になってます
+			 //  Iterable にキャストもできる (List<Book>)にキャストもできる
+			return query.getResultList(); // 結果リスト 型のないリストを返す 
+		}
+
 
 }
