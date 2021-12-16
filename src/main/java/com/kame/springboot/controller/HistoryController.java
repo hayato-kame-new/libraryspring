@@ -23,7 +23,6 @@ import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Book;
 import com.kame.springboot.entity.History;
 import com.kame.springboot.entity.Member;
-import com.kame.springboot.form.HistorySearchForm;
 import com.kame.springboot.form.LendingForm;
 import com.kame.springboot.form.ReturnForm;
 import com.kame.springboot.service.BookService;
@@ -350,35 +349,5 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     }
     
     
-   // 図書館の所蔵の書籍全てから 貸出記録を条件を指定して検索する画面の表示
-    @RequestMapping( value = "/history_search_form", method=RequestMethod.GET)
-    public ModelAndView historySearchForm(
-    		@ModelAttribute("historySearchForm")HistorySearchForm historySearchForm,
-    		ModelAndView mav
-    		) {
-    	
-    	mav.setViewName("history/search");
-    	
-    	return mav;
-    }
-    
-    
-    // POSTでは、historiesテーブルからの検索結果と、状態をMapにしてからビューへ渡す
-    @RequestMapping( value = "/history_search", method=RequestMethod.POST)
-    public ModelAndView historySearch(
-    		@ModelAttribute("historySearchForm")HistorySearchForm historySearchForm,
-    		ModelAndView mav
-    		) {
-    	
-    	int bookId = historySearchForm.getBookId();
-    	
-    	int memberId = historySearchForm.getMemberId();
-    	
-    	int countDisplay = historySearchForm.getCountDisplay();
-    	// countDisplayの中身によって、SQL文が変わる select  全て   limit 10   limit 20   limit 30 
-    	
-    	
-    	
-    	return mav;
-    }
+   
 }

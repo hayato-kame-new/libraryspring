@@ -19,7 +19,7 @@
 
 <h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : 'フォーム画面'}"></h2>
 
-<p th:if="${msg}" th:text="${msg}"></p>
+<p class="msg" th:if="${msg}" th:text="${msg}"></p>
 <div>
 	<form th:action="@{/book_add_edit}" method="post" th:object="${book}">
 	

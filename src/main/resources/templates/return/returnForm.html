@@ -20,7 +20,7 @@
 <h2 class="headingReturn" >返却フォーム</h2>
 
 <!-- フォーム入力の バリデーションにエラーがあると msgにメッセージ -->
-<p th:if="${msg}" th:text="${msg}"></p>
+<p class="msg" th:if="${msg}" th:text="${msg}"></p>
 <!-- 返却のデータベース処理に失敗すると flashMsg に失敗のメッセージ  -->
 <p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
 

@@ -5,9 +5,7 @@
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
 <title th:text="|#{members_page.title} - library|"></title>
 <style>
- .flashMsg {
- 	color: skyblue;
- }
+
 </style>
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
@@ -27,7 +25,6 @@
 <th:block th:if="${members.size() > 0}" >
 	<table>
 		<tr>
-			
 			<th>ID</th><th>名前</th><th colspan="1"></th>
 		</tr>
 		
@@ -35,22 +32,17 @@
 			<td th:text="${member.id}"></td>
 			<td th:text="${member.name}"></td>
 			
-		
 			<td>
 			 <!--  ? 以降の クエリー文字列  ?id=1   などと表示される -->
 				<a th:href="@{/member_show( id=${member.id}) }"><button type="button" >会員 詳細画面</button></a>
-			</td>
-		
+			</td>		
 		</tr>
-	</table>
-	
+	</table>	
 </th:block>
 </div>
 <div>
 	<a href="/member_form?action=add" th:href="@{/member_form(action=add)}"><button type="button" >会員 新規登録画面</button></a>
 </div>
-
-
 
 <div>
 	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>

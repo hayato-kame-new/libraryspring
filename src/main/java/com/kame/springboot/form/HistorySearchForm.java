@@ -14,8 +14,8 @@ public class HistorySearchForm {
 	
 	private Integer memberId;  // 曖昧検索する 入力しなくてもいいので @NotNull などはつけない 
 	
-	
-	private Integer countDisplay;  // 曖昧検索する 入力しなくてもいいので @NotNull などはつけない セレクトボックス使用 "全て" 欄もある
+	// String型
+	private String countDisplay;  // 曖昧検索する 入力しなくてもいいので @NotBlank などはつけない セレクトボックス使用 "全て" 欄もある
 
 
 	public Integer getBookId() {
@@ -38,14 +38,14 @@ public class HistorySearchForm {
 	}
 
 
-	public Integer getCountDisplay() {
+	public String getCountDisplay() {
 		return countDisplay;
 	}
 
 
-	public void setCountDisplay(Integer countDisplay) {
+	public void setCountDisplay(String countDisplay) {
 		this.countDisplay = countDisplay;
 	}
-	
+
 	
 }

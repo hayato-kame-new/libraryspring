@@ -18,10 +18,10 @@
 		<h4>条件を指定して書籍情報を検索します</h4>
 		
 		<!-- 何も条件を指定しなかった場合にまた、リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
-		<p th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
+		<p class="flashMsg" th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
 		
 		<!-- バリデーションエラーのメッセージ -->
-		<p th:if="${msg != null}" th:text="${msg}" ></p>
+		<p class="msg" th:if="${msg != null}" th:text="${msg}" ></p>
 		
 		<!--  曖昧検索です   AND検索で絞る  未入力でも検索できる 
 		ただし、5つとも未入力なら検索しないで リダイレクトをして フォーム再表示する

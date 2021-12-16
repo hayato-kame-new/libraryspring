@@ -18,10 +18,10 @@
 		<h4>条件を指定して貸出履歴を検索します</h4>
 		
 		<!-- 何も条件を指定しなかった場合にまた、リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
-		<p th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
+		<p class="flashMsg" th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
 		
 		<!-- バリデーションエラーのメッセージ -->
-		<p th:if="${msg != null}" th:text="${msg}" ></p>
+		<p class="msg" th:if="${msg != null}" th:text="${msg}" ></p>
 		
 		<!--  曖昧検索です  AND検索で絞る  未入力でも検索できる 
 		ただし、全部を未入力なら検索しないで リダイレクトをして フォーム再表示する
@@ -55,7 +55,7 @@
 				 			<label for="genre">表示件数: </label>
 				 		</td>
 			 			<td ><select id="countDisplay" name="countDisplay"  size="4" style="width:150px;">
-					 		    <option value="" th:text="全て"></option>
+					 		    <option value="全て" th:text="全て"></option>
 					 		    <option value="10" th:text="10件"></option>
 					 		    <option value="20" th:text="20件"></option>
 					 		    <option value="30" th:text="30件"></option>
