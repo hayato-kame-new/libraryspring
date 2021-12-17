@@ -20,7 +20,9 @@
 
 <h2 class="headingReturn" >返却完了ページ</h2>
 
-<p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
+<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
+	<p class="flashMsg"  th:text="${flashMsg}"></p>
+</th:block>
 <h4>会員情報</h4>
 <p th:text="|会員ID: ${member.id}|"></p>
 

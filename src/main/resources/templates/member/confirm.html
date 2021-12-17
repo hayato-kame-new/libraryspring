@@ -20,9 +20,10 @@
 <div th:include="common/header :: common_header"></div>
 
 <h2 class="headingDanger" >この会員を削除してよろしいですか？</h2>
-<!-- リダイレクト後のメッセージ 削除失敗の時に -->
-<p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
-
+<!-- リダイレクト後のメッセージ 削除失敗の時に equals('')  シングルクオーテーションにしてください -->
+<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
+	<p class="flashMsg"  th:text="${flashMsg}"></p>
+</th:block>
 <!-- 内容は 表示するだけなので テーブルタグでいい -->
 <table th:object="${memberForm}">
 		<tr><th>ID</th><td th:text="*{id}"></td></tr>

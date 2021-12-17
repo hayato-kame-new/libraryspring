@@ -18,7 +18,9 @@
 		<h4>条件を指定して書籍情報を検索します</h4>
 		
 		<!-- 何も条件を指定しなかった場合にまた、リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
-		<p class="flashMsg" th:if="${flashMsg != null}" th:text="${flashMsg}" ></p>
+		<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
+			<p class="flashMsg"  th:text="${flashMsg}"></p>
+		</th:block>
 		
 		<!-- バリデーションエラーのメッセージ -->
 		<p class="msg" th:if="${msg != null}" th:text="${msg}" ></p>

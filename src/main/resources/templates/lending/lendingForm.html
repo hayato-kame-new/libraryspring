@@ -22,7 +22,9 @@
 <!-- フォーム入力のバリデーションにエラーがあると msgにメッセージ -->
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>
 <!-- 貸し出しのデータベース処理に失敗すると flashMsg に失敗のメッセージ  -->
-<p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
+<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
+	<p class="flashMsg"  th:text="${flashMsg}"></p>
+</th:block>
 
 <form th:action="@{/lend}" method="post" th:object="${lendingForm}" >
 	<p>※ 1冊借りる</p>

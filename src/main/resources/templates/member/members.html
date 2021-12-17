@@ -19,7 +19,9 @@
 <h2 class="heading">会員一覧</h2>
 
 <!-- リダイレクト後のメッセージ -->
-<p class="flashMsg" th:if="${flashMsg}" th:text="${flashMsg}"></p>
+<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
+	<p class="flashMsg"  th:text="${flashMsg}"></p>
+</th:block>
 
 <div>
 <th:block th:if="${members.size() > 0}" >
