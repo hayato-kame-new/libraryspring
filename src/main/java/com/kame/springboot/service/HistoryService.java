@@ -111,8 +111,65 @@ public class HistoryService {
 				return false; // 失敗したら false が返る
 				// ここでreturnしたら このメソッドは即終了するので以降は実行されない 引数の falseを呼び出し元へ返す
 			}
-			return true;  // 成功
-		 
+			return true;  // 成功		 
 	}
+	
+	
+	
+	/**
+	 * 貸出記録を AND検索 完全一致検索
+	 * 引数は nullの可能性もあるので int じゃなくて Integer
+	 * @param bookId
+	 * @param memberId
+	 * @param count
+	 * @return
+	 */
+	 public List<Object[]> searchHistoryAND(Integer bookId, Integer memberId, Integer count) {
+		 
+		 StringBuilder sql = new StringBuilder();
+		 
+		// 注意！！　JPQL文ですので、Memberはエンティティです なので大文字から始める
+	    	//sql.append("SELECT m From Member m WHERE ");  
+	    	sql.append("SELECT m From Member as m WHERE ");  // JPQLの文なので Member はエンティティを示す
+	    	 boolean bookIdFlg = false;
+	    	 boolean memberIdFlg= false;
+	    	 boolean countFlg= false;	    	
+	    	    	    	 
+	    	 boolean andFlg= false;
+		 
+	    	 // 最近の記録履歴から取得するので order by id desc とする
+	    	 // count には 10  20  30 または null が入ってくる limit 10 などとする nullだったら、 limit句がつかないで全部を取得する
+	    	 if(bookId != null) {
+	    		 // m.bookid   m.bookidと全て小文字にする    プレースホルダーの :bookId はこれでいい
+		    	 sql.append("m.bookid LIKE :bookId");  // bookIdフィールドは PostgreSQLではbookid 全て小文字で書く
+		    	 bookIdFlg = true;
+		    	 andFlg= true;
+		    	 }
+	    	 
+	    	 if(memberId != null) {
+	    		   if (andFlg) sql.append(" AND ");
+	    		// m.memberid   m.memberidと全て小文字にする    プレースホルダーの :memberId はこれでいい
+		    	   sql.append("m.memberid LIKE :memberId");
+		    	   memberIdFlg = true;
+		    	   andFlg = true;
+		    	 }
+	    	 
+	    	 if(count != null) {
+	    		 if (andFlg) sql.append(" AND ");
+	    		 sql.append("order by desc limit :count"); // :count は プレースホルダー
+	    		 
+	    		 countFlg = true;
+	    		 andFlg = true;
+	    	 }
+	    	 
+	    	 Query query = entityManager.createQuery(sql.toString());
+				if (bookIdFlg) query.setParameter("bookid",  bookId );  // 完全一致検索なので 第二引数は "%" + bookId + "%" では無い
+				 if (memberIdFlg) query.setParameter("memberid", memberId );  // 完全一致検索
+				 if (countFlg) query.setParameter("count",  count ); 
+				 
+				 return query.getResultList();
+					// query.getResultList()で取得したデータは List<Object[]>になってます
+	 }
+	
 
 }

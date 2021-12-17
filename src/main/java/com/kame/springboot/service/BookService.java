@@ -221,20 +221,21 @@ public class BookService {
 	    	 isbnFlg = true;
 	    	 andFlg= true;
 	    	 }
-	    	 // ここ変更した  後で直す 文学を選択したのに "0"になってる おかしい
-	    	//  if(!( genre == null ||  "選択しない".equals(genre))) {
+	    
 	    	if(!( genre == null ||  "".equals(genre))) {
 	    	  if (andFlg) sql.append(" AND ");
 	    	  sql.append("b.genre LIKE :genre");
 	    	  genreFlg = true;
 	    	  andFlg = true;
 	    	 }
+	    	
 	    	 if(!"".equals(title)) {
     		   if (andFlg) sql.append(" AND ");
 	    	   sql.append("b.title LIKE :title");
 	    	   titleFlg = true;
 	    	   andFlg = true;
 	    	 }
+	    	 
 	    	 if(!"".equals(authors)) {
 	    		 if (andFlg) sql.append(" AND ");
 	    		 sql.append("b.authors LIKE :authors"); 

@@ -124,8 +124,6 @@ public class BookSearchController {
 		 // 何を入力して検索をかけたのか わかるように、検索結果後も、フォームに以前入力したものを表示させるため
 		 mav.addObject("bookSearchForm", bookSearchForm);  // フォームのオブジェクトとして送る th:object="${bookSearchForm}" として使う
 		 
-		 // 結果のリストを送り表示させる このリストに書架状態までくっつけて リストを作り直しして送ります
-		//  mav.addObject("resultList",resultList); 
 		 		
 		// History実体は 貸し出しを完了する時点で historiesテーブルに保存する 全てhistoriesテーブルに保存していく
 		// bookid で絞って検索をすると
