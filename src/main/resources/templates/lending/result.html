@@ -42,12 +42,7 @@
 				<!-- 書架状態  -->
 				<td align="center" th:text="${element.value}"></td>
 				
-				<td>
-					<!-- フォームでHTTPメソッドGETで送ってもいい -->
-					<!-- <form method = "get" action="/book_show" th:action = "@{/book_show/{isbn}(isbn=${element.key.isbn})}" >
-					 	<input type="hidden" name="isbn" th:value="${element.key.isbn}" >
-					 	<input type="submit" value="詳細" >
-					 </form> -->
+				<td>					
 					 	<a th:href="@{/book_show/{id}(id=${element.key.id})}" ><button th:text="${element.key.id}"></button></a>
 				</td>
 			</tr> 

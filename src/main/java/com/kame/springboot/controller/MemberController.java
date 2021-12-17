@@ -2,6 +2,7 @@ package com.kame.springboot.controller;
 
 import java.time.LocalDate;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,13 @@ import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Member;
 import com.kame.springboot.form.MemberForm;
 import com.kame.springboot.service.MemberService;
-
+// @Transactional をつけないことサービスクラスのメソッドにつけますので、ダブルでつけると、ロールバックがうまく働かない
+// このクラスのリクエストハンドラでは、@Transaction　せずに、try-catchしたいので つけないこと
 @Controller
 public class MemberController {
+	
+	//  コントローラには @Transactional をつけないこと サービスクラスで @Transactionalをつけるから、つけたら、ネストされた状態になるので 
+	// ここのリクエストハンドラでtry-catchできなくなるので、つけないこと
 	
 	@Autowired
 	MemberService memberService;
@@ -43,10 +48,11 @@ public class MemberController {
 	@RequestMapping(value = "/members", method=RequestMethod.GET)
 	public String index(
 			@PageableDefault(page = 0, size = 10, sort = { "id" }) Pageable pageable, // id でソートしてる 重要
-			Model model
+			
+			Model model  // リダイレクトをしてくるので このmodelインスタンスのメソッドで Flash Scope から 取り出す
 			) {
 		
-		// 会員を 新規登録 編集 が成功したら リダイレクトしてくるので このリクエストハンドラを実行する
+		// 会員を 新規登録 編集 削除 が成功したら リダイレクトしてくるので このリクエストハンドラを実行する
 		// Flash Scope から 取り出すには Modelインスタンスの getAttributeメソッドを使用する
 		String flashMsg = null;
 		if(model.getAttribute("flashMsg") != null) {
@@ -242,10 +248,25 @@ public class MemberController {
 	// 削除確認画面を表示する* 削除する際も、一度内容を確認してからなので 削除の確認画面を表示する
 	@RequestMapping( value = "/member_delete_confirm" , method=RequestMethod.GET)
 	public ModelAndView deleteConfirm(
-			@RequestParam(name = "id")Integer id,  // 必須パラメータ aリンクの idが クエリー文字列で送られてきてる
+			// required = falseが必要です リダイレクトの時には 無いから  任意パラメータにすること 必須パラメータにしたらダメ aリンクの idが クエリー文字列で送られてきてるけど、リダイレクトしてきた時には無いのでエラーになるから
+			@RequestParam(name = "id", required = false)Integer id,  // required = falseが必要です 任意パラメータにすること 必須パラメータにしたらダメ
 			@ModelAttribute("memberForm") MemberForm memberForm,
-			ModelAndView mav
+			ModelAndView mav,
+			Model model   // 会員削除できない時には、この確認画面を表示するのに リダイレクトしてくるので 必要
 			) {
+			
+		// リダイレクトもしてくるので Flash Scopeから取り出すのに
+		//   Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。 Request Scope より長く、Session Scope より短いイメージ
+		 // Flash Scop は Request Scope より長く、Session Scope より短いイメージ 
+		// リダイレクト先のリクエストハンドラでは、Flash Scopeから取り出すには、Modelインスタンスの getAttributeメソッドを使う 取り出すのは Object型になってる
+		String flashMsg = "";
+		if(model.getAttribute("flashMsg") != null ) {
+			flashMsg = (String) model.getAttribute("flashMsg");
+		}
+		if(model.getAttribute("id") != null ) {
+			id = (Integer) model.getAttribute("id");
+		}
+			
 			mav.setViewName("member/confirm");
 				
 			Member member = memberService.findMemberDataById(id);  // 削除ときには idは aリンクのクエリー文字列から取得する
@@ -266,10 +287,14 @@ public class MemberController {
 			// 上書きしたフォームオブジェクトをビューに送る
 			mav.addObject("memberForm", memberForm);  // 必要 フォームに初期値として、表示するために
 			
+			// リダイレクトしてきた時に表示
+			mav.addObject("flashMsg", flashMsg);
 			return mav;
 		
 	}
 	
+	
+	// このリクエストハンドラや　このクラスには @Transactionアノテーションをつけないこと
 	/**
 	 * 会員を削除する
 	 * @param id
@@ -285,33 +310,54 @@ public class MemberController {
 			ModelAndView mav			
 			) {
 		
-		// idがあれば Memberデータを削除できる
-		boolean success = memberService.delete(id);
+		// idがあれば Memberデータを削除できるがmembersテーブルが親テーブルでリレーションがあるので
+		// historiesテーブルは membersテーブルの子テーブルなので、historiesテーブルに参照する memeberidカラムがあるので
+		// historiesテーブルにデータがある場合は、会員削除できません
+		// ERROR: update or delete on table "members" violates foreign key constraint "histories_memberid_fkey" on table "histories"
+		//   詳細: Key (id)=(11) is still referenced from table "histories".
+		// 子テーブルのhistoriesテーブルは
+		// ここで、エラーをキャッチしたいので try-catchをつけること、なので、このクラスやリクエストハンドラには @Transaction　つけずに、サービスクラスのメソッドにだけつけること
 		String flashMsg = "";
-		if(success == false) { // データベースから削除に失敗
-			flashMsg = "会員を削除できませんでした";
-			// 結果ページへフォワードする
-			mav.setViewName("result");
-			mav.addObject("flashMsg", flashMsg);
-			return mav;  // ここで即リクエストハンドラの終了 引数のmavを呼び出し元へ返す
-			// return で即終了してるので これより下の行は実行されない
-		} else {
-			// 成功してる
+		boolean success = false;  // 削除処理が成功したら true 失敗したら false
+		try {
+			// このdeleteメソッドは PersistenceExceptionの例外インスタンスを投げる可能性があるので tryの中で実行する
+			// このdeleteメソッドは  宣言の時に @Transactional と  throws文をつけてる  throws PersistenceException
+			success = memberService.delete(id);  // 例外インスタンスを投げたら catch文へ行く
+			// deleteメソッドが例外を投げなかったら、処理を続ける 
+			if(success == false) {  // データベースで削除の失敗
+				flashMsg = "会員を削除できませんでした";
+				
+				redirectAttributes.addFlashAttribute("flashMsg", flashMsg);	
+				redirectAttributes.addFlashAttribute("id", id);	// 注意
+				// Flash Scopeに保存して、削除確認画面を表示するために リダイレクトする
+				return new ModelAndView("redirect:/member_delete_confirm");  // return ここでメソッドの即終了 引数を呼び出し元へ返す 以降の行は実行されない
+
+			}
+			// success が true だったら 会員一覧にリダイレクトする
 			flashMsg = "会員を削除しました";
+			
+		} catch(PersistenceException e) {
+			// ここでキャッチする  やりたい処理を書くPersistenceException発生するというのは、
+			// リレーションのテーブルにデータがあるからなので
+			flashMsg = "削除しようとした会員には、貸出履歴があるので、貸出履歴を削除しないと この会員は削除できません。";
+			redirectAttributes.addFlashAttribute("flashMsg", flashMsg);	
+			redirectAttributes.addFlashAttribute("id", id);	
+			// Flash Scopeに保存して、削除確認画面を表示するために リダイレクトする
+			return new ModelAndView("redirect:/member_delete_confirm");  // return ここでメソッドの即終了 引数を呼び出し元へ返す 以降の行は実行されない
+			
 		}
-		
-		// 一覧へリダイレクトします
-		
+		// 削除に成功したら 会員一覧にリダイレクトする
+	//  Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。 Request Scope より長く、Session Scope より短いイメージ
+
 		//  リダイレクトは、フォワードと違って、リダイレクト先のリクエストハンドラを実行させます。フォワードは、ビューを表示させるだけ
 		// flashMsgは Flashスコープへ保存します スコープに置けるのは、参照型のインスタンスのみです。基本型(プリミティブ型)の変数は置けません intなら Integerの参照型にすれば置ける。
 		// (また、自作のクラスのインスタンスは、サーブレットなら、Beanのクラスにすることが必要です)
 		//  Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。
         // Flash Scop は Request Scope より長く、Session Scope より短いイメージ 
 		// リダイレクト先のリクエストハンドラでは、Flash Scopeから取り出すには、Modelインスタンスの getAttributeメソッドを使う
-       
+      
 		redirectAttributes.addAttribute("flashMsg", flashMsg);   // RedirectAttributesインスタンスの addFlashAttributeメソッドで Flash Scop に保存する
-		return new ModelAndView("redirect:/members");
-		
+		return new ModelAndView("redirect:/members"); // Flash Scopeに保存して、リダイレクトする		
 	}
 	
 	// 会員を検索する

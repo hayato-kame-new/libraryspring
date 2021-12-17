@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
@@ -143,12 +144,27 @@ public class MemberService {
 		return true;  // 成功
 	 }
 	 
+	 
+	 //Servlet.service() for servlet [dispatcherServlet] 
+	 // in context with path [] threw exception [Request processing failed; nested exception is 
+	 // javax.persistence.PersistenceException: org.hibernate.exception.ConstraintViolationException: 
+	 // could not execute statement] with root cause
 	 /**
 	  * 会員 削除する
+	  *  ロールバックの注意点として、非検査例外(RuntimeException及びそのサブクラス)が発生した場合はロールバックされるが、検査例外(Exception及びそのサブクラスでRuntimeExceptionのサブクラスじゃないもの)が発生した場合はロールバックされずコミットされる
+	 * RuntimeException以外の例外が発生した場合もロールバックしたいので @Transactional(rollbackFor =
+	 * Exception.class)としてExceptionおよびExceptionを継承しているクラスがthrowされるとロールバックされるように設定します.
+	 * 呼び出し元つまりコントローラ のメソッドでtry-catchする ここで例外処理をしてはいけない コントローラには @Transactional
+	 * をつけないこと つけると、UnexpectedRollbackException発生する トランザクションをコミットしようとした結果、予期しないロールバックが発生した場合にスローされます
+	 * 
+	 * @Transactional(readOnly=false, rollbackFor=Exception.class) をつけること throws
+	 *                                PersistenceException が必要
 	  * @param id
 	  * @return true:成功<br /> false:失敗
+	  * @throws PersistenceException
 	  */
-	 public boolean delete(Integer id) {
+	 @Transactional(readOnly = false, rollbackFor = Exception.class) // ここに@Transactionalをつけて、コントローラにはつけないでください
+	 public boolean delete(Integer id) throws PersistenceException{// throwsして、呼び出しもとで
 		 Query query = entityManager.createNativeQuery("delete from members where id = ? ");
 		 
 		 query.setParameter(1, id);

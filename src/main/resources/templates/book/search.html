@@ -74,10 +74,9 @@
 				
 			</form>
 		</div>
-		
-	
-		<!-- 検索結果表示  その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか-->
-		<p th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
+			
+		<!-- 検索結果表示 -->
+		<p style="margin-bottom: 5px;" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
 		<div>
 			 <th:block th:if="${statusMap != null && statusMap.size() > 0}">
 				 <table>
