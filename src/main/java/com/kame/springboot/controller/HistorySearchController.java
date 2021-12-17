@@ -1,5 +1,7 @@
 package com.kame.springboot.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,12 @@ public class HistorySearchController {
     	} else {
     		// bookId memberId  2つのうち 1つ以上に何か入力していたら 検索を実行する
     		// フォームに何も入力してない時には nullになってるので Integer型にする int にすると null の時に落ちる    		
+    		
+    		// 取得した本のID と　会員IDが、図書館システムに登録のあるIDなのかをまず調べること
+    		
+    		
+    		
+    		
     		Integer bookId = historySearchForm.getBookId();
     		// フォームに何も入力してない時には nullになってるので Integer型にする  int にすると null の時に落ちる
     		Integer memberId = historySearchForm.getMemberId();
@@ -81,11 +89,89 @@ public class HistorySearchController {
     		// countは、全てを選択したら null になってる
     		Iterable resultList = historyService.searchHistoryAND(historySearchForm.getBookId(), historySearchForm.getMemberId(), count);
     		// 戻り値は List<Object[]> になってるけど Iterable型にもできる
-    		
-    		
+    		int resultCount = ((List<Object[]>) resultList).size();
+    		String searchResultMsg = "検索結果は " + resultCount + "件です";
+    		 // 何を入力して検索をかけたのか わかるように、検索結果後も、フォームに以前入力したものを表示させるため
+   		 	mav.addObject("historySearchForm", historySearchForm);  // フォームのオブジェクトとして送る th:object="${bookSearchForm}" として使う
+   		 mav.addObject("searchResultMsg", searchResultMsg);
+   		 	mav.addObject("resultList", resultList); 
+   		
+   		 	mav.setViewName("history/search");
     	}
     	
     	return mav;
     }
+    
+    
+	/**
+	 * 社員検索
+	 * @param departmentId
+	 * @param employeeId
+	 * @param word
+	 * @return List
+	 */
+//	@SuppressWarnings("unchecked")
+//	public List<Employee> find(String departmentId, String employeeId, String word) {
+//		// 注意 引数のdepartmentId は 空文字とnullの可能ある   employeeId と word は ""空文字の可能性ある
+//
+//		String sql = "select * from employee";
+//		String where = ""; // where句
+//		int depIdIndex = 0; // プレースホルダーの位置を指定する 0だと、プレースホルダーは使用しないことになる
+//		int empIdIndex = 0;
+//		int wordIndex = 0;
+//
+//		if (departmentId == null) {
+//			departmentId = "";
+//		}
+//		if (departmentId.equals("")) {
+//			// 未指定の時 何もしない depIdIndex 0 のまま変更無し
+//		} else {
+//			where = " where departmentid = ?"; // 代入する 注意カラム名を全て小文字にすること departmentid また、前後半角空白入れてつなぐので注意
+//			depIdIndex = 1; // 変更あり
+//		}
+//
+//		if (employeeId.equals("")) {
+//			// 未指定の時 何もしない 
+//		} else {
+//			if (where.equals("")) { 
+//				where = " where employeeid = ?"; // 代入する カラム名を全て小文字 employeeid
+//				empIdIndex = 1;
+//			} else {
+//				where += " and employeeid = ?"; // where句はすでにあるので 二項演算子の加算代入演算子を使って連結 												
+//				empIdIndex = depIdIndex + 1;
+//			}
+//		}
+//
+//		if (word.equals("")) {
+//			// 未指定の時何もしない
+//		} else {
+//			if (where.equals("")) { 
+//				where = " where name like ?"; // 代入  
+//				 wordIndex = 1;
+//			} else if (where.equals(" where departmentid = ?")) {
+//				where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+//				 wordIndex = depIdIndex + 1;
+//			} else if (where.equals(" where employeeid = ?")) {
+//				where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+//				 wordIndex = empIdIndex + 1;
+//			} else if (where.equals(" where departmentid = ? and employeeid = ?")) {
+//				where += " and name like ?"; // 二項演算子の加算代入演算子を使って連結 
+//				 wordIndex = depIdIndex + empIdIndex + 1;
+//			}
+//		}
+//
+//		Query query = entityManager.createNativeQuery(sql + where);
+//		if (depIdIndex > 0) {
+//			query.setParameter(depIdIndex, departmentId);
+//		}
+//		if (empIdIndex > 0) {
+//			query.setParameter(empIdIndex, employeeId);
+//		}
+//		if (wordIndex > 0) {
+//			query.setParameter(wordIndex, "%" + word + "%");
+//		}
+//		return query.getResultList(); // 結果リスト 型のないリストを返す 
+//	}
+
 
 }

@@ -193,6 +193,7 @@ public class BookService {
 	  	 * このクエリにsetParameterで値を割り当てています
 	  	 *  query.getResultList()で取得したデータは List<Object[]>になってます
 	  	 *   Iterable にキャストもできる (List<Book>)にキャストもできる
+	  	 *   
 	  	 *  List<Object[]>
 	  	 * @param isbn
 	  	 * @param genre
@@ -204,11 +205,12 @@ public class BookService {
 	    public List<Object[]> searchBookAND(String isbn, String genre, String title, String authors, String publisher) {
 	    
 	    	StringBuilder sql = new StringBuilder();
-	    	
+	    	// JPQL文 大文字小文字を明確に区別する　予約語は大文字で書く
 	    	// 注意！！　JPQL文ですので、Bookはエンティティです なので大文字から始める
 	    	//sql.append("SELECT b From Book b WHERE ");  
 	    	sql.append("SELECT b From Book as b WHERE ");  // JPQLの文なので Book はエンティティを示す
-	    	 boolean isbnFlg = false;
+	    	sql.append(" ");  // 一応半角空白を明示的に入れておくと ミスが防げる 
+	    	boolean isbnFlg = false;
 	    	 boolean genreFlg= false;
 	    	 boolean titleFlg= false;	    	
 	    	 boolean authorsFlg = false;
@@ -223,28 +225,28 @@ public class BookService {
 	    	 }
 	    
 	    	if(!( genre == null ||  "".equals(genre))) {
-	    	  if (andFlg) sql.append(" AND ");
-	    	  sql.append("b.genre LIKE :genre");
+	    	  if (andFlg) sql.append(" AND ");  // 前後に半角空白が必要です
+	    	  sql.append("b.genre LIKE :genre");  // b.エンティティのプロパティ名 bのエイリアスは省略できません
 	    	  genreFlg = true;
 	    	  andFlg = true;
 	    	 }
 	    	
 	    	 if(!"".equals(title)) {
-    		   if (andFlg) sql.append(" AND ");
-	    	   sql.append("b.title LIKE :title");
+    		   if (andFlg) sql.append(" AND "); // 前後に半角空白が必要です
+	    	   sql.append("b.title LIKE :title");// b.エンティティのプロパティ名 bのエイリアスは省略できません
 	    	   titleFlg = true;
 	    	   andFlg = true;
 	    	 }
 	    	 
 	    	 if(!"".equals(authors)) {
-	    		 if (andFlg) sql.append(" AND ");
+	    		 if (andFlg) sql.append(" AND "); // 前後に半角空白が必要です
 	    		 sql.append("b.authors LIKE :authors"); 
 	    		 authorsFlg = true;
 	    		 andFlg = true;
 	    	 }
 	    	 // 追加
 	    	 if(!"".equals(publisher)) {
-	    	 if (andFlg) sql.append(" AND ");
+	    	 if (andFlg) sql.append(" AND "); // 前後に半角空白が必要です
 	    	  sql.append("b.publisher LIKE :publisher");
 	    	  publisherFlg = true;
 	    	 andFlg = true;

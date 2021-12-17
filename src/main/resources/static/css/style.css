@@ -62,3 +62,6 @@ div { margin-bottom: 13px; }
  	width: 400px;
  	color: skyblue;
  }
+ .searchResultMsg {
+ 	color: darkgreen;
+ }

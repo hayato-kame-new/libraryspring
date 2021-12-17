@@ -85,7 +85,7 @@ public class MemberService {
 	  */
 	 public Member findMemberDataById(Integer id) {
 	 
-		 Query query = entityManager.createNativeQuery("select * from members where id = :id ");
+		 Query query = entityManager.createNativeQuery("select * from members where id = :id order by id asc");
 		 query.setParameter("id", id);
 		 // List<Object[]>   になってます
 		  List<Object[]> resultDataList = query.getResultList();

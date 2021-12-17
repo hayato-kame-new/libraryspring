@@ -73,7 +73,7 @@
 		
 	
 		<!-- 検索結果表示  その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか-->
-		<p th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
+		<p class="searchResultMsg" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
 		<div>
 			 <th:block th:if="${historySearchMap != null && historySearchMap.size() > 0}">
 				 <table>
@@ -85,9 +85,17 @@
 						<td align="center" th:text="${element.key.memberId}"></td>　
 						<td align="left" th:text="${element.key.lendDate}"></td>
 						<td align="left" th:text="${element.key.returnDate}"></td>
-						<td align="left" th:text="${element.key.publisher}"></td>
-						<!-- 書架状態 表示後で変更 -->
-						<td align="center" th:text="${element.value}"></td>
+						
+						<!-- 書架状態 returnDateが nullなら 貸出中-->
+<!-- 三項演算子のネストの書き方
+<div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
+-->
+
+<!-- <h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : 'フォーム画面'}"></h2>
+ -->						
+						
+						<td align="center" th:text="${element.key.returnDate == null} ?  '貸出中' : '書架' "></td>
+						
 						<td>
 							 <a  th:href="@{/book_show_list(id=${element.key.id})}"><button type="button">詳細</button></a>
 						</td>

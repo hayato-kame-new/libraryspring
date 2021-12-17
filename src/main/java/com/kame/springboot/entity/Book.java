@@ -18,7 +18,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity  //// エンティティのクラスです 処理のメソッドは書かないLibraryクラスに書く リポジトリを組み込んだサービスをフィールドとしておかないこと
-@Table(name = "books")  // 小文字で
+@Table(name = "books",  schema = "public")  // テーブル名は小文字で
 public class Book {  // Bookの方が 主エンティティ   Historyエンティティが 従エンティティ
 	// エンティティクラスに書くのは テーブルのからむの対応するフィールドだけ あとはコンストラクタとアクセッサだけ
 	// フォームのクラスを作らないので バリデーションのアノテーションもつける 

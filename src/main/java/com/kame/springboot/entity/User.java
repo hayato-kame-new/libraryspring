@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity  // つけてください  @Entityをつけて @Id をつけないと@OneToManyがつけられないしエラーになる 処理のメソッドは書かないLibraryクラスに書く
-@Table(name = "users")
+@Table(name = "users",  schema = "public")  // テーブル名は小文字で
 public class User {
 	// エンティティのクラスです ロジックは書かないこと リポジトリを組み込んだサービスをフィールドとしておかないこと
 	// フォームクラスSignupFormクラスも見てください！！ 入力チェックのアノテーションはそちらのフォームクラスにつけます

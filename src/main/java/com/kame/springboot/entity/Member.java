@@ -20,7 +20,7 @@ import javax.persistence.Table;
  *
  */
 @Entity  //// エンティティのクラスです 処理のメソッドは書かないLibraryクラスに書く リポジトリを組み込んだサービスをフィールドとしておかないこと
-@Table(name = "members")  // 小文字で
+@Table(name = "members",  schema = "public")  // テーブル名は小文字で
 public class Member {  // Memberの方が 主エンティティ   Historyエンティティが 従エンティティ
 	
 	
