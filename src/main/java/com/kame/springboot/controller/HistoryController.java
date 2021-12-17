@@ -82,7 +82,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     public ModelAndView lend(
     		//@Valid @NotNull @RequestParam(name = "bookId")Integer bookId,  // 必須パラメータ バリデーションつき Integerだから @NotNullを使う
     		// @Valid @NotNull @RequestParam(name = "memberId")Integer memberId, // 必須パラメータ バリデーションつき Integerだから @NotNullを使う
-    		@ModelAttribute("lendingForm")@Validated LendingForm lendingForm,  
+    		@ModelAttribute("lendingForm")@Validated LendingForm lendingForm,  // これと 下のBindingResultは、すぐ下につけないと エラーになる BindingError
     		BindingResult result,  // バリデーションエラーを取得するため
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
 		    HttpServletRequest request, // requestオブジェクトから取得したい時に

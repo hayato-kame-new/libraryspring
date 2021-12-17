@@ -115,8 +115,63 @@ public class HistoryService {
 	}
 	
 	
-	
 	/**
+	 * こっちを使う
+	 * 完全一致検索 履歴
+	 * @param bookId
+	 * @param memberId
+	 * @param count
+	 * @return
+	 */
+ public List<Object[]> searchAND(Integer bookId, Integer memberId, Integer count) {
+		 
+		 StringBuilder sql = new StringBuilder();
+		 // 素のSQL文
+		 sql.append("select * from histories where  ");
+		 boolean bookIdFlg = false;
+    	 boolean memberIdFlg= false;
+    	 boolean countFlg= false;
+    	 
+    	 boolean andFlg= false;
+    	 
+    	 if(bookId != null) {
+    		 
+	    	 sql.append("bookid = :a");  
+	    	 bookIdFlg = true;
+	    	 andFlg= true;
+	    	 }
+    	 
+    	 if(memberId != null) {
+  		   if (andFlg) sql.append(" AND ");  
+	    	   sql.append("memberid = :b ");
+	    	   memberIdFlg = true;
+	    	   andFlg = true;
+	    	 }
+    	 
+    	 
+    	 if(count == null) { // countが nullだったら 全部表示なので
+		   // if (andFlg) sql.append(" AND ");   // これはいらない
+    	   sql.append(" order by id desc ");  // limit はつけない
+    	   // countFlgは falseのままにしておく
+    	  
+    	 } else {  // count に 10  20  30 入っていたら
+    		 sql.append(" order by id desc limit :c ");  // limit をつける
+    		 countFlg = true;
+    		 
+    	 }
+    	 // 素のSQLだから createNativeQueryメソッドを使う
+    	 Query query = entityManager.createNativeQuery(sql.toString());
+    	 
+    	 if (bookIdFlg) query.setParameter("a",  bookId );  // 完全一致検索なので 第二引数は "%" + bookId + "%" では無い
+		 if (memberIdFlg) query.setParameter("b", memberId );  // 完全一致検索
+		 if (countFlg) query.setParameter("c", count );  // 完全一致検索
+		 return query.getResultList();
+			// query.getResultList()で取得したデータは List<Object[]>になってます
+	
+ }
+	/**
+	 * これはエラーになるので使えない 参考にとっておく
+	 * 
 	 * 貸出記録を AND検索 完全一致検索
 	 * 引数は nullの可能性もあるので int じゃなくて Integer
 	 * 

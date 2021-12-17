@@ -25,26 +25,30 @@
 	<p class="flashMsg"  th:text="${flashMsg}"></p>
 </th:block>
 <!-- 内容は 表示するだけなので テーブルタグでいい -->
-<table th:object="${memberForm}">
-		<tr><th>ID</th><td th:text="*{id}"></td></tr>
-		<tr><th>名前</th><td th:text="*{name}"></td></tr>
-		<tr><th>生年月日</th><td th:text="${memberForm.birthdayPrint()}"></td></tr>
-		<tr><th>電話</th><td th:text="*{tel}"></td></tr>
-		<tr><th>住所</th><td th:text="*{address}"></td></tr>
-		<tr>
-			<th></th>
-			<td style="margin-top: 20px;">
-				<!-- 削除に必要なのは idだけなので idだけフォームで送ればいい -->
-			
-				<form th:action="@{/member_delete}" method="post" th:object="${memberForm}" onsubmit="return beforeSubmit()">
-					<input type="hidden" name="id" th:value="*{id}" />
-					<input class="deletebtn" type="submit" value="削除する" />
-				</form>
+<div>
+	<table th:object="${memberForm}">
+			<tr><th>ID</th><td th:text="*{id}"></td></tr>
+			<tr><th>名前</th><td th:text="*{name}"></td></tr>
+			<tr><th>生年月日</th><td th:text="${memberForm.birthdayPrint()}"></td></tr>
+			<tr><th>電話</th><td th:text="*{tel}"></td></tr>
+			<tr><th>住所</th><td th:text="*{address}"></td></tr>
+			<tr>
+				<th></th>
+				<td style="margin-top: 20px;">
+					<!-- 削除に必要なのは idだけなので idだけフォームで送ればいい -->
 				
-			</td>
-		</tr>
-</table>
-
+					<form th:action="@{/member_delete}" method="post" th:object="${memberForm}" onsubmit="return beforeSubmit()">
+						<input type="hidden" name="id" th:value="*{id}" />
+						<input class="deletebtn" type="submit" value="削除する" />
+					</form>
+					
+				</td>
+			</tr>
+	</table>
+</div>
+<div>
+	<a href="/members" th:href="@{/members}"><button type="button" >会員 一覧画面</button></a>
+</div>
 
 <script>
 function beforeSubmit() {

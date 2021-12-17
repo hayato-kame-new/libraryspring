@@ -101,5 +101,5 @@ public class UserController {
 		return mav;
 	}
 		
-	
+	// BindingResultは、@ModelAttributeのすぐ下につけないと エラーになる BindingError
 }

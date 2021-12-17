@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,13 +36,15 @@ public class HistorySearchController {
     	return mav;
     }
     
-    
+//    @ModelAttribute("historySearchForm")@Validated HistorySearchForm historySearchForm,
+//	BindingResult result,  // バリデーションに必要@ModelAttributeのすぐ下につけること
     // POSTでは、historiesテーブルからの検索結果と、状態をMapにしてからビューへ渡す
     @RequestMapping( value = "/history_search", method=RequestMethod.POST)
     public ModelAndView historySearch(
-    		@ModelAttribute("historySearchForm")HistorySearchForm historySearchForm,
+    		@ModelAttribute("historySearchForm")@Validated HistorySearchForm historySearchForm,
+    		BindingResult result,  // バリデーションに必要@ModelAttributeのすぐ下につけること
+    		
     		RedirectAttributes redirectAttributes,  // リダイレクトするのに必要
-			BindingResult result,  // バリデーションに必要
 			HttpServletRequest request, // requestオブジェクトから取得したい時に
     		ModelAndView mav
     		) {
@@ -77,17 +80,22 @@ public class HistorySearchController {
     		Integer bookId = historySearchForm.getBookId();
     		// フォームに何も入力してない時には nullになってるので Integer型にする  int にすると null の時に落ちる
     		Integer memberId = historySearchForm.getMemberId();
-    		// セレクトボックスを何も選択しないで送信したら nullになってる 
+    		// セレクトボックスを何も選択しないで送信したら バリデーションエラーに引っかかるので 選択されてきてる
     		// countDisplayの中身によって、SQL文が変わる select  全て   limit 10   limit 20   limit 30 
-    		Integer count = 0;
-    		if(historySearchForm.getCountDisplay().equals("全て")) {
-    			count = null;
-    		} else {
+    		
+    		Integer count = null;  // "全て" だったら nullにしておく
+    		
+    		if( !historySearchForm.getCountDisplay().equals("全て")) { // nullにはなってないから historySearchForm.getCountDisplay() != null はいらない
+    			// "10"  "20"  "30" だったら 文字列から数値に変換する
     			count = Integer.parseInt(historySearchForm.getCountDisplay());
-    		}
+    		} 
     		// 指定した条件で AND検索 完全一致検索 引数は nullの可能性もあるので int じゃなくて Integer  戻り値 List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
-    		// countは、全てを選択したら null になってる
-    		Iterable resultList = historyService.searchHistoryAND(historySearchForm.getBookId(), historySearchForm.getMemberId(), count);
+    		// countは、"全て" を選択してたら  null になってる
+    		
+    		
+    		Iterable resultList = historyService.searchAND(historySearchForm.getBookId(), historySearchForm.getMemberId(), count);
+    		
+    		
     		// 戻り値は List<Object[]> になってるけど Iterable型にもできる
     		int resultCount = ((List<Object[]>) resultList).size();
     		String searchResultMsg = "検索結果は " + resultCount + "件です";

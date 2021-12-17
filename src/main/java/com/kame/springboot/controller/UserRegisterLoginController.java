@@ -252,5 +252,5 @@ public class UserRegisterLoginController {
 		return new ModelAndView("redirect:/");
 		// return "redirect:/";
 	}
-
+	// BindingResultは、@ModelAttributeのすぐ下につけないと エラーになる BindingError
 }

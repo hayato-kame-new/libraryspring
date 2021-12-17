@@ -195,7 +195,7 @@ public class BookController {
 	public ModelAndView bookAddEdit(
 			@RequestParam( name = "action")String action,  // 必須のパラメータ hidden
 			@RequestParam( name = "id")Integer id, // 必須のパラメータ  idは新規では 0なので 0で渡ってくる 編集の時にはidが入ってる
-			@ModelAttribute("book")@Validated Book book,
+			@ModelAttribute("book")@Validated Book book,// これと 下のBindingResultは、すぐ下につけないと エラーになる BindingError
 			BindingResult result,
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
 		    HttpServletRequest request, // requestオブジェクトから取得したい時に

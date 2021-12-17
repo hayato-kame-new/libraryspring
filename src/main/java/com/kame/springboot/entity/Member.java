@@ -164,5 +164,7 @@ public class Member {  // Memberの方が 主エンティティ   Historyエン�
 		this.birthDay = birthDay;
 	}
 	
-
+	// \dn   とすると スキーマ名が確認できる
+		// \d histories  とすると　テーブル詳細が見れるTable "public.histories"　と書いてあるので スキーマ名は pulic　　かなと思う
+		
 }

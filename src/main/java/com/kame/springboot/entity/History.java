@@ -139,4 +139,7 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 		this.memberId = memberId;
 	}
 	
+	// \dn   とすると スキーマ名が確認できる
+	// \d histories  とすると　テーブル詳細が見れるTable "public.histories"　と書いてあるので スキーマ名は pulic　　かなと思う
+	
 }

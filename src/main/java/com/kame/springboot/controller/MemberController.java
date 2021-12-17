@@ -164,7 +164,7 @@ public class MemberController {
 			@RequestParam( name = "action")String action,  // 必須のパラメータ hidden
 			@RequestParam( name = "id", required = false)Integer id, // 新規の時には無いのでnull  required = false で任意パラメータにする
 			@ModelAttribute("memberForm")@Validated MemberForm memberForm,   // @Validatedをつけることによってバリデーション機能が働きます
-			BindingResult result,
+			BindingResult result,  // BindingResultは、@ModelAttributeのすぐ下につけないと エラーになる BindingError
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
 		    HttpServletRequest request, // requestオブジェクトから取得したい時に
 			ModelAndView mav

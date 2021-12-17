@@ -16,7 +16,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
+//\dn   とすると スキーマ名が確認できる
+	// \d histories  とすると　テーブル詳細が見れるTable "public.histories"　と書いてあるので スキーマ名は pulic　　かなと思う
+	
 @Entity  //// エンティティのクラスです 処理のメソッドは書かないLibraryクラスに書く リポジトリを組み込んだサービスをフィールドとしておかないこと
 @Table(name = "books",  schema = "public")  // テーブル名は小文字で
 public class Book {  // Bookの方が 主エンティティ   Historyエンティティが 従エンティティ
@@ -83,7 +85,10 @@ public class Book {  // Bookの方が 主エンティティ   Historyエンテ�
 	// mappedByに指定する値は「対応する(＠ManyToOneがついた)フィールド変数名」になります。
 	@OneToMany(mappedBy = "bookId", cascade = CascadeType.ALL)
 	List<History> histories;  // 複数形  List<エンティティ名> の変数名が複数系
-	
+	// なおmaapedByで指定したフィールドは @ManyToOne だが、
+	// @ManyToOne はデフォルトで join-columnなので結果としてjoin-columnマッピング戦略になる。
+
+
 	
 	/**
 	 * 引数なしコンストラクタ

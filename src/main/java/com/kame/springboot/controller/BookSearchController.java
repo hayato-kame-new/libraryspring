@@ -85,9 +85,9 @@ public class BookSearchController {
 	 */
 	@RequestMapping(value = "/book_search", method=RequestMethod.POST)
 	public ModelAndView search(
-			@ModelAttribute("bookSearchForm")@Validated BookSearchForm bookSearchForm,
-			RedirectAttributes redirectAttributes,  // リダイレクトするのに必要
+			@ModelAttribute("bookSearchForm")@Validated BookSearchForm bookSearchForm, // これと 下のBindingResultは、すぐ下につけないと エラーになる BindingError
 			BindingResult result,  // バリデーションに必要
+			RedirectAttributes redirectAttributes,  // リダイレクトするのに必要
 			HttpServletRequest request, // requestオブジェクトから取得したい時に
 			ModelAndView mav
 			) {

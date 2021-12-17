@@ -36,5 +36,7 @@ public class MemberSearchController {
 		
 		return mav;
 	}
+	
+	// BindingResultは、@ModelAttributeのすぐ下につけないと エラーになる BindingError
 
 }

@@ -20,24 +20,25 @@
 <div th:include="common/header :: common_header"></div>
 
  <h2 class="heading" th:inline="text">[[${member.name}]]さんの詳細ページ</h2>
-
-<table th:object="${member}">
-		<tr><th>ID</th><td th:text="*{id}"></td></tr>
-		<tr><th>名前</th><td th:text="*{name}"></td></tr>
-		<tr><th>生年月日</th><td th:text="${member.printBirthDay()}"></td></tr>
-		<tr><th>電話</th><td th:text="*{tel}"></td></tr>
-		<tr><th>住所</th><td th:text="*{address}"></td></tr>
-		<tr>
-			<th></th>
-			<td>
-			    <!-- 編集画面を表示する -->
-				<a style="margin-right: 20px" th:href="@{/member_form(action=edit, id=${member.id})}"><button class="editbtn" type="button" >会員編集</button></a>
-				<!-- 削除の時にも 一旦確認のため 内容表示の画面を表示する -->
-				<a th:href="@{/member_delete_confirm(id=${member.id})}"><button class="deletebtn" type="button" >会員削除</button></a>
-			</td>
-		</tr>
-	
-</table>
+<div>
+	<table th:object="${member}">
+			<tr><th>ID</th><td th:text="*{id}"></td></tr>
+			<tr><th>名前</th><td th:text="*{name}"></td></tr>
+			<tr><th>生年月日</th><td th:text="${member.printBirthDay()}"></td></tr>
+			<tr><th>電話</th><td th:text="*{tel}"></td></tr>
+			<tr><th>住所</th><td th:text="*{address}"></td></tr>
+			<tr>
+				<th></th>
+				<td>
+				    <!-- 編集画面を表示する -->
+					<a style="margin-right: 20px" th:href="@{/member_form(action=edit, id=${member.id})}"><button class="editbtn" type="button" >会員編集</button></a>
+					<!-- 削除の時にも 一旦確認のため 内容表示の画面を表示する -->
+					<a th:href="@{/member_delete_confirm(id=${member.id})}"><button class="deletebtn" type="button" >会員削除</button></a>
+				</td>
+			</tr>
+		
+	</table>
+</div>
 <div>
 	<a href="/members" th:href="@{/members}"><button type="button"  >会員 一覧画面</button></a>
 </div>
