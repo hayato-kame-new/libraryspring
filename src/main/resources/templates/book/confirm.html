@@ -19,8 +19,12 @@
 
 <!-- <h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : '書籍 削除確認画面 この本を削除してよろしいですか?'}"></h2> -->
 <h2 class="headingDanger" >この書籍を削除してよろしいですか?</h2>
-
-<table  th:object="${book}">
+<!-- リダイレクト後のメッセージ 削除失敗の時に equals('')  シングルクオーテーションにしてください -->
+<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
+	<p class="flashMsg"  th:text="${flashMsg}"></p>
+</th:block>
+<div>
+	<table  th:object="${book}">
 		<tr><th>ID</th><td th:text="*{id}"></td></tr>
 		<tr><th>ISBN</th><td th:text="*{isbn}"></td></tr>
 		<tr><th>ジャンル</th><td th:text="*{genre}"></td></tr>
@@ -40,8 +44,9 @@
 				
 			</td>
 		</tr>	
-</table>
-<div>
+	</table>
+</div>
+<div style="margin-top: 25px;">
 	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面</button></a>
 </div>
 

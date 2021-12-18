@@ -21,69 +21,67 @@
 <h2 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : 'フォーム画面'}"></h2>
 
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>
-
-<form th:action="@{/member_add_edit}" method="post" th:object="${memberForm}" onsubmit="return beforeSubmit()" >
-
-	<input type="hidden" name="action" th:value="${action}" />
-	<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 
-	編集の時には idが入ってるので使用できる  フォームのオブジェクトには関係なく 独立してパラメータで送る ${id} にする *{id} ではない-->
-	<input type="hidden" name="id" th:value="*{id}" />
-	
-	<p th:if="${memberForm.id != 0}" th:text="|会員ID: *{id}|" ></p>
-	
-	<div>
-		<label for="name">名前: </label> 
-		<input type="text" id="name" name="name" th:value="*{name}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="err">
-		</div>				
-	</div>
-	
-	<div>誕生日: 
-        <select  name="year" class="js-changeYear" th:errorclass="err" >        	
-	            <option th:each="i : ${#numbers.sequence(#dates.format(new java.util.Date(), 'yyyy'), 1920)}"
-	                th:value="${i}" th:text="${i}" th:selected="${i == memberForm.year}">
-	            </option>        
-        </select> 年
-
-        <select name="month" class="js-changeMonth" th:errorclass="err" >
-            <option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}"
-                th:text="${i}" th:selected="${i == memberForm.month}">
-            </option>
-        </select> 月
-
-        <select name="day" class="js-changeDay" th:errorclass="err">
-            <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}"
-                th:text="${i}" th:selected="${i == memberForm.day}">
-            </option>
-        </select> 日
-    </div>
-	
-	<div>
-		<label for="tel">電話: </label>
-		<input type="text" id="tel" name="tel" th:value="*{tel}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" th:errorclass="err">
-		</div>				
-	</div>
-	
-	<div>
-		<label for="address">住所: </label>
-		<input type="text" id="address" name="address" th:value="*{address}" th:errorclass="err" />		
-		<div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" th:errorclass="err">
-		</div>				
-	</div>
-		
-	<th:block th:if="${action.equals('add') || action.equals('edit')}"  >
-		<div>
-			<input type="submit" value="送信" />
-			<input type="reset" value="キャンセル">
-		</div>
-	</th:block>
-</form>
-	
-
-<hr />
-
 <div>
+	<form th:action="@{/member_add_edit}" method="post" th:object="${memberForm}" onsubmit="return beforeSubmit()" >
+	
+		<input type="hidden" name="action" th:value="${action}" />
+		<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 
+		編集の時には idが入ってるので使用できる  フォームのオブジェクトには関係なく 独立してパラメータで送る ${id} にする *{id} ではない-->
+		<input type="hidden" name="id" th:value="*{id}" />
+		<p th:if="*{id != null && id != 0}" th:text="|会員登録ID: *{id}|" ></p>
+		<!-- <p th:if="${memberForm.id != 0}" th:text="|会員ID: *{id}|" ></p> -->
+		
+		<div>
+			<label for="name">名前: </label> 
+			<input type="text" id="name" name="name" th:value="*{name}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="err">
+			</div>				
+		</div>
+		
+		<div>誕生日: 
+	        <select  name="year" class="js-changeYear" th:errorclass="err" >        	
+		            <option th:each="i : ${#numbers.sequence(#dates.format(new java.util.Date(), 'yyyy'), 1920)}"
+		                th:value="${i}" th:text="${i}" th:selected="${i == memberForm.year}">
+		            </option>        
+	        </select> 年
+	
+	        <select name="month" class="js-changeMonth" th:errorclass="err" >
+	            <option th:each="i : ${#numbers.sequence(1, 12)}" th:value="${i}"
+	                th:text="${i}" th:selected="${i == memberForm.month}">
+	            </option>
+	        </select> 月
+	
+	        <select name="day" class="js-changeDay" th:errorclass="err">
+	            <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}"
+	                th:text="${i}" th:selected="${i == memberForm.day}">
+	            </option>
+	        </select> 日
+	    </div>
+		
+		<div>
+			<label for="tel">電話: </label>
+			<input type="text" id="tel" name="tel" th:value="*{tel}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}" th:errorclass="err">
+			</div>				
+		</div>
+		
+		<div>
+			<label for="address">住所: </label>
+			<input type="text" id="address" name="address" th:value="*{address}" th:errorclass="err" />		
+			<div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" th:errorclass="err">
+			</div>				
+		</div>
+			
+		<th:block th:if="${action.equals('add') || action.equals('edit')}"  >
+			<div>
+				<input type="submit" value="送信" />
+				<input type="reset" value="キャンセル">
+			</div>
+		</th:block>
+	</form>
+</div>
+
+<div style="margin-top: 25px;">
 	<a href="/members" th:href="@{/members}"><button type="button" >会員 一覧画面</button></a>
 </div>
 

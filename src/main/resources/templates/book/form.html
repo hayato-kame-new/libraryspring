@@ -27,7 +27,7 @@
 		<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 編集の時には idが入ってるので使用できる -->
 		<input type="hidden" name="id" th:value="*{id}" />
 		
-		<p th:if="${id != null && id != 0}" th:text="|書籍登録ID: *{id}|" ></p>
+		<p th:if="*{id != null && id != 0}" th:text="|書籍登録ID: *{id}|" ></p>
 		
 		<div>
 			<label style="width:7ch;" for="isbn">ISBN: </label> 
@@ -83,7 +83,7 @@
 	</form>
 </div>
 
-<div>
+<div style="margin-top: 25px;">
 	<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面</button></a>
 </div>
 

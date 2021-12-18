@@ -55,10 +55,10 @@ div { margin-bottom: 13px; }
  	color: #FF69B4;
  }
  .flashMsg {
- 	border: 1px solid blue;
+ 	border: 1px solid royalblue;
  	border-radius: 10px;
  	background-color: ghostwhite;
- 	padding :3px 6px;
+ 	padding :3px 7px;
  	width: 400px;
  	color: skyblue;
  }

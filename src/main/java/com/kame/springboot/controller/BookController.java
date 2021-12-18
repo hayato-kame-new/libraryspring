@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -28,11 +29,14 @@ import com.kame.springboot.component.ViewBean;
 import com.kame.springboot.entity.Book;
 import com.kame.springboot.service.BookService;
 import com.kame.springboot.service.HistoryService;
-
+// @Transactional をつけないことサービスクラスのメソッドにつけますので、ダブルでつけると、ロールバックがうまく働かない
+//このクラスのリクエストハンドラでは、@Transaction　せずに、try-catchしたいので つけないこと
 
 @Controller
 public class BookController {
 	
+//  コントローラには @Transactional をつけないこと サービスクラスで @Transactionalをつけるから、つけたら、ネストされた状態になるので 
+	// ここのリクエストハンドラでtry-catchできなくなるので、つけないこと
 	
 	@Autowired
 	BookService bookService;
@@ -277,22 +281,34 @@ public class BookController {
 	 */
 	@RequestMapping(value="/book_delete_confirm", method=RequestMethod.GET)
 	public ModelAndView delete(
-			@RequestParam(name = "id")Integer id, // 必須パラメータ
-			ModelAndView mav
+			// required = falseが必要です リダイレクトの時には 無いから  任意パラメータにすること 必須パラメータにしたらダメ aリンクの idが クエリー文字列で送られてきてるけど、リダイレクトしてきた時には無いのでエラーになるから
+			@RequestParam(name = "id", required = false)Integer id,  // required = falseが必要です 任意パラメータにすること 必須パラメータにしたらダメ
+			ModelAndView mav,
+			Model model   // 書籍削除できない時には、この確認画面を表示するのに リダイレクトしてくるので 必要
 			) {
+		// リダイレクトもしてくるので Flash Scopeから取り出すのに
+				//   Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。 Request Scope より長く、Session Scope より短いイメージ
+				 // Flash Scop は Request Scope より長く、Session Scope より短いイメージ 
+				// リダイレクト先のリクエストハンドラでは、Flash Scopeから取り出すには、Modelインスタンスの getAttributeメソッドを使う 取り出すのは Object型になってる
+				String flashMsg = "";
+				if(model.getAttribute("flashMsg") != null ) {
+					flashMsg = (String) model.getAttribute("flashMsg");
+				}
+				if(model.getAttribute("id") != null ) {
+					id = (Integer) model.getAttribute("id");
+				}
+		
 		mav.setViewName("book/confirm");
 		Book book = bookService.findBookDataById(id);
 		
-		// Mapを渡す
-		// 貸出中だったら、削除できないので、statusも表示する
-		// メッセージも送る statusが 貸出中だったら、貸出中なので、削除できませんのメッセージを表示する
-		
+		// リダイレクトしてきた時に表示
+		mav.addObject("flashMsg", flashMsg);
 		
 		mav.addObject("book", book);  // 必要 フォームに初期値として、表示するために
 		return mav;
 	}
 
-	
+	// このリクエストハンドラや　このクラスには @Transactionアノテーションをつけないこと
 	/**
 	 * 書籍を削除する
 	 * <a th:href="@{/book_delete(id=${book.id})}">
@@ -311,25 +327,53 @@ public class BookController {
 			ModelAndView mav
 			) {
 		
-		// 貸出中だったら、削除できませんので、それを書く
+		// 貸出中だったら、削除できませんし、貸出履歴が一つでもあれば返却済みでも削除できないようにしてある
+				
+		// ここで、エラーをキャッチしたいので try-catchをつけること、なので、このクラスやリクエストハンドラには @Transaction　つけずに、サービスクラスのメソッドにだけつけること
+				String flashMsg = "";
+				boolean success = false;  // 削除処理が成功したら true 失敗したら false
+				try {
+					// このdeleteメソッドは PersistenceExceptionの例外インスタンスを投げる可能性があるので tryの中で実行する
+					// このdeleteメソッドは  宣言の時に @Transactional と  throws文をつけてる  throws PersistenceException
+					success = bookService.delete(id);  // 例外インスタンスを投げたら catch文へ行く
+					// deleteメソッドが例外を投げなかったら、処理を続ける 
+					if(success == false) {  // データベースで削除の失敗
+						flashMsg = "書籍を削除できませんでした";
+						
+						redirectAttributes.addFlashAttribute("flashMsg", flashMsg);	
+						redirectAttributes.addFlashAttribute("id", id);	// 注意
+						// Flash Scopeに保存して、削除確認画面を表示するために リダイレクトする
+						return new ModelAndView("redirect:/book_delete_confirm");  // return ここでメソッドの即終了 引数を呼び出し元へ返す 以降の行は実行されない
+
+					}
+					// success が true だったら 会員一覧にリダイレクトする
+					flashMsg = "書籍を削除しました";
+					
+				} catch(PersistenceException e) {
+					// ここでキャッチする  やりたい処理を書くPersistenceException発生するというのは、
+					// リレーションのテーブルにデータがあるからなので
+					flashMsg = "削除しようとした書籍には、貸出履歴があるので、貸出履歴を削除しないと この会員は削除できません。";
+					redirectAttributes.addFlashAttribute("flashMsg", flashMsg);	
+					redirectAttributes.addFlashAttribute("id", id);	
+					// Flash Scopeに保存して、削除確認画面を表示するために リダイレクトする
+					return new ModelAndView("redirect:/book_delete_confirm");  // return ここでメソッドの即終了 引数を呼び出し元へ返す 以降の行は実行されない
+					
+				}
+				// 削除に成功したら 書籍一覧にリダイレクトする
+			//  Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。 Request Scope より長く、Session Scope より短いイメージ
+
+				//  リダイレクトは、フォワードと違って、リダイレクト先のリクエストハンドラを実行させます。フォワードは、ビューを表示させるだけ
+				// flashMsgは Flashスコープへ保存します スコープに置けるのは、参照型のインスタンスのみです。基本型(プリミティブ型)の変数は置けません intなら Integerの参照型にすれば置ける。
+				// (また、自作のクラスのインスタンスは、サーブレットなら、Beanのクラスにすることが必要です)
+				//  Flash Scop へ、インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。
+		        // Flash Scop は Request Scope より長く、Session Scope より短いイメージ 
+				// リダイレクト先のリクエストハンドラでは、Flash Scopeから取り出すには、Modelインスタンスの getAttributeメソッドを使う
+		      
+				redirectAttributes.addAttribute("flashMsg", flashMsg);   // RedirectAttributesインスタンスの addFlashAttributeメソッドで Flash Scop に保存する
+				return new ModelAndView("redirect:/books"); // Flash Scopeに保存して、リダイレクトする		
+			}
+			
 		
-		String flashMsg = "";
-		// 削除は 主キーidがあればできる
-		boolean success = bookService.delete(id);
 		
-		if(success == false) { // データベース 更新 失敗
-			// 失敗のメッセージとreturnする
-			flashMsg = "書籍を削除できませんでした";
-			mav.setViewName("result");
-			return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
-		} else {
-			// 成功してる
-			flashMsg = "書籍を削除しました";
-		}
-		redirectAttributes.addFlashAttribute("flashMsg" , flashMsg);
-		// 書籍一覧を表示する
-		 return new ModelAndView("redirect:/books");
-		
-	}
 	
 }

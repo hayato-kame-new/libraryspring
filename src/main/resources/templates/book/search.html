@@ -76,9 +76,8 @@
 				
 			</form>
 		</div>
-			
 		<!-- 検索結果表示 -->
-		<p style="margin-bottom: 5px;" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
+		<p style="margin-bottom: 0;" class="searchResultMsg" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
 		<div>
 			 <th:block th:if="${statusMap != null && statusMap.size() > 0}">
 				 <table>
@@ -103,6 +102,9 @@
 					</tr> 
 				</table>
 			</th:block>
+		</div>
+		<div>
+			<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面</button></a>
 		</div>
 		<div >
 			<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
