@@ -15,13 +15,21 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kame.springboot.form.HistorySearchForm;
+import com.kame.springboot.service.BookService;
 import com.kame.springboot.service.HistoryService;
+import com.kame.springboot.service.MemberService;
 
 @Controller
 public class HistorySearchController {
 	
 	@Autowired
 	HistoryService historyService;
+	
+	@Autowired
+	BookService bookService;
+	
+	@Autowired
+	MemberService memberService;
 	
 	
 	// 図書館の所蔵の書籍全てから 貸出記録を条件を指定して検索する画面の表示
@@ -49,11 +57,13 @@ public class HistorySearchController {
     		ModelAndView mav
     		) {
     	
+    	String msg = "";
     	// まず、入力チェック バリデーションに引っ掛かったら
 		if (result.hasErrors()) {
 			// フォワード
-        	mav.setViewName("history/search");       	
-        	mav.addObject("msg", "入力エラーが発生しました。");
+        	mav.setViewName("history/search"); 
+        	msg = "入力エラーが発生しました。";
+        	mav.addObject("msg", msg);
 			       
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
@@ -73,6 +83,42 @@ public class HistorySearchController {
     		// フォームに何も入力してない時には nullになってるので Integer型にする int にすると null の時に落ちる    		
     		
     		// 取得した本のID と　会員IDが、図書館システムに登録のあるIDなのかをまず調べること
+    		// nullで渡ってくる時もあるので nullじゃ無いときに調べる
+    		boolean exist = false;
+    		if(historySearchForm.getBookId() != null) {
+    			exist = bookService.exist(historySearchForm.getBookId());
+    			if(exist == false) {
+    				// このIDの本は図書館システムには存在していないので 
+    	   		 	//mav.addObject("historySearchForm", historySearchForm);  // フォームのオブジェクトとして送る th:object="${bookSearchForm}" として使う
+    	   		 msg = "このIDの本は存在しません. ";
+//    	   		 	mav.addObject("msg", "このIDの本は存在しません");
+//    	   		 // フォワード
+//    	   		mav.setViewName("history/search");
+//    	   		return mav;
+    			}
+    		}
+    		if(historySearchForm.getMemberId() != null) {
+    			exist = memberService.exist(historySearchForm.getMemberId());
+    			if(exist == false) {
+    				// このIDの会員は図書館システムには存在していないので 
+    				 // 何を入力して検索をかけたのか わかるように、検索結果後も、フォームに以前入力したものを表示させるため
+    	   		 msg += "このIDの会員は存在しません. ";  // += で連結
+    			}
+    		}
+    		// どっちか存在してなかったら、フォワードする
+    		if(!msg.equals("")) {
+    			
+    			// 何を入力して検索をかけたのか わかるように、検索結果後も、フォームに以前入力したものを表示させるため
+    			mav.addObject("historySearchForm", historySearchForm);  // フォームのオブジェクトとして送る th:object="${bookSearchForm}" として使う
+    			// 表示件数の countDisplayの値も 前に選択したものを送る
+//    			HistorySearchForm target = (HistorySearchForm) result.getTarget();
+//    			String countDisplay = target.getCountDisplay();
+//    			mav.addObject("countDisplay", countDisplay);
+    			mav.addObject("msg", msg);
+    			// フォワード
+    			mav.setViewName("history/search");
+    			return mav;
+    		}
     		
     		
     		

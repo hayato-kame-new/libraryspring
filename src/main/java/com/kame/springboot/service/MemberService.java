@@ -248,5 +248,14 @@ public class MemberService {
 			return query.getResultList(); // 結果リスト 型のないリストを返す 
 		}
 
-
+		  // idがnullじゃない時に、idで検索した本が、図書館システムに存在してるかどうかを調べる
+	    public boolean exist(int id) {
+	    	Query query = entityManager.createNativeQuery("select * from members where id = ? ");
+	    	query.setParameter(1, id);
+	    	List<Object[]> list = query.getResultList();
+	    	if(list.size() > 0) {
+	    		return true;
+	    	}
+	    	return false;
+	    }
 }

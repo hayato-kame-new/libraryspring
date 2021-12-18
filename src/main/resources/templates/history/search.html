@@ -25,9 +25,10 @@
 		<!-- バリデーションエラーのメッセージ -->
 		<p class="msg" th:if="${msg != null}" th:text="${msg}" ></p>
 		
-		<!--  曖昧検索です  AND検索で絞る  未入力でも検索できる 
+		<!-- 本のID 会員IDは 完全一致検索です
+		 AND検索で絞る  未入力でも検索できる 表示件数は必須
 		ただし、全部を未入力なら検索しないで リダイレクトをして フォーム再表示する
-		検索用のBookSearchForm フォームクラスを定義してるのでそれを利用する -->
+		検索用のHistorySearchForm フォームクラスを定義してるのでそれを利用する -->
 		<div>
 		 	※ 検索したい本のIDを入力    書籍に図書館システムで使用する識別番号IDが貼ってあるので、そのIDを入力する(booksテーブルの主キーになってる)
 	    	※ 検索したい会員のIDを入力    図書館システムに登録してある会員ID(ユーザでは無い)
@@ -57,49 +58,38 @@
 				 			<label for="genre">表示件数: </label>
 				 		</td>
 			 			<td ><select id="countDisplay" name="countDisplay"  size="4" style="width:150px;">
-					 		    <option value="全て" th:text="全て"></option>
-					 		    <option value="10" th:text="10件"></option>
-					 		    <option value="20" th:text="20件"></option>
-					 		    <option value="30" th:text="30件"></option>
+					 		    <option value="全て" th:text="全て"  th:selected="${'全て' ==  historySearchForm.countDisplay}" ></option>
+					 		    <option value="10" th:text="10件"  th:selected="${'10' ==  historySearchForm.countDisplay}" ></option>
+					 		    <option value="20" th:text="20件"  th:selected="${'20' ==  historySearchForm.countDisplay}" ></option>
+					 		    <option value="30" th:text="30件"  th:selected="${'30' ==  historySearchForm.countDisplay}" ></option>
 					    	</select>
 					    	<div th:if="${#fields.hasErrors('countDisplay')}" th:errors="*{countDisplay}" th:errorclass="err"></div>
 				    	</td>
 			    	</tr>
 					<tr><td></td><td><input style="margin-right: 20px;" type="submit" value="検索する" /> <input type="reset" value="キャンセル"></td></tr>
-				</table>	
-				
+				</table>					
 			</form>
-		</div>
-		
-	
-		<!-- 検索結果表示  その書籍が現在どういう状態かまで、わかるようにする つまり、貸出中なのかどうか-->
-		<p class="searchResultMsg" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
+		</div>	
+		<!-- 検索結果表示 -->
+		<p style="margin-bottom: 0;" class="searchResultMsg" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
 		<div>
-			 <th:block th:if="${historySearchMap != null && historySearchMap.size() > 0}">
+			 <th:block th:if="${resultList != null && resultList.size() > 0}">
 				 <table>
-					<tr><th>本のID</th><th>会員のID</th><th>貸し出し日</th><th>返却日</th><th>書架状態</th><th></th></tr>
-					
-					<tr th:each="element : ${historySearchMap}" >	
-					
-						<td align="center" th:text="${element.key.bookId}"></td>				
-						<td align="center" th:text="${element.key.memberId}"></td>　
-						<td align="left" th:text="${element.key.lendDate}"></td>
-						<td align="left" th:text="${element.key.returnDate}"></td>
-						
+					<tr><th>本のID</th><th>会員のID</th><th>貸し出し日</th><th>返却日</th><th>書架状態</th></tr>
+					<!-- resultList  は List<Object[]> になってる ループで取り出したら Object[] になってる -->
+					<tr th:each="obj : ${resultList}" >	<!-- obj は　Object[]になってる -->
+						<td align="center" th:text="${obj[3]}"></td>
+						<td align="center" th:text="${obj[4]}"></td>				
+						<td align="center" th:text="${obj[1]}"></td>　
+						<td align="left" th:text="${obj[2]}"></td>						
 						<!-- 書架状態 returnDateが nullなら 貸出中-->
 <!-- 三項演算子のネストの書き方
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
 <!-- <h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : 'フォーム画面'}"></h2>
- -->						
-						
-						<td align="center" th:text="${element.key.returnDate == null} ?  '貸出中' : '書架' "></td>
-						
-						<td>
-							 <a  th:href="@{/book_show_list(id=${element.key.id})}"><button type="button">詳細</button></a>
-						</td>
-						
+ -->												
+						<td align="center" th:text="${obj[2] == null} ?  '貸出中' : '書架' "></td>
 					</tr> 
 				</table>
 			</th:block>
