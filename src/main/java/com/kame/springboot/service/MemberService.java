@@ -258,4 +258,42 @@ public class MemberService {
 	    	}
 	    	return false;
 	    }
+	    
+	    
+	    // idは完全一致検索 nameは曖昧検索 AND検索
+	    
+	    public List<Object[]> searchMemberAND(Integer id, String name) {
+		    
+	    	StringBuilder sql = new StringBuilder();
+	    	
+	    	// 注意！！　JPQL文ですので、Bookはエンティティです なので大文字から始める
+	    	//JPQL には エイリアスが必要
+	    	//sql.append("SELECT m From Member m WHERE ");  
+	    	sql.append("SELECT m From Member as m WHERE ");  // JPQLの文なので Member はエンティティを示す
+	    	sql.append(" ");  // 一応半角空白を明示的に入れておくと ミスが防げる 
+	    	boolean idFlg = false;
+	    	 boolean nameFlg= false;
+	    	 	    	    	 
+	    	 boolean andFlg= false;
+	    	 
+	    	 if(id != null) {  // id は　Integerです フォームに何も入力しないと nullできます
+	    	 sql.append("m.id = :id");  // m.id とエイリアス付きに書かないといけない  完全一致検索なので イコールで
+	    	 idFlg = true;
+	    	 andFlg= true;
+	    	 }
+	    
+	    	if( !"".equals(name)) {  // nameは Stringなので フォームに何も入力しないと ""空文字できます
+	    	  if (andFlg) sql.append(" AND ");  // 前後に半角空白が必要です
+	    	  sql.append("m.name LIKE :name");  // m.エンティティのプロパティ名 mのエイリアスは省略できません 曖昧検索なので LIKEです
+	    	  nameFlg = true;
+	    	  // andFlg = true;
+	    	 }
+	    	// JPQL だから createQueryメソッドを使う
+	    	 Query query = entityManager.createQuery(sql.toString());
+				if (idFlg) query.setParameter("id",  id );  // 完全一致検索なので
+				 if (nameFlg) query.setParameter("name", "%" + name + "%");  // 曖昧検索なので
+				
+				return query.getResultList();
+				// query.getResultList()で取得したデータは List<Object[]>になってます
+	    }
 }

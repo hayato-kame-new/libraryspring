@@ -216,7 +216,7 @@ public class BookService {
 	    public List<Object[]> searchBookAND(String isbn, String genre, String title, String authors, String publisher) {
 	    
 	    	StringBuilder sql = new StringBuilder();
-	    	// JPQL文 大文字小文字を明確に区別する　予約語は大文字で書く
+	    	
 	    	// 注意！！　JPQL文ですので、Bookはエンティティです なので大文字から始める
 	    	//sql.append("SELECT b From Book b WHERE ");  
 	    	sql.append("SELECT b From Book as b WHERE ");  // JPQLの文なので Book はエンティティを示す

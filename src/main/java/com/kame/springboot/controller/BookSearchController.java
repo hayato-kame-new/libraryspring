@@ -92,6 +92,7 @@ public class BookSearchController {
 			ModelAndView mav
 			) {
 		
+		
 		// セレクトボックス表示用のgenreMap
 		 Map<Integer, String> genreMap = viewBean.getGenreMap();
 		
@@ -117,6 +118,8 @@ public class BookSearchController {
 
 			 return new ModelAndView("redirect:/book_search_form");  // 未入力なので、何もしないで /book_search_form へリダイレクトするだけ リダイレクトは、リダイレクト先のリクエストハンドラを実行させます。
 		 }   // フォームに何か入ってたら、検索を実行する
+		 // まず、本のIDがフォームにあったら、そのIDが null じゃない時に、
+		 // 図書館システムに存在するのかを調べる必要があるが、今回はidのフォームはないので、大丈夫
 		 // 戻り値 List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる
 		 Iterable resultList = bookService.searchBookAND(bookSearchForm.getIsbn(), bookSearchForm.getGenre(), 
 					 bookSearchForm.getTitle(),bookSearchForm.getAuthors(), bookSearchForm.getPublisher());

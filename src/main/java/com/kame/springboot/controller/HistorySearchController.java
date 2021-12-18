@@ -91,10 +91,6 @@ public class HistorySearchController {
     				// このIDの本は図書館システムには存在していないので 
     	   		 	//mav.addObject("historySearchForm", historySearchForm);  // フォームのオブジェクトとして送る th:object="${bookSearchForm}" として使う
     	   		 msg = "このIDの本は存在しません. ";
-//    	   		 	mav.addObject("msg", "このIDの本は存在しません");
-//    	   		 // フォワード
-//    	   		mav.setViewName("history/search");
-//    	   		return mav;
     			}
     		}
     		if(historySearchForm.getMemberId() != null) {
@@ -108,7 +104,7 @@ public class HistorySearchController {
     		// どっちか存在してなかったら、フォワードする
     		if(!msg.equals("")) {
     			
-    			// 何を入力して検索をかけたのか わかるように、検索結果後も、フォームに以前入力したものを表示させるため
+    			// 何を入力して検索をかけたのか わかるように、フォームに以前入力したものを表示させるため
     			mav.addObject("historySearchForm", historySearchForm);  // フォームのオブジェクトとして送る th:object="${bookSearchForm}" として使う
     			// 表示件数の countDisplayの値も 前に選択したものを送る
 //    			HistorySearchForm target = (HistorySearchForm) result.getTarget();
@@ -121,10 +117,8 @@ public class HistorySearchController {
     		}
     		
     		
-    		
-    		
     		Integer bookId = historySearchForm.getBookId();
-    		// フォームに何も入力してない時には nullになってるので Integer型にする  int にすると null の時に落ちる
+    		// フォームに何も入力してない時には nullになってるので Integer型にする  int にすると null の時に落ちるし、フォームに0が初期値として表示されてしまうので
     		Integer memberId = historySearchForm.getMemberId();
     		// セレクトボックスを何も選択しないで送信したら バリデーションエラーに引っかかるので 選択されてきてる
     		// countDisplayの中身によって、SQL文が変わる select  全て   limit 10   limit 20   limit 30 

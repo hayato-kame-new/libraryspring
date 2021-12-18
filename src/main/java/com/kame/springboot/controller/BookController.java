@@ -352,7 +352,7 @@ public class BookController {
 				} catch(PersistenceException e) {
 					// ここでキャッチする  やりたい処理を書くPersistenceException発生するというのは、
 					// リレーションのテーブルにデータがあるからなので
-					flashMsg = "削除しようとした書籍には、貸出履歴があるので、貸出履歴を削除しないと この会員は削除できません。";
+					flashMsg = "この書籍には、貸出履歴があるので削除できません. (貸出履歴を削除しないと この書籍は削除できません.)";
 					redirectAttributes.addFlashAttribute("flashMsg", flashMsg);	
 					redirectAttributes.addFlashAttribute("id", id);	
 					// Flash Scopeに保存して、削除確認画面を表示するために リダイレクトする
