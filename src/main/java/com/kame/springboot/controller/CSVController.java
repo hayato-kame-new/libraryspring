@@ -122,18 +122,18 @@ public class CSVController {
 		// リダイレクトのために、取り出しておいたものを、今度はFlash Scope へ保存します。 Flash Scopは、１回のリダイレクトで有効なスコープです。 Request Scope より長く、Session Scope より短いイメージ
 		// セッションスコープへは なるべく置かないで、一回きりのリクエスト レスポンスで有効で良ければ Flash Scopeの方を使います 
 		// この後また 貸し出し中一覧ページへリダイレクトするから
-						
+		// 必要なのは、会員オブジェクト memberだけ あと flashMsg
 	    	//  フラッシュメッセージも Flash Scop へ保存する、Flash Scopへ インスタンスをセットできます。 Flash Scopは、１回のリダイレクトで有効なスコープです。 Request Scope より長く、Session Scope より短いイメージ
 	    	// addFlashAttributeメソッドです  Flash Scope 使う RedirectAttributes redirectAttributes をリクエストハンドラの引数に書く
 		
 			// String flashMsg = "デスクトップに CSVファイルを出力しました。";
 			String flashMsg = " CSVファイルを出力しました。";
 			redirectAttributes.addFlashAttribute("flashMsg", flashMsg);
-			redirectAttributes.addFlashAttribute("statusMap", statusMap);
+			//redirectAttributes.addFlashAttribute("statusMap", statusMap);
 			redirectAttributes.addFlashAttribute("member" , member);
-			redirectAttributes.addFlashAttribute("twoWeekAfter" , twoWeekAfter);
-			redirectAttributes.addFlashAttribute("history" , history);
-			// 貸し出し中一覧ページへ リダイレクトする HistoryControllerの onLoanリクエストハンドラ へ  リダイレクトする リダイレクトはフォワードとは違って、リクエストハンドラを実行させる
+			//redirectAttributes.addFlashAttribute("twoWeekAfter" , twoWeekAfter);
+			// redirectAttributes.addFlashAttribute("history" , history);
+			// 貸し出し中一覧ページへ リダイレクトする LendingControllerの onLoanリクエストハンドラ へ  リダイレクトする リダイレクトはフォワードとは違って、リクエストハンドラを実行させる
 			return "redirect:/on_loan";
 	}
 }

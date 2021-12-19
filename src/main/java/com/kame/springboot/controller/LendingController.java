@@ -64,11 +64,37 @@ public class LendingController {  // 貸し出しに関するコントローラ
     		@RequestParam(name = "id", required = false)Integer id,  //  required = false必要 任意パラメータにする aリンクの時だけ ? 以降のクエリー文字列で送られてくる
     	
     		ModelAndView mav,
-    		Model model  // Flash Scopeから取得するので Modelインスタンスが必要
+    		Model model  // Flash Scopeから取得するので Modelインスタンスが必要 リダイレクトしてくるので
     		) {
     	
+    	// もし、あればFlashスコープから取得する 
+    	String flashMsg = "";
+		Member member = null;		
+		
+    	if(model.getAttribute("flashMsg") != null) {
+    		flashMsg = (String) model.getAttribute("flashMsg");
+    	}
+    	if(model.getAttribute("flashMsg") != null) {
+    		member = (Member) model.getAttribute("member");
+    	}
     	
+    	if(id != null) {  // member.htmlから aリンクでアクセスしてきたら そのidでmemberを上書き
+    		member = memberService.findMemberDataById(id);
+    	}
+    	int memberId = member.getId();
+    	// 取得した member  主キーidを使う.   親テーブル membersテーブルのidカラム（主キー)は、
+    	// 子テーブル historiesテーブルのmemberidカラム から参照されているので
+    	// historiesテーブルから その会員ID(memberidカラム)で絞ったデータで、 
+    	// returnDate の値が nullの貸し出し中Historyデータを全て取得してくる 
+    	//  select * from histories where memberid = 14 and returndate is null;
     	
+    	List<Object[]> returndateIsNullDataList = historyService.getReturndateIsNullData(memberId);
+    	// Mapにして送る
+    	// Map<Book, History>()　型にして
+    	
+    	mav.addObject("flashMsg", flashMsg);
+    	mav.addObject("member", member);
+    	// mav.addObject("list", returndateIsNullDataList);
     	mav.setViewName("history/onLoan");
     	
     	return mav;

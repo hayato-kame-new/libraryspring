@@ -16,7 +16,8 @@
 	 <div class="contents">
 		<h2 class="heading">[[${member.name}]] さんの貸し出し中 書籍一覧</h2>
 		<h4>会員情報</h4>
-		
+		<p   th:text="|会員ID: ${member.id}|"></p>
+		<p   th:text="|会員名: ${member.name}|"></p>
 		<!-- CSVファイルを出力した後にも リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
 		<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
 			<p class="flashMsg"  th:text="${flashMsg}"></p>
@@ -25,15 +26,15 @@
 		<!-- 指定した会員の 現在貸し出し中の書籍を一覧で 表示 -->
 		<p style="margin-bottom: 0;" class="searchResultMsg" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
 		<div>
-			 <th:block th:if="${resultList != null && resultList.size() > 0}">
+			 <th:block th:if="${list != null && list.size() > 0}">
 				 <table>
-					<tr><th>本のID</th><th>会員のID</th><th>貸し出し日</th><th>返却日</th><th>書架状態</th></tr>
-					<!-- resultList  は List<Object[]> になってる ループで取り出したら Object[] になってる -->
-					<tr th:each="obj : ${resultList}" >	<!-- obj は Object[] になってる -->
+					<tr><th>本のID</th><th>貸し出し日</th><th>書架状態</th></tr>
+					<!-- list  は List<Object[]> になってる ループで取り出したら Object[] になってる -->
+					<tr th:each="obj : ${list}" >	<!-- obj は Object[] になってる -->
 						<td align="center" th:text="${obj[3]}"></td>
-						<td align="center" th:text="${obj[4]}"></td>				
+									
 						<td align="center" th:text="${obj[1]}"></td>　
-						<td align="left" th:text="${obj[2]}"></td>						
+					
 						<!-- 書架状態 returnDateが nullなら 貸出中-->
 <!-- 三項演算子のネストの書き方
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 

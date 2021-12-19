@@ -29,6 +29,22 @@ public class HistoryService {
 		private EntityManager entityManager;
 		
 		
+		// 取得した member  主キーidを使う.   親テーブル membersテーブルのidカラム（主キー)は、
+    	// 子テーブル historiesテーブルのmemberidカラム から参照されているので
+    	// historiesテーブルから その会員ID(memberidカラム)で絞ったデータで、 
+    	// returnDate の値が nullの貸し出し中Historyデータを全て取得してくる 
+    	//  select * from histories where memberid = 14 and returndate is null;
+		public List<Object[]> getReturndateIsNullData(int memberId) {
+			
+			Query query = entityManager.createNativeQuery("select * from histories where memberid = ? and returndate is null order by id desc ");  // order by id を付けないと 順番が更新されたのが一番最後の順になってしまうのでorder byをつける
+			
+			query.setParameter(1, memberId);
+			// query.getResultList()で取得したデータは List<Object[]>になってます  List<エンティティ> にキャストもできる Iterable型 にもできる
+			List<Object[]> Datalist = query.getResultList();
+			return Datalist;
+		}
+		
+		
 		
 		// historiesテーブルから select * from histories where bookid = ?  order by id desk limit 1; で探すと　最後の貸し出し履歴が取れる
 		/**
@@ -45,7 +61,7 @@ public class HistoryService {
 			
 			query.setParameter(1, bookId);
 			
-			// query.getResultList()で取得したデータは List<Object[]>になってます  List<エンティティ> にキャストもできる 
+			// query.getResultList()で取得したデータは List<Object[]>になってます  List<エンティティ> にキャストもできる Iterable型 にもできる
 			List<Object[]> Datalist = query.getResultList();
 			// limit 1 だから このリストの中には 1つの要素だけ入ってる または 何も入ってない
 			
