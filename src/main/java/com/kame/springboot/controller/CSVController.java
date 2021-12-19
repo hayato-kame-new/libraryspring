@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class CSVController {
 		// 異なるコントローラ間なので、セッションスコープから取得する 
 		Map<Book, String> statusMap = (Map<Book, String>) session.getAttribute("statusMap");		
 		Member member = (Member)session.getAttribute("member");		
-		String twoWeekAfter = (String)session.getAttribute("twoWeekAfter");		
+		Date twoWeekAfter = (Date)session.getAttribute("twoWeekAfter");		
 		History history = (History)session.getAttribute("history");
 		// 取り出して変数に格納した後は もう使わないなら セッションスコープに保存したものは積極的に削除する
 		// セッションスコープに置いたら、明示的に セッションスコープから 削除することが必要です
@@ -46,10 +47,12 @@ public class CSVController {
 		session.removeAttribute("history"); // 重要
 		
 		String file_name = "/csv_result.csv"; //  拡張子も書く
-		// Fileクラスのオブジェクトを作成 ユーザのデスクトップにファイルを作ろうとしているなら
-		// File file = new File(System.getProperty("user.home") + "/Desktop" + file_name);
 		
-		File file = new File("src/main/resources" + file_name);
+		// Fileクラスのオブジェクトを作成 ユーザのデスクトップにファイルを作ろうとしているなら
+		 File file = new File(System.getProperty("user.home") + "/Desktop" + file_name);
+		
+		// プロジェクトの中にファイルを作るなら
+		// File file = new File("src/main/resources" + file_name);
 
 		try {
 			file.createNewFile();  // その名前のファイルがまだ存在していない場合だけ、ファイルを作る。  戻り値は 指定されたファイルが存在せず、ファイルの生成に成功した場合はtrue、示されたファイルがすでに存在する場合はfalse
@@ -67,13 +70,14 @@ public class CSVController {
 				osw = new OutputStreamWriter(fos, "UTF-8");
 				bw = new BufferedWriter(osw);
 				// 見出し部分
-				bw.write(String.format("%s,%s,%s,%s,%s\n",  "ID", "ISBN", "タイトル", "著者", "書架状態", "貸し出し日", "返却予定日"));
+				bw.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", "会員ID: " +  member.getId(), "書籍ID", "ISBN", "タイトル", "著者", "書架状態", "貸し出し日", "返却予定日"));
 
 				// Mapから取り出す
 				for(Iterator<Map.Entry<Book, String>> iterator = statusMap.entrySet().iterator() ; iterator.hasNext() ;){
 				    Map.Entry<Book, String> entry = iterator.next();
 				    
-				    bw.write(String.format("%d,%s,%s,%s,%s,%s,%s\n",  entry.getKey().getId(), entry.getKey().getIsbn(), entry.getKey().getTitle(), entry.getKey().getAuthors(), entry.getValue(), history.getLendDate().toString(), twoWeekAfter.toString() ));
+				    // %tF  にすることで Date型を Sun Dec 19 12:00:51 JST 2021 ではなくて 2021-12-19 の形式で表示できる
+				    bw.write(String.format("%s,%d,%s,%s,%s,%s,%tF,%tF\n",  " ", entry.getKey().getId(), entry.getKey().getIsbn(), entry.getKey().getTitle(), entry.getKey().getAuthors(), entry.getValue(), history.getLendDate(), twoWeekAfter ));
 				 
 				}
 				
@@ -83,8 +87,9 @@ public class CSVController {
 //				bw.write(String.format("%s\n", "貸し出し日:" + history.getLendDate().toString()));  // javaは 参照型の変数はtoStoring()を呼び出せる 文字列に変換してくれる  プリミティブ型は呼び出せない
 //				bw.write(String.format("%s\n", "返却予定日:" + twoWeekAfter.toString()));  // javaは 参照型の変数はtoStoring()を呼び出せる 文字列に変換してくれる  プリミティブ型は呼び出せない
 				
-				bw.write(String.format("%s\n", "会員ID:" + member.getId()));  // javaは 文字列と違う型を + で連結すると 自動的に文字列に変換してくれる
+				// bw.write(String.format("%s\n", "会員ID:" + member.getId()));  // javaは 文字列と違う型を + で連結すると 自動的に文字列に変換してくれる
 				 bw.flush();  // 必要です bw.flush(); 
+				 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
