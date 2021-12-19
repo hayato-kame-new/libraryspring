@@ -17,7 +17,7 @@
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス-->
 <div th:include="common/header :: common_header"></div>
-<h2 class="heading">書籍一覧</h2>
+<h2 class="heading"><span class="bookicon"><i class="fas fa-book"></i></span> 書籍一覧</h2>
 
 <th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
 	<p class="flashMsg"  th:text="${flashMsg}"></p>

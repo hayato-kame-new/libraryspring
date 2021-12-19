@@ -8,6 +8,12 @@
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
+<style>
+.lendingspan {
+	font-size: 80%;
+	color: #2b2b2b;
+}
+</style>
 </head>
 <body>
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
@@ -27,15 +33,14 @@
 </th:block>
 
 <form th:action="@{/lend}" method="post" th:object="${lendingForm}" >
-	<p>※ 1冊借りる</p>
-	<p>※ 本の裏に図書館で作成した本の識別ID番号のシールが貼ってあるので、その番号を入力する</p>
-	<p>※ (本の識別ID番号は booksテーブルの主キーと同じ番号 ISBN番号ではない)</p>
+	
 	<div>
 	    <label for="memberId">会員のID番号を入力: </label>
 	    <input type="text" id="memberId" name="memberId" th:value="*{memberId}" th:errorclass="err" />		
 		<div th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" th:errorclass="err"></div>
 	</div>
 	<div>
+	<span class="lendingspan">※ 本の裏に図書館で作成した本の識別ID番号のシールが貼ってあるので、その番号を入力する.(本の識別ID番号は booksテーブルの主キーと同じ数字)</span><br />
 		<label for="bookId">本に貼ってるID番号を入力: </label> 
 		<input type="text" id="bookId" name="bookId" th:value="*{bookId}" th:errorclass="err" />		
 		<div th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}" th:errorclass="err">
@@ -46,8 +51,6 @@
 		<input type="reset" value="キャンセル">
 	</div>
 </form>
-
-<p>確認用で表示してます、貸し出し可能の一覧と 不可(今貸出中)の一覧を作り表示する</p>
 
 <div>
 	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>

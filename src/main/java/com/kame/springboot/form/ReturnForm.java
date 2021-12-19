@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 // フォームのクラス
 public class ReturnForm {
 	
-	@NotNull(message = "書籍IDを入力してください")
+	@NotNull(message = "書籍IDを入力してください")  //@NotNullを付与することで、nullのみ許容しなくなる intや Dateなどに使う
 	private Integer bookId;
 		
 	/**

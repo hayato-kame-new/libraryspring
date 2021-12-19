@@ -65,3 +65,7 @@ div { margin-bottom: 13px; }
  .searchResultMsg {
  	color: darkgreen;
  }
+ .bookicon {
+ 	color : lightslategray;
+ 	font-size: 80%;
+ }

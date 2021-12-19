@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,11 +48,15 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 	
 	@Autowired
 	ViewBean viewBean;
+	
+	// CSVへ出力するために、結果のリストを他のコントローラへ送るのでセッションスコープへ保存する
+	@Autowired
+	HttpSession session;
     
 	/**
 	 * 貸し出し画面を表示する
 	 * @param mav
-	 * @return
+	 * @return ModelAndView
 	 */
     @RequestMapping( value = "/lending_form", method=RequestMethod.GET)
     public ModelAndView lendingForm(
@@ -65,21 +70,21 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     }
     
     /**
-     * 貸し出しができるのかを確認してから、貸し出し処理をする
-     * リクエストパラメーターをバリデーションする
-     * まず、このクラス宣言に@Validatedをつける  このクラスがバリデーションを使えるようにする
-     * そしてリクエストハンドラ(メソッド)の引数に@Validを付与すると、その引数はバリデーションされるようになる
-     * @NotBlank を付与することで、空文字・空白・nullを許容しなくなる
-     * @NotEmpty だと、 半角空白文字でも、OKになってしまうので、半角空白もバリデーションでエラーにするには @NotBlank にすること
-     * @NotNullを付与することで、nullのみ許容しなくなる intや Dateなどに使う
-     * Integerだったら @NotNull を使う
-     * @param bookId
-     * @param memberId
+     *  貸し出しができるのかを確認してから、貸し出し処理をする
+     *  Integer Date だったら @NotNull を使う
+     *  @NotEmpty だと、 半角空白文字でも、OKになってしまうので、半角空白もバリデーションでエラーにするには @NotBlank にすること
+     * @param lendingForm
+     * @param result
+     * @param redirectAttributes
+     * @param request
      * @param mav
      * @return
      */
     @RequestMapping( value = "/lend", method=RequestMethod.POST)
     public ModelAndView lend(
+    		// リクエストパラメーターをバリデーションする時には このクラスの宣言に @Validatedをつける このクラスがバリデーションを使えるようにする
+    		// そしてリクエストハンドラ(メソッド)の引数に@Validを付与すると、その引数はバリデーションされるようになる
+    		// @NotNullを付与することで、nullのみ許容しなくなる intや Dateなどに使う
     		//@Valid @NotNull @RequestParam(name = "bookId")Integer bookId,  // 必須パラメータ バリデーションつき Integerだから @NotNullを使う
     		// @Valid @NotNull @RequestParam(name = "memberId")Integer memberId, // 必須パラメータ バリデーションつき Integerだから @NotNullを使う
     		@ModelAttribute("lendingForm")@Validated LendingForm lendingForm,  // これと 下のBindingResultは、すぐ下につけないと エラーになる BindingError
@@ -124,7 +129,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     	
     	// bookIdで絞って検索したその本に関する貸し出し履歴Historyが複数あるが、その中で最新の貸し出し履歴を取得する
     	// historiesテーブルから select * from histories where bookid = ?  order by id desk limit 1; で探す
-    	// その本の一番最新の貸し出し履歴 の情報が入ってるリストです
+    	// その本の一番最新の貸し出し履歴 の情報が入ってるリストです このデータの returnDateが nullなら、ただ今貸し出し中とわかる
     	List<Object[]> LastHistoryData = historyService.getLastHistoryData(bookId);
     	
   
@@ -140,7 +145,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     		return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
     	}
     	// この図書館システムの所蔵されている本なので、次に canLend メソッドで その本が貸出可能なのか調べる
-    	// 
+    	// canLend メソッドでは、returnDateの値を調べ、returnDate が null だったら、ただ今貸し出し中となる
     	Boolean canLend = library.canLend(history, LastHistoryData);
     	if(canLend == false) {  // その本は貸し出しできない
     		//  貸し出し中
@@ -161,7 +166,7 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 				mav.setViewName("lending/lendingForm");
 				return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
 			} else {
-				// 成功してる
+				// 成功してる 
 				flashMsg = "貸し出し処理しました";
 			}       	
     	}   	
@@ -181,33 +186,44 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 	      Date twoWeekAfter = calendar.getTime();
 	      // 返却予定日を 貸し出し完了ページへ送る
 	      mav.addObject("twoWeekAfter" , twoWeekAfter);
-	      
-	      // 貸し出した本の情報を取得する それも貸し出し完了ページへ送る
-	    //   Book book = bookService.findBookDataById(bookId);
-	      // mav.addObject("book" , book);
-	      // Mapを送る
-	      List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(bookId);  // 更新後の  最新の状態を上書きする
-	    	 
-	    	// これで最後の貸し出し履歴のHistoryのデータ！履歴がまだない時は []
-	    	String status = library.getStatusStr(LastHistoryDatalist);
+	      // 貸し出し完了ページへ送るためのデータをMapにする このMapはCSVファイル出力のため、セッションスコープへ保存もする
+	      // 貸し出した本の情報を取得してMapのキーにする 
+	      // その貸し出した本の状態statusをMapの値にする 
+	      // データベースに登録した その本の最後の貸し出し記録が、今回の貸し出し記録になります
+	      // まず、更新されたその本の最後の貸し出し記録が 今回の貸し出し記録なので 取得する historyDataから取り出した情報 は、セッションスコープにも置く
+	      List<Object[]> historyData = historyService.getLastHistoryData(bookId); 
+	     
+	    	// 更新された最後の貸し出し記録historyData から、情報の文字列を取得する
+	    	String status = library.getStatusStr(historyData);
 	    	//Mapに変換するをnewして確保しておく  今後複数の本を同時に貸し出し 返却する時のためにMapで管理しておく
 			 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
 			 // Historyデータの bookidフィールドは Bookデータの主キーidを参照してるので Book情報を取得する
-			 Book book = bookService.findBookDataById(bookId);
-	    	statusMap.put(book, status);
+			 Book book = bookService.findBookDataById(bookId); // 貸し出した本の情報をMapのキーにして送る
+	    	// Mapに追加
+			 statusMap.put(book, status);
+			 // ビューへ送る
 	    	mav.addObject("statusMap", statusMap);
+	    	
+	    // この statusMap は、セッションスコープにも保存しておく CSVControllerで取り出して使うため 取り出したあとはセッションスコープから明示的に削除する
+	    	session.setAttribute("statusMap", statusMap);
+	    	session.setAttribute("member" , member);
+	    	session.setAttribute("twoWeekAfter" , twoWeekAfter);
+	    	session.setAttribute("history" , history);
+	    	
 	    
-	      
-	     
-	      // 貸し出した会員の情報も貸し出し完了ページへ送る
-	     
-	      mav.addObject("member" , member);
-	    
+	    	// 貸し出した会員の情報も貸し出し完了ページへ送る   
+	    	mav.addObject("member" , member);
 	   // 貸出結果の画面へフォワードする
 		 return mav;
     }
     
-    // 返却画面を表示する
+   
+    /**
+     * 返却画面を表示する
+     * @param returnForm
+     * @param mav
+     * @return ModelAndView
+     */
     @RequestMapping( value = "/return_form", method=RequestMethod.GET)
     public ModelAndView returnForm(
     		@ModelAttribute("returnForm")ReturnForm returnForm,
@@ -218,9 +234,19 @@ public class HistoryController {  // 貸し出しに関するコントローラ
     	return mav;
     }
     
- // 返却する メソッド名にreturnは使えない予約語なので
+ 
+    /**
+     * 返却する 
+     * メソッド名にreturnは使えない予約語なので
+     * @param returnForm
+     * @param result
+     * @param redirectAttributes
+     * @param request
+     * @param mav
+     * @return ModelAndView
+     */
     @RequestMapping( value = "/return", method=RequestMethod.POST)
-    public ModelAndView returnBook(
+    public ModelAndView returnBook(  //  返却する メソッド名にreturnは使えない予約語なので
     		@ModelAttribute("returnForm")@Validated ReturnForm returnForm,
     		BindingResult result,  // バリデーションエラーを取得するため
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要

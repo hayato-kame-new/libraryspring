@@ -23,39 +23,35 @@
 <th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
 	<p class="flashMsg"  th:text="${flashMsg}"></p>
 </th:block>
-<h4>会員情報</h4>
-<p th:text="${member.id}"></p>
+<h4>** 会員情報 **</h4>
+<p th:text="|会員ID: ${member.id}|"></p>
 
-<h4>貸し出しした本</h4>
-
+<h4>** 貸し出しした本 **</h4>
+<p th:text="|貸し出し日: ${#dates.format(history.lendDate, 'yyyy年MM月dd日')}|"></p>
 <p th:text="|返却予定日: ${#dates.format(twoWeekAfter, 'yyyy年MM月dd日')}|"></p>
-<th:block th:if="${statusMap != null && statusMap.size() > 0}">
+<div>
+	<th:block th:if="${statusMap != null && statusMap.size() > 0}">
 		 <table>
-			<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th><th></th></tr>
+			<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th></tr>
 			
 			<tr th:each="element : ${statusMap}" >	
 				<td align="center" th:text="${element.key.id}"></td>
-				<td align="center" >
-					<!-- <a href="/book_show" th:href="@{/book_show/{isbn}(isbn=${element.key.isbn})}" th:text="${element.key.isbn}"></a> -->
-					<a th:href="@{/book_show/{id}(id=${element.key.id})}" th:text="${element.key.id}"></a>
-				</td>
+				<td align="center" th:text="${element.key.isbn}"></td>
 				<td align="left" th:text="${element.key.title}"></td>
 				<td align="left" th:text="${element.key.authors}"></td>
 				<!-- 書架状態  -->
 				<td align="center" th:text="${element.value}"></td>
-				
-				<td>					
-					 	<a th:href="@{/book_show/{id}(id=${element.key.id})}" ><button th:text="${element.key.id}"></button></a>
-				</td>
 			</tr> 
 		</table>
 	</th:block>
-
-
-CSVファイルへ出力する 個人情報見えないようにする
+</div>
 
 <div>
-	<a href="/find" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
+	<a href="/csv" th:href="@{/csv}"><button type="button" th:text="CSVファイルに出力" ></button></a>
+</div>
+
+<div>
+	<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>
 </div>
 
 </body>
