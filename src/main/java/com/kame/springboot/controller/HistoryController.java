@@ -11,11 +11,13 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -374,6 +376,23 @@ public class HistoryController {  // 貸し出しに関するコントローラ
 	
     }
     
+    // th:href="@{/onLoan( id=${member.id})}" members.htmlから aリンクでもくるし、CSV出力後にリダイレクトでもくる
+    // 指定した会員の貸し出し一覧を表示する  リダイレクトは HTTPメソッドは GETになるので GETにする
+    
+    @RequestMapping( value = "/on_loan", method=RequestMethod.GET)  // リダイレクトは HTTPメソッドは GETになるので GETにする
+    public ModelAndView onLoan(
+    		@RequestParam(name = "id", required = false)Integer id,  //  required = false必要 任意パラメータにする aリンクの時だけ ? 以降のクエリー文字列で送られてくる
+    	
+    		ModelAndView mav,
+    		Model model  // Flash Scopeから取得するので Modelインスタンスが必要
+    		) {
+    	
+    	
+    	
+    	mav.setViewName("history/onLoan");
+    	
+    	return mav;
+    }
     
    
 }

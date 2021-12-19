@@ -27,7 +27,7 @@
 <th:block th:if="${members.size() > 0}" >
 	<table>
 		<tr>
-			<th>ID</th><th>名前</th><th colspan="1"></th>
+			<th>ID</th><th>名前</th><th colspan="2"></th>
 		</tr>
 		
 		<tr th:each="member : ${members}" >
@@ -37,7 +37,11 @@
 			<td>
 			 <!--  ? 以降の クエリー文字列  ?id=1   などと表示される -->
 				<a th:href="@{/member_show( id=${member.id}) }"><button type="button" >会員 詳細画面</button></a>
-			</td>		
+			</td>
+		
+			<td>
+				<a th:href="@{/onLoan( id=${member.id})}"><button type="button"  >会員 貸し出し中書籍一覧</button></a>
+			</td>
 		</tr>
 	</table>	
 </th:block>

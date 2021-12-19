@@ -45,37 +45,35 @@
 			<div class="book_item"><!-- フレックスアイテム -->
 				<div>
 					<a href="/books" th:href="@{/books}"><button type="button" >書籍 一覧画面</button></a>
-				</div>
-				
+				</div>				
 				<div>
 					<!-- フォームのビューで必要なので  ? 以降のクエリー文字列action=addを つけること -->
 					<a href="/book_form?action=add" th:href="@{/book_form(action=add)}"><button type="button"  >書籍 新規登録画面</button></a>
 				</div>
-				
 				<div>
 					<a href="/book_search_form" th:href="@{/book_search_form}"><button type="button"  >書籍 検索画面</button></a>
-				</div>
-				
-				
+				</div>				
 			</div>
 			
 			<div class="member_item"><!-- フレックスアイテム -->
 				<div>
 					<a href="/members" th:href="@{/members}"><button type="button"  >会員 一覧画面</button></a>
 				</div>
-				
 				<div>
 					<a href="/member_form?action=add" th:href="@{/member_form(action=add)}"><button type="button" >会員 新規登録画面</button></a>
 				</div>
-				
 				<div>
 					<a href="/member_search_form" th:href="@{/member_search_form}"><button type="button"  >会員 検索画面</button></a>
 				</div>
-				
 			</div>
 			
-			<div class="history_item"><!-- フレックスアイテム -->
-			
+		<!-- 	<div class="member_item">フレックスアイテム
+				<div>
+					<a href="/onLoan" th:href="@{/onLoan}"><button type="button"  >会員 貸し出し中書籍一覧</button></a>
+				</div>
+			</div> -->
+							
+			<div class="history_item"><!-- フレックスアイテム -->			
 				<div>
 					<a href="/lending_form" th:href="@{/lending_form}"><button type="button"  >貸し出し画面</button></a>
 				</div>
@@ -86,16 +84,13 @@
 				<div>
 					<a href="/history_search_form" th:href="@{/history_search_form}"><button type="button"  >貸し出し履歴 検索画面</button></a>
 				</div>			
-			</div>
-			
-			
+			</div>			
 		</div>	
 		<div>
 			<form th:action="@{/logout}" method="post">
 		        <input type="submit" value="ログアウト" />
 		    </form>	
 		</div>
-
     </div>
 </body>
 </html>

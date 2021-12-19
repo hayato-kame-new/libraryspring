@@ -38,7 +38,7 @@ public class CSVController {
 		Member member = (Member)session.getAttribute("member");		
 		String twoWeekAfter = (String)session.getAttribute("twoWeekAfter");		
 		History history = (History)session.getAttribute("history");
-		
+		// 取り出して変数に格納した後は もう使わないなら セッションスコープに保存したものは積極的に削除する
 		// セッションスコープに置いたら、明示的に セッションスコープから 削除することが必要です
 		session.removeAttribute("statusMap");  // 重要
 		session.removeAttribute("member"); // 重要
@@ -113,7 +113,7 @@ public class CSVController {
 				}
 			}
 		}
-		// セッションスコープから取得したものを、セッションスコープからは削除しましたので
+		// セッションスコープから取得したものを変数に格納して置き、セッションスコープからは削除しましたので  (取り出して変数に格納した後は もう使わないなら セッションスコープに保存したものは積極的に削除することが重要)
 		// リダイレクトのために、取り出しておいたものを、今度はFlash Scope へ保存します。 Flash Scopは、１回のリダイレクトで有効なスコープです。 Request Scope より長く、Session Scope より短いイメージ
 		// セッションスコープへは なるべく置かないで、一回きりのリクエスト レスポンスで有効で良ければ Flash Scopeの方を使います 
 		// この後また 貸し出し中一覧ページへリダイレクトするから
@@ -128,8 +128,7 @@ public class CSVController {
 			redirectAttributes.addFlashAttribute("member" , member);
 			redirectAttributes.addFlashAttribute("twoWeekAfter" , twoWeekAfter);
 			redirectAttributes.addFlashAttribute("history" , history);
-			// 貸し出し中一覧ページへ リダイレクトする
+			// 貸し出し中一覧ページへ リダイレクトする HistoryControllerの onLoanリクエストハンドラ へ  リダイレクトする リダイレクトはフォワードとは違って、リクエストハンドラを実行させる
 			return "redirect:/on_loan";
-
 	}
 }
