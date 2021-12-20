@@ -19,7 +19,7 @@
 パスは templatesからのパス-->
 <div th:include="common/header :: common_header"></div>
 
-<h2 class="headingDanger" >この会員を削除してよろしいですか？</h2>
+<h2 class="headingMember" >この会員を削除してよろしいですか？</h2>
 <!-- リダイレクト後のメッセージ 削除失敗の時に equals('')  シングルクオーテーションにしてください -->
 <th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
 	<p class="flashMsg"  th:text="${flashMsg}"></p>

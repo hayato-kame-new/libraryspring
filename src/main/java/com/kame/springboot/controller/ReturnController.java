@@ -72,7 +72,7 @@ public class ReturnController { // 返却に関する処理を行うコントロ
     @RequestMapping( value = "/return", method=RequestMethod.POST)
     public ModelAndView returnBook(  //  返却する メソッド名にreturnは使えない予約語なので
     		@ModelAttribute("returnForm")@Validated ReturnForm returnForm,
-    		BindingResult result,  // バリデーションエラーを取得するため
+    		BindingResult result,  // バリデーションエラーを取得するため  これは@ModelAttributeのすぐ下に書かないとエラーになるので注意
 			RedirectAttributes redirectAttributes,  // 成功したら、リダイレクトするので必要
 		    HttpServletRequest request, // requestオブジェクトから取得したい時に
     		ModelAndView mav

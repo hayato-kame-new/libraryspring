@@ -23,10 +23,10 @@
 <th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
 	<p class="flashMsg"  th:text="${flashMsg}"></p>
 </th:block>
-<h4>会員情報</h4>
+<h4>**会員情報**</h4>
 <!-- <p th:text="|会員ID: ${member.id}|"></p> -->
 
-<h4>返却した本</h4>
+<h4>**返却した本**</h4>
 
 	<p th:if="${resultMsg}" th:text="${resultMsg}"></p>
 	<div>
@@ -36,9 +36,7 @@
 				
 				<tr th:each="element : ${statusMap}" >	
 					<td align="center" th:text="${element.key.id}"></td>
-					<td align="center" >
-						<a href="/book_show" th:href="@{/book_show/{isbn}(isbn=${element.key.isbn})}" th:text="${element.key.isbn}"></a>
-					</td>
+					<td align="center" th:text="${element.key.isbn}"></td>
 					<td align="left" th:text="${element.key.title}"></td>
 					<td align="left" th:text="${element.key.authors}"></td>
 					<!-- 書架状態  -->

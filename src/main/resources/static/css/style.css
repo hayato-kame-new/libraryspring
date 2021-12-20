@@ -7,6 +7,9 @@ font-size: 17px; color: gray; margin: 10px 30px;}
 .heading {
     color: blue;
 }
+.headingMember {
+	color: saddlebrown;
+}
 .headingDanger {
 	color: red;
 }
@@ -50,6 +53,24 @@ div { margin-bottom: 13px; }
  	padding: 4px;
  	font-size: 15px;
  	border: 1px solid #333;
+ }
+ .showbtn {
+ 	background-color: #ffffcc;
+ 	color: #564539;
+ 	font-size: bold;
+ 	border-radius: 7px;
+ 	padding: 3px 4px;
+ 	font-size: 15px;
+ 	border: 1px solid #543f32;
+ }
+ .lendingbtn {
+ 	background-color: olive;
+ 	color: white;
+ 	font-size: bold;
+ 	border-radius: 7px;
+ 	padding: 3px 4px;
+ 	font-size: 15px;
+ 	border: 1px solid #543f32;
  }
  .msg {
  	color: #FF69B4;

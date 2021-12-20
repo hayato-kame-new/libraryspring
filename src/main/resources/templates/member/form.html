@@ -18,7 +18,7 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h2 class="heading" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : 'フォーム画面'}"></h2>
+<h2 class="headingMember" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : 'フォーム画面'}"></h2>
 
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>
 <div>

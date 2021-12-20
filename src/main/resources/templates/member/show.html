@@ -19,7 +19,7 @@
 パスは templatesからのパス-->
 <div th:include="common/header :: common_header"></div>
 
- <h2 class="heading" th:inline="text">[[${member.name}]]さんの詳細ページ</h2>
+ <h2 class="headingMember" th:inline="text">[[${member.name}]]さんの詳細ページ</h2>
 <div>
 	<table th:object="${member}">
 			<tr><th>ID</th><td th:text="*{id}"></td></tr>

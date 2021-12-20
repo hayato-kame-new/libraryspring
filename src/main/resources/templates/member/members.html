@@ -16,7 +16,7 @@
 パスは templatesからのパス-->
 <div th:include="common/header :: common_header"></div>
 
-<h2 class="heading">会員一覧</h2>
+<h2 class="headingMember">会員一覧</h2>
 
 <!-- リダイレクト後のメッセージ -->
 <th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
@@ -36,11 +36,11 @@
 			
 			<td>
 			 <!--  ? 以降の クエリー文字列  ?id=1   などと表示される -->
-				<a th:href="@{/member_show( id=${member.id}) }"><button type="button" >会員 詳細画面</button></a>
+				<a th:href="@{/member_show( id=${member.id}) }"><button class="showbtn" type="button" >会員 詳細画面</button></a>
 			</td>
 		
 			<td>
-				<a th:href="@{/on_loan( id=${member.id})}"><button type="button"  >会員 貸し出し中書籍一覧</button></a>
+				<a th:href="@{/on_loan( id=${member.id})}"><button class="lendingbtn" type="button"  >会員 貸し出し中書籍一覧</button></a>
 			</td>
 		</tr>
 	</table>	
