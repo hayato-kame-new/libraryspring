@@ -9,7 +9,7 @@
 <style th:include="common/header :: common_header_style"></style>
 <style>
 .countMsg {
-	color: limegreen;
+	color: #79c06e;
 }
 </style>
 </head>
@@ -19,7 +19,7 @@
 	<div th:include="common/header :: common_header"></div>
 	 
 	 <div class="contents">
-		<h2 class="heading">貸し出し中 書籍一覧</h2>
+		<h2 class="headingOnLoan"><span class="onLoanIcon"><i class="fab fa-pagelines"></i></span> 貸し出し中 書籍一覧</h2>
 		<h4>**会員情報**</h4>
 		<p   th:text="|会員ID: ${member.id}|"></p>
 		<p   th:text="|会員名: ${member.name}|"></p>
@@ -64,5 +64,7 @@
 		</div>
 		
 	 </div>
+<!-- Font Awesomeのための -->
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
 </body>
 </html>

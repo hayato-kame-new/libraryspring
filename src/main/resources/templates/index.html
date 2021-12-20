@@ -5,12 +5,12 @@
 <link th:href="@{/css/style.css}" rel="stylesheet"/>
 <title th:text="|#{top_page.title} - library|"></title>
 <style>
-.toptitle {
+/* .toptitle {
      font-size: 44px;
 	 margin-bottom: 50px;
-}
+} */
 .book_item, .member_item{
-	margin-right: 40px;
+	margin-right: 50px;
 }
 </style>
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
@@ -27,7 +27,7 @@
 そのため、「-f」オプションをつけて強制的にpushする必要があります。 -->
 	
     <div class="contents">
-		<h1 class="heading toptitle">図書館 Top Page</h1>
+		<h1 class="headingToptitle">Library System Top Page</h1>
 			
 		<!-- この機能を使用するには、thymeleaf-extras-springsecurity5 が必要となりますが、基本的にはプロジェクトの作成時に
 		Maven プロジェクト（pom.xml ファイル）に追加されている 

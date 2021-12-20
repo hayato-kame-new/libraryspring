@@ -1,11 +1,15 @@
 @charset "utf-8";
 
-h1 {
-font-size: 24px; font-weight:bold; color:gray;}
 body {
 font-size: 17px; color: gray; margin: 10px 30px;}
-.heading {
-    color: blue;
+.headingToptitle {
+	font-size: 2.3em;
+	font-weight:bold;
+    color: #3d3dff;
+    margin-bottom: 50px;
+}
+.headingBook {
+	color: #3d3dff;
 }
 .headingMember {
 	color: saddlebrown;
@@ -22,6 +26,14 @@ font-size: 17px; color: gray; margin: 10px 30px;}
 .headingUser {
 	color: plum;
 }
+.headingOnLoan {
+	/* color: #a4d5bd; */
+	/* #79c06e */
+	color: #79c06e;
+}
+
+
+#a4d5bd
 pre {
 font-size: 17px; color:gray; padding:5px 10px; border:1px solid gray;
 }
@@ -87,18 +99,30 @@ div { margin-bottom: 13px; }
  	color: darkgreen;
  }
  .bookicon {
- 	color : lightslategray;
- 	font-size: 90%;
+ 	color : #522886;
+ 	font-size: 95%;
+ 	margin-left: 5px;
  }
  .membericon {
  	color: saddlebrown;
- 	font-size: 90%; 	
+ 	font-size: 105%; 	
  }
  .returnicon {
  	color:  lightsalmon;
-	
+	font-size: 105%;
+	border:1px solid lightsalmon;
+	border-radius: 50%;
+	padding: 2px 3px 4px 5px;
  }
  .lendingicon {
  	color: green;
- 	font-size: 90%; 
+ 	font-size: 105%; 
+ }
+ .searchHistoryIcon {
+ 	color: #2792c3;
+ 	font-size: 105%;
+ }
+ .onLoanIcon {
+ 	color: #a4d5bd;
+ 	font-size: 105%;
  }

@@ -8,6 +8,12 @@
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
+<style>
+label {
+ display: inline-block;
+ width: 7ch;
+}
+</style>
 </head>
 <body>
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
@@ -17,12 +23,12 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : 'フォーム画面'}"></h2>
+<h2 class="headingBook" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : 'フォーム画面'}"></h2>
 
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>
 <div>
 	<form th:action="@{/book_add_edit}" method="post" th:object="${book}">
-	
+		<!-- inputタグは インラインなので、display: inline-block; にしないと　widthが効かない -->
 		<input type="hidden" name="action" th:value="${action}" />
 		<!-- hidden で送る idは 新規の時には int型のデフォルト値(規定値) の 0 です 編集の時には idが入ってるので使用できる -->
 		<input type="hidden" name="id" th:value="*{id}" />
@@ -30,14 +36,15 @@
 		<p th:if="*{id != null && id != 0}" th:text="|書籍登録ID: *{id}|" ></p>
 		
 		<div>
-			<label style="width:7ch;" for="isbn">ISBN: </label> 
+		    
+			<label  for="isbn">ISBN: </label> 
 			<input type="text" id="isbn" name="isbn" th:value="*{isbn}" th:errorclass="err" />		
 			<div th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" th:errorclass="err">
 			</div>				
 		</div>
 		
 		<div>
-		    <label style="width:7ch;" for="genre">ジャンル: </label>
+		    <label  for="genre">ジャンル: </label>
 			<select name="genre" id="genre" size="4" style="width:150px;" >
 				<!-- <option  >選択しない</option> -->
 				<th:block th:each="element : ${genreMap}">
@@ -49,28 +56,28 @@
 		</div>
 		
 		<div>
-			<label style="width:7ch;" for="title">タイトル: </label> 
+			<label  for="title">タイトル: </label> 
 			<input type="text" id="title" name="title" th:value="*{title}" th:errorclass="err" />		
 			<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="err">
 			</div>				
 		</div>
 		
 		<div>
-			<label style="width:7ch;" for="authors">著者: </label>
+			<label  for="authors">著者: </label>
 			<input type="text" id="authors" name="authors" th:value="*{authors}" th:errorclass="err" />		
 			<div th:if="${#fields.hasErrors('authors')}" th:errors="*{authors}" th:errorclass="err">
 			</div>				
 		</div>
 		
 		<div>
-			<label style="width:7ch;" for="publisher">出版社: </label>
+			<label  for="publisher">出版社: </label>
 			<input type="text" id="publisher" name="publisher" th:value="*{publisher}" th:errorclass="err" />		
 			<div th:if="${#fields.hasErrors('publisher')}" th:errors="*{publisher}" th:errorclass="err">
 			</div>				
 		</div>
 		
 		<div>
-			<label style="width:7ch;" for="publishYear">発行年: </label>
+			<label  for="publishYear">発行年: </label>
 			<input type="text" id="publishYear" name="publishYear" th:value="*{publishYear}" th:errorclass="err" />		
 			<div th:if="${#fields.hasErrors('publishYear')}" th:errors="*{publishYear}" th:errorclass="err">
 			</div>

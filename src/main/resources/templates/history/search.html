@@ -7,6 +7,12 @@
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
+<style>
+.searchbookspan {
+	color: #2792c3;
+	font-size: 85%;
+}
+</style>
 </head>
 <body> 
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
@@ -14,7 +20,7 @@
 	<div th:include="common/header :: common_header"></div>
 	 
 	 <div class="contents">
-		<h2 class="heading">貸出履歴 検索ページ</h2>
+		<h2 class="heading"><span class="searchHistoryIcon"><i class="fas fa-search"></i></span> 貸出履歴 検索ページ</h2>
 		<h4>条件を指定して貸出履歴を検索します</h4>
 		
 		<!-- 何も条件を指定しなかった場合にまた、リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
@@ -30,9 +36,9 @@
 		ただし、全部を未入力なら検索しないで リダイレクトをして フォーム再表示する
 		検索用のHistorySearchForm フォームクラスを定義してるのでそれを利用する -->
 		<div>
-		 	※ 検索したい本のIDを入力    書籍に図書館システムで使用する識別番号IDが貼ってあるので、そのIDを入力する(booksテーブルの主キーになってる)
-	    	※ 検索したい会員のIDを入力    図書館システムに登録してある会員ID(ユーザでは無い)
-			※ 検索結果の表示件数を選択    図書館システムに登録してある貸出記録の最近のものから表示
+		 	<span class="searchbookspan">※ 検索したい本のIDを入力  書籍に図書館システムで使用する識別番号IDが貼ってあるので、そのIDを入力する(booksテーブルの主キーになってる)</span><br />
+	    	<span class="searchbookspan">※ 検索したい会員のIDを入力    図書館システムに登録してある会員ID(ユーザでは無い)</span><br />
+			<span class="searchbookspan">※ 検索結果の表示件数を選択    図書館システムに登録してある貸出記録の最近のものから表示</span><br />
 			<form th:action="@{/history_search}" method="post" th:object="${historySearchForm}">
 				<table>
 					<tr>
@@ -99,5 +105,7 @@
 		</div>
 		
 	 </div>
+ <!-- Font Awesomeのための -->
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
 </body>
 </html>

@@ -23,7 +23,7 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h2 class="headingReturn" ><span class="returnicon" ><i class="far fa-hand-point-left"></i></span> 返却フォーム</h2>
+<h2 class="headingReturn" ><span class="returnicon" ><i class="far fa-hand-point-right"></i></span> 返却フォーム</h2>
 
 <!-- フォーム入力の バリデーションにエラーがあると msgにメッセージ -->
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>
@@ -34,8 +34,8 @@
 <div>
 	<form th:action="@{/return}" method="post" th:object="${returnForm}" >
 		<div>
-			<span class="returnspan">※ 本の裏に図書館で作成した本の識別ID番号のシールが貼ってあるので、その番号を入力する.(本の識別ID番号は booksテーブルの主キーと同じ数字)</span><br />
-			<label for="bookId">本に貼ってる識別ID番号を入力: </label> 
+			<span class="returnspan">※ 本にID番号のシールが貼ってあるので、その番号を入力する.(本の識別ID番号は booksテーブルの主キーと同じ数字)</span><br />
+			<label for="bookId">本に貼ってるID番号を入力: </label> 
 			<input type="text" id="bookId" name="bookId" th:value="*{bookId}" th:errorclass="err" />		
 			<div th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}" th:errorclass="err">
 			</div>				
