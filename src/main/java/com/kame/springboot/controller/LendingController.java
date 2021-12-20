@@ -2,6 +2,7 @@ package com.kame.springboot.controller;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class LendingController {  // 貸し出しに関するコントローラ
     
     @RequestMapping( value = "/on_loan", method=RequestMethod.GET)  // リダイレクトは HTTPメソッドは GETになるので GETにする
     public ModelAndView onLoan(
-    		@RequestParam(name = "id", required = false)Integer id,  //  required = false必要 任意パラメータにする aリンクの時だけ ? 以降のクエリー文字列で送られてくる
+    		@RequestParam(name = "id", required = false)Integer id,  // 会員ID  required = false必要 任意パラメータにする aリンクの時だけ ? 以降のクエリー文字列で送られてくる
     	
     		ModelAndView mav,
     		Model model  // Flash Scopeから取得するので Modelインスタンスが必要 リダイレクトしてくるので
@@ -74,26 +75,71 @@ public class LendingController {  // 貸し出しに関するコントローラ
     	if(model.getAttribute("flashMsg") != null) {
     		flashMsg = (String) model.getAttribute("flashMsg");
     	}
-    	if(model.getAttribute("flashMsg") != null) {
+    	if(model.getAttribute("member") != null) {
     		member = (Member) model.getAttribute("member");
     	}
     	
+    	// リダイレクトしてきた時には null になってますのでスルー
     	if(id != null) {  // member.htmlから aリンクでアクセスしてきたら そのidでmemberを上書き
     		member = memberService.findMemberDataById(id);
     	}
-    	int memberId = member.getId();
+    	int memberId = member.getId();  // これを使う
     	// 取得した member  主キーidを使う.   親テーブル membersテーブルのidカラム（主キー)は、
     	// 子テーブル historiesテーブルのmemberidカラム から参照されているので
     	// historiesテーブルから その会員ID(memberidカラム)で絞ったデータで、 
     	// returnDate の値が nullの貸し出し中Historyデータを全て取得してくる 
     	//  select * from histories where memberid = 14 and returndate is null;
-    	
+    	// List<Object[]>   になってます
     	List<Object[]> returndateIsNullDataList = historyService.getReturndateIsNullData(memberId);
+    	int isNullDataCount = returndateIsNullDataList.size();
+    	String countMsg = "貸し出し件数は " + isNullDataCount + " 件です";
     	// Mapにして送る
-    	// Map<Book, History>()　型にして
+    	// Map<Book, History>()　型にして送ります
     	
+    	Map<Book, History> isNullMap = new LinkedHashMap<Book, History>();  // newで確保 中身 {}
+    	// returndateIsNullDataList List<Object[]>   になってます ので  Iterator<Object[]> にします
+    	// returndateIsNullDataList　見つからない時には []になってるので、
+		  History history = null;  // 見つからない時には []になってるので nullを代入してそれをreturnしてます
+		  Book book = null;
+		 int history_id = 0;
+		   Date lendDate = null;  
+		   Date returnDate = null;
+		  int bookId = 0;
+		  //  int memberId = 0;  // これはパラメータで送られてきてる idを使うので要らない
+		  
+		  
+		  if(returndateIsNullDataList.size() > 0) {  // 貸し出し中が ある時
+			  // 見つかったので History型のオブジェクトに詰め替えてる
+			  Iterator<Object[]> itr = returndateIsNullDataList.iterator();
+			  while(itr.hasNext()) {
+				  Object[] obj = (Object[]) itr.next();
+				  
+				  history_id = Integer.parseInt(String.valueOf(obj[0]));
+				  java.sql.Date sqlLendDate = (java.sql.Date)(obj[1]);
+				  java.util.Date utilLendDate = new Date(sqlLendDate.getTime());
+				  // nullとわかってるので変換するとエラーだし、要らない
+//				  java.sql.Date sqlReturnDate = (java.sql.Date)(obj[2]);
+//				  java.util.Date utilReturnDate = new Date(sqlLendDate.getTime());
+				  bookId = Integer.parseInt(String.valueOf(obj[3]));
+				  // public History(int id, Date lendDate, Date returnDate, int bookId, int memberId)
+				  // Historyインスタンスにして生成して これをMapのバリュー(値)に追加する
+				  history = new History(history_id, utilLendDate, bookId, memberId);
+				  
+				  // Bookインスタンスを取得する これをMapのキーにする bookIdから探せる
+				   book = bookService.findBookDataById(bookId);
+				  isNullMap.put(book, history);
+				  
+				  }
+		  } else { //貸し出し中のがなかったら
+			  // Historyインスタンス Bookインスタンス は null のまま isNullMapも[]のまま
+			  
+			  
+		  }
+		
     	mav.addObject("flashMsg", flashMsg);
     	mav.addObject("member", member);
+    	mav.addObject("countMsg", countMsg);
+    	mav.addObject("isNullMap", isNullMap);
     	// mav.addObject("list", returndateIsNullDataList);
     	mav.setViewName("history/onLoan");
     	

@@ -7,6 +7,11 @@
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
+<style>
+.countMsg {
+	color: limegreen;
+}
+</style>
 </head>
 <body> 
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
@@ -14,26 +19,29 @@
 	<div th:include="common/header :: common_header"></div>
 	 
 	 <div class="contents">
-		<h2 class="heading">[[${member.name}]] さんの貸し出し中 書籍一覧</h2>
-		<h4>会員情報</h4>
+		<h2 class="heading">貸し出し中 書籍一覧</h2>
+		<h4>**会員情報**</h4>
 		<p   th:text="|会員ID: ${member.id}|"></p>
 		<p   th:text="|会員名: ${member.name}|"></p>
 		<!-- CSVファイルを出力した後にも リダイレクトしてこの画面が表示されますそのメッセージflashMsg -->
 		<th:block th:if="${flashMsg != null && !flashMsg.equals('') }">
 			<p class="flashMsg"  th:text="${flashMsg}"></p>
 		</th:block>
-		
+		<h4>**書籍情報**</h4>
 		<!-- 指定した会員の 現在貸し出し中の書籍を一覧で 表示 -->
-		<p style="margin-bottom: 0;" class="searchResultMsg" th:if="${searchResultMsg}" th:text="${searchResultMsg}"></p>
+		<p style="margin-bottom: 0;" class="countMsg" th:if="${countMsg}" th:text="${countMsg}"></p>
 		<div>
-			 <th:block th:if="${list != null && list.size() > 0}">
+			 <th:block th:if="${isNullMap != null && isNullMap.size() > 0}">
 				 <table>
-					<tr><th>本のID</th><th>貸し出し日</th><th>書架状態</th></tr>
-					<!-- list  は List<Object[]> になってる ループで取り出したら Object[] になってる -->
-					<tr th:each="obj : ${list}" >	<!-- obj は Object[] になってる -->
-						<td align="center" th:text="${obj[3]}"></td>
-									
-						<td align="center" th:text="${obj[1]}"></td>　
+					<tr><th>本のID</th><th>ISBN</th><th>タイトル</th><th>著者</th><th>貸し出し日</th><th>書架状態</th></tr>
+					<!-- isNullMap  は Map<Book, History> になってる  -->
+					<tr th:each="element : ${isNullMap}" >
+						<td align="center" th:text="${element.key.id}"></td>
+						<td align="center" th:text="${element.key.isbn}"></td>
+						<td align="center" th:text="${element.key.title}"></td>
+						<td align="center" th:text="${element.key.authors}"></td>
+		
+						<td align="center" th:text="${#dates.format(element.value.lendDate, 'yyyy/MM/dd HH:mm')}"></td>　
 					
 						<!-- 書架状態 returnDateが nullなら 貸出中-->
 <!-- 三項演算子のネストの書き方
@@ -42,10 +50,14 @@
 
 <!-- <h2 class="heading" th:text="${action == 'add'} ?  '書籍 新規登録画面' : ${action == 'edit' ? '書籍 編集画面' : 'フォーム画面'}"></h2>
  -->												
-						<td align="center" th:text="${obj[2] == null} ?  '貸出中' : '書架' "></td>
+<!-- 						<td align="center" th:text="${obj[2] == null} ?  '貸出中' : '書架' "></td> -->
+						<td align="center" th:text="${element.value.returnDate == null} ?  '貸出中' : '書架' "></td>
 					</tr> 
 				</table>
 			</th:block>
+		</div>
+		<div>
+			<a href="/members" th:href="@{/members}"><button type="button"  >会員 一覧画面</button></a>
 		</div>
 		<div >
 			<a href="/" th:href="@{/}"><button type="button" th:text="トップページ" ></button></a>

@@ -87,6 +87,7 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 	
 	/**
 	 * 貸し出し日を本日とした 履歴インスタンスを生成するコンストラクタ 
+	 * 貸し出しをする時に使う
 	 * 引数は 貸し出しする本のid と 借りる会員の id が必要
 	 * @param bookId
 	 * @param memberId
@@ -98,6 +99,24 @@ public class History {  // 子テーブルの方です ある本に対する貸�
 		this.memberId = memberId;
 	}
 	
+	
+	/**
+	 * 引数4つのコンストラクタ
+	 * データベースからデータを取得して、History型のインスタンスを生成する時に使う
+	 * LendignController onLoanリクエストハンドラで使ってる
+	 * @param id
+	 * @param lendDate
+	 * @param bookId
+	 * @param memberId
+	 */
+	public History(int id, Date lendDate, int bookId, int memberId) {
+		super();
+		this.id = id;
+		this.lendDate = lendDate;
+		this.bookId = bookId;
+		this.memberId = memberId;
+	}
+
 	// アクセッサ
 	public int getId() {
 		return id;

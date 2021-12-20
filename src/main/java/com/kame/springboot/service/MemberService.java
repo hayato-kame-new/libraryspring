@@ -89,7 +89,7 @@ public class MemberService {
 		 query.setParameter("id", id);
 		 // List<Object[]>   になってます
 		  List<Object[]> resultDataList = query.getResultList();
-		  // Iterator<Object[]> になってます
+		  // Iterator<Object[]> にします
 		  // 見つからない時には []になってるので、
 		  Member member = null;  // 見つからない時には []になってるので nullを代入してそれをreturnしてます
 		  if(resultDataList.size() > 0) {  // 見つかったので
