@@ -23,7 +23,7 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h2 class="headingLenging" >貸し出しフォーム</h2>
+<h2 class="headingLenging" ><span class="lendingicon" ></span><i class="fas fa-book-reader"></i></span> 貸し出しフォーム</h2>
 
 <!-- フォーム入力のバリデーションにエラーがあると msgにメッセージ -->
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>

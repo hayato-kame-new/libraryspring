@@ -41,7 +41,7 @@ div { margin-bottom: 13px; }
  	color: darkgreen;
  	font-size: bold;
  	border-radius: 7px;
- 	padding: 4px;
+ 	padding: 3px 4px;
  	font-size: 15px;
  	border: 1px solid #333;
  }
@@ -50,7 +50,7 @@ div { margin-bottom: 13px; }
  	color: white;
  	font-size: bold;
  	border-radius: 7px;
- 	padding: 4px;
+ 	padding: 3px 4px;
  	font-size: 15px;
  	border: 1px solid #333;
  }
@@ -88,5 +88,17 @@ div { margin-bottom: 13px; }
  }
  .bookicon {
  	color : lightslategray;
- 	font-size: 80%;
+ 	font-size: 90%;
+ }
+ .membericon {
+ 	color: saddlebrown;
+ 	font-size: 90%; 	
+ }
+ .returnicon {
+ 	color:  lightsalmon;
+	
+ }
+ .lendingicon {
+ 	color: green;
+ 	font-size: 90%; 
  }

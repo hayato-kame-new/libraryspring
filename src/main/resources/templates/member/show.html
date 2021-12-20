@@ -31,7 +31,7 @@
 				<th></th>
 				<td>
 				    <!-- 編集画面を表示する -->
-					<a style="margin-right: 20px" th:href="@{/member_form(action=edit, id=${member.id})}"><button class="editbtn" type="button" >会員編集</button></a>
+					<a style="margin-right: 11px" th:href="@{/member_form(action=edit, id=${member.id})}"><button class="editbtn" type="button" >会員編集</button></a>
 					<!-- 削除の時にも 一旦確認のため 内容表示の画面を表示する -->
 					<a th:href="@{/member_delete_confirm(id=${member.id})}"><button class="deletebtn" type="button" >会員削除</button></a>
 				</td>

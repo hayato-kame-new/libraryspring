@@ -23,7 +23,7 @@
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
 
-<h2 class="headingReturn" >返却フォーム</h2>
+<h2 class="headingReturn" ><span class="returnicon" ><i class="far fa-hand-point-left"></i></span> 返却フォーム</h2>
 
 <!-- フォーム入力の バリデーションにエラーがあると msgにメッセージ -->
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>
