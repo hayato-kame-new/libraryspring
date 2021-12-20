@@ -7,6 +7,12 @@
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
+<style>
+label {
+	display: inline-block;
+	width: 18ch;
+}
+</style>
 </head>
 <body> 
 <!-- フラグメントの組み込み th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
@@ -30,16 +36,15 @@
 		検索用のBookSearchForm フォームクラスを定義してるのでそれを利用する -->
 		<div>
 			<form th:action="@{/book_search}" method="post" th:object="${bookSearchForm}">
-				<table>
-				
-					<tr><td style="width:13ch;"><label for="isbn">ISBN: </label></td>
-						<td><input type="text" id="isbn" name="isbn" th:value="*{isbn}" th:errorclass="err"/>
+				<table>				
+					<tr><td ><label for="isbn">ISBN: </label></td>
+						<td><input type="text" style="width:165px;" id="isbn" name="isbn" th:value="*{isbn}" th:errorclass="err"/>
 							<div th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}" th:errorclass="err"></div>
 						</td>
 					</tr>
 					 
-			 		<tr><td style="width:13ch;" ><label for="genre">ジャンル: </label></td>
-			 			<td ><select id="genre" name="genre"  size="4" style="width:150px;">
+			 		<tr><td  ><label for="genre">ジャンル: </label></td>
+			 			<td ><select id="genre" name="genre"  size="4" style="width:165px;">
 					 		    <option value="" th:text="選択しない"></option>
 					 		    <th:block th:each="element : ${genreMap}">
 									<option  th:value="${element.value}"  th:selected="${element.value == bookSearchForm.genre}"   th:inline="text">[[${element.value}]]</option>
@@ -51,26 +56,26 @@
 			    	
 					<tr><td><label for="title">タイトルに含まれる文字: </label></td>
 						<td>
-							<input type="text" id="title" name="title" th:value="*{title}" th:errorclass="err" />
+							<input type="text" style="width:165px;" id="title" name="title" th:value="*{title}" th:errorclass="err" />
 							<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="err"></div>
 						</td>
 					</tr>
 					
 					<tr><td><label for="authors">著者に含まれる文字: </label></td> 
 						<td>
-							<input type="text" id="authors" name="authors" th:value="*{authors}" th:errorclass="err" />
+							<input type="text" style="width:165px;" id="authors" name="authors" th:value="*{authors}" th:errorclass="err" />
 							<div th:if="${#fields.hasErrors('authors')}" th:errors="*{authors}" th:errorclass="err"></div>
 						</td>
 					</tr>
 					
 					<tr><td><label for="publisher">出版社に含まれる文字: </label></td> 
 						<td>
-							<input type="text" id="publisher" name="publisher" th:value="*{publisher}" th:errorclass="err" />
+							<input type="text" style="width:165px;" id="publisher" name="publisher" th:value="*{publisher}" th:errorclass="err" />
 							<div th:if="${#fields.hasErrors('publisher')}" th:errors="*{publisher}" th:errorclass="err"></div>
 						</td>
 					</tr>
 					
-					<tr><td></td><td><input style="margin-right: 20px;" type="submit" value="検索する" /> <input type="reset" value="キャンセル"></td></tr>
+					<tr><td></td><td><input style="margin-right: 8px;" type="submit" value="検索する" /> <input type="reset" value="キャンセル"></td></tr>
 					
 				</table>	
 				
