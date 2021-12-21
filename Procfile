@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/bootemp-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar target/libraryspring-0.0.1-SNAPSHOT.jar
