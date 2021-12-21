@@ -57,9 +57,16 @@ public class LendingController {  // 貸し出しに関するコントローラ
 	HttpSession session;
     
 	
-	 // th:href="@{/onLoan( id=${member.id})}" members.htmlから aリンクでもくるし、CSV出力後にリダイレクトでもくる
-    // 指定した会員の貸し出し一覧を表示する  リダイレクトは HTTPメソッドは GETになるので GETにする
-    
+	
+    /**
+     * 指定した会員の貸し出し一覧を表示する
+     * 貸し出し完了後にCSVファイルを出力したら、この/on_loanにリダイレクトしてくる リダイレクトは HTTPメソッドは GETになるので GETにする
+     * members.html 会員一覧表示に aリンクボタンで　この/on_loanに　GET でアクセスもしてくる th:href="@{/onLoan( id=${member.id})}" members.htmlから aリンクでもくる
+     * @param id
+     * @param mav
+     * @param model
+     * @return
+     */
     @RequestMapping( value = "/on_loan", method=RequestMethod.GET)  // リダイレクトは HTTPメソッドは GETになるので GETにする
     public ModelAndView onLoan(
     		@RequestParam(name = "id", required = false)Integer id,  // 会員ID  required = false必要 任意パラメータにする aリンクの時だけ ? 以降のクエリー文字列で送られてくる
@@ -164,6 +171,7 @@ public class LendingController {  // 貸し出しに関するコントローラ
     }
     
     /**
+     *  貸し出し処理をする
      *  貸し出しができるのかを確認してから、貸し出し処理をする
      *  Integer Date だったら @NotNull を使う
      *  @NotEmpty だと、 半角空白文字でも、OKになってしまうので、半角空白もバリデーションでエラーにするには @NotBlank にすること
@@ -231,14 +239,14 @@ public class LendingController {  // 貸し出しに関するコントローラ
     	// まず、housesメソッドで その書籍がこの図書館システムの所蔵されている本なのかどうか、調べる
     	// trueを返せば この図書館システムの所蔵されている本
     	Boolean houses = library.houses(history, LastHistoryData);
-    	if(houses == false) {
+    	if(houses == false) {  // false だったら
     		// そのIDの書籍は図書館システムにはない
     		// フォワード returnでこのリクエストハンドラを即終了する 以降の行は実行されない
     		mav.setViewName("lending/lendingForm");  
     		mav.addObject("msg", "貸し出しできません(書籍は所蔵されていません)");
     		return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
     	}
-    	// この図書館システムの所蔵されている本なので、次に canLend メソッドで その本が貸出可能なのか調べる
+    	// true だった この図書館システムの所蔵されている本なので、次に canLend メソッドで その本が貸出可能なのか調べる
     	// canLend メソッドでは、returnDateの値を調べ、returnDate が null だったら、ただ今貸し出し中となる
     	Boolean canLend = library.canLend(history, LastHistoryData);
     	if(canLend == false) {  // その本は貸し出しできない
@@ -251,7 +259,7 @@ public class LendingController {  // 貸し出しに関するコントローラ
     	} else { // true その本は貸し出しできる 
     		
     		// 貸し出し処理をする historiesテーブルに登録する
-    		// 上で生成した historyインスタンスを、引数に、登録する
+    		// 上で生成した historyインスタンスを、引数に、登録する 貸し出しできるのを確認したら、ここでHistoryデータをhistoriesテーブルに追加しています
     		boolean success = historyService.add(history);
     		if(success == false) { // データベース登録失敗
 				// 失敗したら 貸し出しのフォームへフォワードする   失敗のメッセージとreturnする

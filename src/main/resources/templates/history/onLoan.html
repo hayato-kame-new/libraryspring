@@ -41,7 +41,7 @@
 						<td align="center" th:text="${element.key.title}"></td>
 						<td align="center" th:text="${element.key.authors}"></td>
 		
-						<td align="center" th:text="${#dates.format(element.value.lendDate, 'yyyy/MM/dd HH:mm')}"></td>　
+						<td align="center" th:text="${#dates.format(element.value.lendDate, 'yyyy/MM/dd')}"></td>　
 					
 						<!-- 書架状態 returnDateが nullなら 貸出中-->
 <!-- 三項演算子のネストの書き方

@@ -500,7 +500,12 @@ public class BookService {
 //		 }
 		 
 	    
-	    // idがnullじゃない時に、idで検索した本が、図書館システムに存在してるかどうかを調べる
+	   
+	    /**
+	     * idで検索した本が、図書館システムに存在してるかどうかを調べる (idがnullじゃない時に)
+	     * @param id
+	     * @return
+	     */
 	    public boolean exist(int id) {
 	    	Query query = entityManager.createNativeQuery("select * from books where id = ? ");
 	    	query.setParameter(1, id);

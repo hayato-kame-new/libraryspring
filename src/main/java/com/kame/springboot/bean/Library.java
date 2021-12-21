@@ -63,9 +63,13 @@ public class Library {  // Beanとして使えるクラスにしています MyB
         return false;  // 貸し出し中では無い falseを返す
     }
     
-    //状態を調べる
-	// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
-	// 貸出可能 書架の状態です
+   
+    /**
+     * 貸し出しの状態を調べて 文字列で返す
+     * LastHistoryDatalist サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので 貸し出しOK
+     * @param LastHistoryDatalist
+     * @return String
+     */
     public String getStatusStr(List<Object[]> LastHistoryDatalist) {
     	// 最後の貸し出し履歴のHistoryのデータ 履歴がまだない時は []
 		int id = 0;
@@ -100,6 +104,30 @@ public class Library {  // Beanとして使えるクラスにしています MyB
     	}
     	return status;
     }
+   	// Iteratorを使ったやり方でもいい
+// Iterator itr =  LastHistoryDatalist.iterator();
+// while(itr.hasNext()) {
+//		Object[] obj = (Object[]) itr.next();
+//		id = Integer.parseInt(String.valueOf(obj[0]));
+//		lendDate = (Date) obj[1];
+//	returnDate = (Date) obj[2];
+//	memberId = Integer.parseInt(String.valueOf(obj[4])); 
+//	 }
+// String status = "";
+//// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
+//// 貸出可能 書架の状態です
+//if(LastHistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
+//	status = "書架";
+//} else if(LastHistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
+//	// 最新の履歴の状態は 返却済みなのかどうか、 returnDate;  // 返却した日が nullなのかどうか
+//	if(returnDate == null) {
+//		// 貸し出し中です
+//		status = "貸し出し中";
+//	} else {
+//		status = "書架";
+//	}				
+//}
+ 	 
 
     /**
      * 貸し出し中なのか調べて 文字列で表示する
@@ -207,21 +235,25 @@ public class Library {  // Beanとして使えるクラスにしています MyB
        // その本の貸出履歴が存在しない場合 つまり histories.size() == 0 は，今まで借りられたことがないため，貸し出し可能
        // その本の貸出履歴があったら histories.size() > 0 だったら、貸出可能かどうかを調べる
         // その本に関する今までの貸出記録があれば
-       if(historiesObjList.size() > 0){  // 最後の貸し出し記録があれば
+	   if(historiesObjList.size() == 0) {
+		   // その本に関する貸し出し記録はまだ無い(まだ１冊も貸し出されたことがない)
+    	   return true;  // 貸し出しできます ここでメソッド即終了して 引数の trueを呼び出し元へ返します
+    	// return が実行されたら ここより下は実行されない
+	   }else if(historiesObjList.size() > 0){  // 最後の貸し出し記録があれば
            // その本に関する最後の貸出記録の実態を取得する
-           // List<History> は、 右辺が new ArrayList<Hirstory>(); で初期化されてるため、ArrayListは、中身は配列と同じ構造なので、
-           //  履歴は順に格納されるため，最後の要素が貸し出し中でなければ貸し出し可能です
-          //  History lastHistory = histories.get(histories.size() - 1);
-         //  if(this.isLent(lastHistory.getReturnDate())){  // 最後の貸出記録を調べてる isLent(Date returnDate)は 貸出中ならtrueを返す
     	  // List<Object[]>  historiesObjList です
-    	   Object[] obj = historiesObjList.get(0);
+    	   // historiesObjList 最後の貸し出し記録を取得してるので 要素の数は1つのみなので 先頭を取得すればいい
+    	   Object[] obj = historiesObjList.get(0);  // [26, 2021-12-21, 2021-12-21, 40, 30]  返却済みだとこうなる
     	   if(obj[2] != null) {  //  returnDate が nullじゃない ので 返却済みで貸し出し可能
-    	   return false;  // falseを返す 貸出不可です
+    	   return true;  // 貸し出しできます ここでメソッド即終了して 引数の trueを呼び出し元へ返します
+    	   // return が実行されたら ここより下は実行されない
+           } else {
+        	   // nullだったら、現在は貸し出し中なので貸し出しができない状態です
+        	   return false;  // 貸し出しできません  ここでメソッド即終了して 引数の falseを呼び出し元へ返します
+        	// return が実行されたら ここより下は実行されない
            }
-       }
-       // その本に関する貸し出し記録はまだ無い(まだ１冊も貸し出されたことがない)
-       
-       return true;  // 貸出可能です
+       }      
+       return false;  
    }
 
     

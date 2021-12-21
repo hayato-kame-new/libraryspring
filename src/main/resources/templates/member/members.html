@@ -65,7 +65,7 @@
       <span th:if="${page.first}">&lt;&lt;前</span>
       <a
         th:if="${!page.first}"
-        th:href="@{/books(page = ${page.number} - 1)}"
+        th:href="@{/members(page = ${page.number} - 1)}"
       >
         &lt;&lt;前
       </a>
@@ -77,7 +77,7 @@
       <span th:if="${i} == ${page.number}" th:text="${i + 1}">1</span>
       <a
         th:if="${i} != ${page.number}"
-        th:href="@{/books(page = ${i})}"
+        th:href="@{/members(page = ${i})}"
       >
         <span th:text="${i+1}">1</span>
       </a>
@@ -86,7 +86,7 @@
       <span th:if="${page.last}">次&gt;&gt;</span>
       <a
         th:if="${!page.last}"
-        th:href="@{/books(page = (${page.number} + 1))}"
+        th:href="@{/members(page = (${page.number} + 1))}"
       >
         次&gt;&gt;
       </a>

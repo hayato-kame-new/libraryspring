@@ -86,32 +86,44 @@ public class ReturnController { // 返却に関する処理を行うコントロ
 			
         	return mav;  //returnで メソッドの即終了この後ろは実行されない
 		 }
-    	
-    	
+    	// まず、その本のIDが この図書館システムに所蔵してあるのか（登録してるかどうか)を確認する
     	int bookId = returnForm.getBookId();
+    	String flashMsg = "";
+    	
+    	boolean exist = bookService.exist(bookId);
+    	if(exist == false) {  // falseの時に
+    		flashMsg = "この本のIDは存在しません";
+			mav.addObject("flashMsg", flashMsg);
+			mav.setViewName("return/returnForm");
+			return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
+
+    	}
+    	 // true この本が図書館システムに所蔵されている本だったので
+    	
     	// bookIdを元に、その書籍の一番最後の貸し出し履歴を取得します historiesテーブルから取得する
     	//  "select * from histories where bookid = ?  order by id desc limit 1"
+    	// LastHistoryDatalistは 最後の１つを取得してるので [] か もしくは 要素数は 1 かのどちらかです
     	List<Object[]> LastHistoryDatalist = historyService.getLastHistoryData(bookId);
     	// updateするには  貸し出し記録Historyの主キーだけが分かればいいが、
     	// 確認のため、returnDate に null が入ってるかどうかの確認をする nullだったら、上書きして返却処理できますが、
-    	// nullじゃなかったら 貸し出し処理をしていない可能性があるので、エラーとする
-    
+    	// nullじゃなかったら 貸し出し処理をしていない可能性(貸し出し処理をせずに返却処理をしようとしてる可能性)があるので、エラーとする
+    // そうなら、この本は貸し出し処理をしていませんのメッセージをつけて 返す
     	int id = 0;  // 貸し出し記録 主キーこれだけが必要
     	
 		Date lendDate = null;  // 本当は不要
 		 Date returnDate = null;  // 必要
 		 // int bookId = 0;
 		 int memberId = 0;	// 必要
-    	// その最後の貸し出し履歴の 返却日に今日の日付を入れます
+    	// その最後の貸し出し履歴の 返却日に今日の日付を入れます 返却処理
 		 // 拡張forでもいいし 下のように Iterator を使ってもいい
     	for(Object[] obj : LastHistoryDatalist) {
-			System.out.println(obj[0]);
-			System.out.println(obj[1]);
-			System.out.println(obj[2]);
-			System.out.println(obj[3]);  
-			System.out.println(obj[4]);
+//			System.out.println(obj[0]);
+//			System.out.println(obj[1]);
+//			System.out.println(obj[2]);
+//			System.out.println(obj[3]);  
+//			System.out.println(obj[4]);
 			id =  Integer.parseInt(String.valueOf(obj[0])); 
-			lendDate = (Date) obj[1];   // 不要
+			lendDate = (Date) obj[1];   // 不要だけど一応
 			returnDate = (Date) obj[2];   // 必要
 			// bookIdはわかってるので要らない
 			memberId = Integer.parseInt(String.valueOf(obj[4]));   // 必要
@@ -128,10 +140,10 @@ public class ReturnController { // 返却に関する処理を行うコントロ
 // 		 }
     	
     	// チェックする
-    	String flashMsg = "";
+    	
     	if(returnDate != null) {
     		// nullじゃ無い時は、そもそも貸し出し記録が無い可能性 貸し出し処理をしていないのに 返却処理をしようとした可能性ある
-    		flashMsg = "返却処理ができませんでした(貸し出し記録を更新できませんでした)";
+    		flashMsg = "返却処理ができませんでした(この本は貸し出し処理をしていません)";
     		mav.addObject("flashMsg", flashMsg);
 			mav.setViewName("return/returnForm");
 			return mav; //  return で メソッドの即終了で、引数を呼び出し元へ返す この下は実行されない
@@ -141,7 +153,7 @@ public class ReturnController { // 返却に関する処理を行うコントロ
     	// それから、 データベースで updateします
     	// updateには 主キー idだけでいい
     	boolean success = historyService.update(id);
-    	if(success == false) { // データベース更新 失敗
+    	if(success == false) { // データベース更新 失敗 updateメソッドのデータベース側での何らかのエラー
 			// 失敗のメッセージとreturnする
     		// 失敗したら 返却のフォーム へフォワードする   失敗のメッセージとreturnする
 			flashMsg = "返却処理ができませんでした(貸し出し記録を更新できませんでした)";
@@ -163,30 +175,7 @@ public class ReturnController { // 返却に関する処理を行うコントロ
     	String status = library.getStatusStr(LastHistoryDatalist);
     	 
     	 
-    	   	// Iteratorを使ったやり方でもいい
-//    	 Iterator itr =  LastHistoryDatalist.iterator();
-//    	 while(itr.hasNext()) {
-// 			Object[] obj = (Object[]) itr.next();
-// 			id = Integer.parseInt(String.valueOf(obj[0]));
-// 			lendDate = (Date) obj[1];
-//			returnDate = (Date) obj[2];
-//			memberId = Integer.parseInt(String.valueOf(obj[4])); 
-// 		 }
-//    	 String status = "";
-//    	// HistoryDatalistに要素がない サイズが 0なら、貸し出し履歴はないので まだ一度も貸出されていませんので
-//		// 貸出可能 書架の状態です
-//		if(LastHistoryDatalist.size() == 0) { // 該当の本は貸し出しの履歴は今まで一度も無い
-//			status = "書架";
-//		} else if(LastHistoryDatalist.size() > 0){ // 該当の本は貸し出しの最新の履歴１件はあります
-//			// 最新の履歴の状態は 返却済みなのかどうか、 returnDate;  // 返却した日が nullなのかどうか
-//			if(returnDate == null) {
-//				// 貸し出し中です
-//				status = "貸し出し中";
-//			} else {
-//				status = "書架";
-//			}				
-//		}
-//    	   	 
+
     	//Mapに変換するをnewして確保しておく  今後複数の本を同時に貸し出し 返却する時のためにMapで管理しておく
 		 Map<Book, String> statusMap = new LinkedHashMap<Book, String>();  // LinkedHashMapは、格納した順番を記憶する
 		 // Historyデータの bookidフィールドは Bookデータの主キーidを参照してるので Book情報を取得する
