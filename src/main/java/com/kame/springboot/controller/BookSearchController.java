@@ -109,7 +109,7 @@ public class BookSearchController {
 		 }
 		
 		// もし、5つとも全部検索条件入れてない時は、何もしないで リダイレクトして、また、検索フォームに戻るだけ 何か入力してくださいのメッセージをつける
-		 if ("".equals(bookSearchForm.getIsbn()) && ( bookSearchForm.getGenre() == null || "選択しない".equals(bookSearchForm.getGenre())  ) && "".equals(bookSearchForm.getAuthors()) && "".equals(bookSearchForm.getTitle()) &&  "".equals(bookSearchForm.getPublisher())  ) {
+		 if ("".equals(bookSearchForm.getIsbn()) && ( bookSearchForm.getGenre() == null || "".equals(bookSearchForm.getGenre())  ) && "".equals(bookSearchForm.getAuthors()) && "".equals(bookSearchForm.getTitle()) &&  "".equals(bookSearchForm.getPublisher())  ) {
 		 
 			 // 何もしないでリダイレクトするだけ メッセージだけつける
 			 String flashMsg = "検索フォームに何か入力してください";
@@ -117,7 +117,12 @@ public class BookSearchController {
 				redirectAttributes.addFlashAttribute("flashMsg", flashMsg);
 
 			 return new ModelAndView("redirect:/book_search_form");  // 未入力なので、何もしないで /book_search_form へリダイレクトするだけ リダイレクトは、リダイレクト先のリクエストハンドラを実行させます。
-		 }   // フォームに何か入ってたら、検索を実行する
+		 }  
+		 
+		 
+		 
+		 
+		 // フォームに何か入ってたら、検索を実行する
 		 // まず、本のIDがフォームにあったら、そのIDが null じゃない時に、
 		 // 図書館システムに存在するのかを調べる必要があるが、今回はidのフォームはないので、大丈夫
 		 // 戻り値 List<Object[]>になってます  Iterable にキャストもできる (List<Book>)にキャストもできる

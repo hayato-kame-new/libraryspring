@@ -30,7 +30,7 @@
 	<div>
 		 <th:block th:if="${statusMap != null && statusMap.size() > 0}">
 			 <table>
-				<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th><th></th></tr>
+				<tr><th>ID</th><th>ISBN</th><th>タイトル</th><th>著者名</th><th>書架状態</th></tr>
 				
 				<tr th:each="element : ${statusMap}" >	
 					<td align="center" th:text="${element.key.id}"></td>

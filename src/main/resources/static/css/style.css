@@ -103,7 +103,11 @@ div { margin-bottom: 13px; }
  	font-size: 95%;
  	margin-left: 5px;
  }
- .membericon {
+ .membersIcon {
+ 	color: saddlebrown;
+ 	font-size: 105%; 	
+ }
+ .memberIcon {
  	color: saddlebrown;
  	font-size: 105%; 	
  }

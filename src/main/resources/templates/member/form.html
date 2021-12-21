@@ -7,6 +7,13 @@
 <!-- フラグメントを組み込む th:include の値は 読み込むファイルの.htmlを抜いたパス :: th:fragmentに指定した値 
 パスは templatesからのパス -->
 <style th:include="common/header :: common_header_style"></style>
+<style>
+.container {
+	display: flexbox;
+	align-items: center;
+
+}
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
@@ -17,8 +24,10 @@
 <!-- 三項演算子のネストの書き方
 <div th:text="${prod.Num=='12'} ? '準備中' : ${prod.Num=='13' && prod.sis=='春'} ? '出力' : '123'"></div> 
 -->
-
-<h2 class="headingMember" th:text="${action == 'add'} ?  '会員 新規登録画面' : ${action == 'edit' ? '会員 編集画面' : 'フォーム画面'}"></h2>
+<div class="container">
+	<span class="memberIcon" style="font-size : x-large; margin-right: 8px; color: saddlebrown;" ><i class="far fa-user"></i></span>
+	<h2 class="headingMember" th:text="${action == 'add'} ?  ' 会員 新規登録画面' : ${action == 'edit' ? ' 会員 編集画面' : ' フォーム画面'}"></h2>
+</div>
 
 <p class="msg" th:if="${msg}" th:text="${msg}"></p>
 <div>
@@ -129,5 +138,9 @@ function beforeSubmit() {
     }
   }
 </script>
+
+<!-- Font Awesomeのための -->
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
+
 </body>
 </html>
